@@ -1,0 +1,23 @@
+{
+  "name": "sharenews-api",
+  "version": "1.0.0",
+  "description": "API principal do ShareNews",
+  "main": "server.js",
+  "scripts": {
+    "start": "node bin/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShareNews/sharenews-api.git"
+  },
+  "author": "Fabiano Bizarro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShareNews/sharenews-api/issues"
+  },
+  "homepage": "https://github.com/ShareNews/sharenews-api#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "mongoose": "^4.3.1"
+  }
+}
