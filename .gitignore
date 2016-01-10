@@ -29,5 +29,5 @@ node_modules
 #TypeScript definitions
 typings
 
-#Environment configurarions
+#Ambientes 
 config/env
