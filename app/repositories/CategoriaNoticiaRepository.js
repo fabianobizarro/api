@@ -1,19 +1,14 @@
 "use strict";
-var CategoriaNoticiaRepository = (function(){
-    
-    var CategoriaNoticia = require('mongoose').model('CategoriaNoticia');
-    var BaseRepository = require('./BaseRepository');
+
+module.exports = function(database){
+    //var CategoriaNoticia = require('mongoose').model('CategoriaNoticia');
+    var BaseRepository = require('./BaseRepository')(database);
 
     class CategoriaNoticiaRepository extends BaseRepository {
         constructor() {
-            //super('categoriaNoticia')
-            super(CategoriaNoticia)
+            super('categoriaNoticia')
         }
     }
     
     return CategoriaNoticiaRepository;
-        
-})()
-
-
-module.exports = CategoriaNoticiaRepository;
+}

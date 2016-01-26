@@ -1,26 +1,19 @@
 'use strict'
 var express = require('express'),
-    database = require('./mongoose.js'),
+    database = require('./database.js'),
     repositories = require('../app/repositories'),
     services = require('../app/services');
 
 var app = express();
 
-database.initialize();
-//Teste
-app.get('/', function (req, res) {
-
-//     let _repo = repositories().CategoriaNoticiaRepository;
-//     let service = new services.CategoriaNoticiaService(new _repo());
-// 
-//     service.getAll(function (err, results) {
-// 
-//         console.log(results);
-// 
-//         res.json(results);
-//     });
-
-    res.end('Hellow World!');
+//Initialize database connection
+database.initialize((err, database) => {
+    
+    
+    app.get('/', function (req, res) {
+        res.json({message:'Hello World'});
+    });
+    
 });
 
 module.exports = app;

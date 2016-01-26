@@ -4,7 +4,7 @@
   "description": "API principal do ShareNews",
   "main": "server.js",
   "scripts": {
-    "start": "node bin/server.js"
+    "start": "node bin/www"
   },
   "repository": {
     "type": "git",
