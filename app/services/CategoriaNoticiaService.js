@@ -1,11 +1,21 @@
+/// <reference path="BaseService.js" />
 'use strict';
-var BaseService = require('./BaseService');
-
-class CategoriaNoticiaService extends BaseService {
+var CategoriaNoticiaService = (function(){
+ 
+    var CategoriaNoticiaRepository = require('../repositories/CategoriaNoticiaRepository'),
+        BaseService = require('./BaseService');
+ 
+    class CategoriaNoticiaService extends BaseService {
     
-    constructor(CategoriaNoticiaRepository) {
-        super(CategoriaNoticiaRepository)
-    }    
-}
+        constructor() {
+            super(new CategoriaNoticiaRepository())
+        }    
+    }
+    
+    return CategoriaNoticiaService;    
+})()
+
+
+
 
 module.exports = CategoriaNoticiaService;

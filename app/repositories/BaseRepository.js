@@ -1,29 +1,32 @@
+/// <reference path="../../typings/mongoose/mongoose.d.ts" />
 'use strict';
+var BaseRepository = (function () {
 
-module.exports = function(databse){
-	console.log('base repository: ' + typeof(databse));
-    
+    var mongoose = require('mongoose');
+
     class BaseRepository {
-        
-        constructor(collectionName)
-        {
-            this.collectionName = collectionName;
-            this.collection = databse.collection(collectionName);
+
+        constructor(collectionName, schema) {
+            this._collectionName = collectionName;
+            this.Schema = mongoose.model(collectionName);
         }
-        
-        getAll(callback) 
-        {
-            return this.collection.find({}).toArray(callback);
+
+        getAll(callback) {
+            
+            var c = this.Schema.constructor;
+            var s = new c({nome:"Bizarrp"});
+            s.save(callback);
+            //this.Schema.save({ nome: 'Bizarro' }).exec(callback);
         }
-        
+
         find(condition, callback) {
             return this.model.find(condition, callback);
         }
     }
-    
-    
-    return BaseRepository;
-        
-} 
 
+    return BaseRepository;
+
+})()
+
+module.exports = BaseRepository;
 

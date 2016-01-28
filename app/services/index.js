@@ -1,4 +1,4 @@
 module.exports = {
 	BaseService: require('./BaseService'),
-	CategoriaNoticiaService: require('./CategoriaNoticiaService')
+	CategoriaNoticia: require('./CategoriaNoticiaService')
 }

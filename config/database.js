@@ -1,20 +1,20 @@
 var config = require('./config'),
-    MongoClient = require('mongodb').MongoClient;
-    //modelService = require('../app/models').ModelService;
+    mongoose = require('mongoose'),
+    modelService = require('../app/models').ModelService;
 	
-exports.initialize = function(callback){ 
-	
-    MongoClient.connect(config.databaseUri, callback);
-    // try 
-    // {
-    //     mongoose.connect(config.databaseUri);
-    //     modelService.registerModels(mongoose);
-    // } 
-    // catch (error)
-    // {
-    //     console.log('erro de conexão');
-    //     throw (error);
-    // }	
+exports.initialize = function(callback){
+     
+    try 
+    {
+        mongoose.connect(config.databaseUri);
+        modelService.registerModels(mongoose);
+        callback(null);
+    } 
+    catch (error)
+    {
+        console.log('Ocorrue um erro na conexão com o banco de dados.');
+        callback (error);
+    }	
 }
 
 

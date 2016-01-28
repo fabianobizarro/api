@@ -1,14 +1,17 @@
-
 'use strict';
+var BaseService = (function(){
 
-class BaseSerivce {
-	constructor(baseRepository) {
-		this._repository = baseRepository;
-	}
-	
-	getAll(callback) { 
-		this._repository.getAll(callback);
-	}
-}
+    class BaseService {
+        constructor(baseRepository) {
+            this._repository = baseRepository;
+        }
+        
+        getAll(callback) { 
+            this._repository.getAll(callback);
+        }
+    }
+    
+    return BaseService;
+})()
 
-module.exports = BaseSerivce;
+module.exports = BaseService;

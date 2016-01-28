@@ -1,14 +1,17 @@
+/// <reference path="./BaseRepository.js" /> 
 "use strict";
 
-module.exports = function(database){
-    //var CategoriaNoticia = require('mongoose').model('CategoriaNoticia');
-    var BaseRepository = require('./BaseRepository')(database);
+var CategoriaNoticiaRepository = (function(){
+    var CategoriaNoticia = require('mongoose').model('CategoriaNoticia'),
+        BaseRepository = require('./BaseRepository');
 
     class CategoriaNoticiaRepository extends BaseRepository {
         constructor() {
-            super('categoriaNoticia')
+            super('CategoriaNoticia', CategoriaNoticia)
         }
     }
     
     return CategoriaNoticiaRepository;
-}
+})()
+
+module.exports = CategoriaNoticiaRepository;
