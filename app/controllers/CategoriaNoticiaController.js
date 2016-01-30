@@ -11,7 +11,9 @@ var CategoriaNoticiaController = (function(){
         }
         
         listarCategoriaNoticias(req, res) {
-            
+            console.log();
+            console.log(this._service);
+            console.log();
             this._service.getAll((err, docs) => {
                 
                 if (err)
@@ -20,6 +22,18 @@ var CategoriaNoticiaController = (function(){
                     res.json(docs);    
                 
             });
+        }
+        
+        adicionarCategoria(req, res) {
+            res.json({'post': 'Categori Noticia'});
+        }
+        
+        atualizarCategoria(req, res){
+            res.json({'put': 'categoria noticia'});
+        }
+        
+        excluirCategoria(req, res){
+            res.json({delete:'categoria noticia'});
         }
     }
     return CategoriaNoticiaController;

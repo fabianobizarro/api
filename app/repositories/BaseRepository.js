@@ -8,19 +8,27 @@ var BaseRepository = (function () {
 
         constructor(collectionName, schema) {
             this._collectionName = collectionName;
-            this.Schema = mongoose.model(collectionName);
+            this.Model = mongoose.model(collectionName);
         }
 
         getAll(callback) {
-            
-            var c = this.Schema.constructor;
-            var s = new c({nome:"Bizarrp"});
-            s.save(callback);
-            //this.Schema.save({ nome: 'Bizarro' }).exec(callback);
+            return this.Model.find({}, callback);
         }
 
         find(condition, callback) {
-            return this.model.find(condition, callback);
+            return this.Model.find(condition, callback);
+        }
+        
+        add(model, callback){
+            
+        }
+        
+        update(model , callback){
+            
+        }
+        
+        delete(model, callback){
+            
         }
     }
 

@@ -15,7 +15,4 @@ var CategoriaNoticiaService = (function(){
     return CategoriaNoticiaService;    
 })()
 
-
-
-
 module.exports = CategoriaNoticiaService;

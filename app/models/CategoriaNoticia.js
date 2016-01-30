@@ -8,6 +8,10 @@ var model = (function(){
 			type: String,
 			required: 'O nome é obrigatório',
 			trim: true,
+            match: [
+                /^[a-zA-Zà-ú 0-9]*$/g, 
+                'Este campo não pode conter caracteres especiais'
+            ] 
 		},
 		descricao:{
 			type: String,
