@@ -1,44 +1,20 @@
 'use strict';
 
-var CategoriaNoticiaController = (function(){
-    
-    var CategoriaNoticiaService = require('../services').CategoriaNoticia;
+var CategoriaNoticiaRepository = require('../repositories/CategoriaNoticiaRepository'),
+    repository = new CategoriaNoticiaRepository();
 
-    class CategoriaNoticiaController {
-        
-        constructor(){ 
-            this._service = new CategoriaNoticiaService();
-        }
-        
-        listarCategoriaNoticias(req, res) {
-            console.log();
-            console.log(this._service);
-            console.log();
-            this._service.getAll((err, docs) => {
-                
-                if (err)
-                    res.json(err);
-                else
-                    res.json(docs);    
-                
-            });
-        }
-        
-        adicionarCategoria(req, res) {
-            res.json({'post': 'Categori Noticia'});
-        }
-        
-        atualizarCategoria(req, res){
-            res.json({'put': 'categoria noticia'});
-        }
-        
-        excluirCategoria(req, res){
-            res.json({delete:'categoria noticia'});
-        }
-    }
-    return CategoriaNoticiaController;
-})()
+exports.listarCategoriaNoticias = function (req, res) {
 
+    repository.getAll((err, docs) => {
+        res.json(docs);
+    });
+}
 
-module.exports = CategoriaNoticiaController;
+exports.adicionarCategoria = function (req, res) {
+}
 
+exports.atualizarCategoria = function (req, res) {
+}
+
+exports.excluirCategoria = function (req, res) {
+}

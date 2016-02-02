@@ -6,9 +6,9 @@ module.exports = function(app) {
     var controller = CategoriaNoticiaController;
     
     
-    app.get('/categoriaNoticia', new controller().listarCategoriaNoticias);
-    app.post('/categoriaNoticia', new controller().adicionarCategoria);
-    app.put('/categoriaNoticia', new controller().atualizarCategoria);
-    app.delete('/categoriaNoticia', new controller().excluirCategoria);
+    app.get('/categoriaNoticia', controller.listarCategoriaNoticias);
+    app.post('/categoriaNoticia', controller.adicionarCategoria);
+    app.put('/categoriaNoticia', controller.atualizarCategoria);
+    app.delete('/categoriaNoticia', controller.excluirCategoria);
     
 }

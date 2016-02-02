@@ -33,7 +33,6 @@ var model = (function(){
 	
 })()
 
-//mongoose.model('CategoriaNoticia', CategoriaNoticiaSchema);
 module.exports = { 
 	schemaName: model.schemaName, 
 	schema: model.schema 
