@@ -17,19 +17,22 @@ class BaseRepository {
     find(condition, callback) {
         return this.Model.find(condition, callback);
     }
-    
-    add(model, callback){
-        
+
+    findById(id, callback) {
+        this.Model.findById(id, callback);
+    }
+
+    add(model, callback) {
         var _ = new this.Model(model);
-        _.save(callback); 
+        _.save(callback);
     }
-    
-    update(model , callback){
-        
+
+    update(model, callback) {
+        this.Model.update(model, callback);
     }
-    
-    delete(model, callback){
-        
+
+    delete(model, callback) {
+        this.Model.remove(model, callback);
     }
 }
 
