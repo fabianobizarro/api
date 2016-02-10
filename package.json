@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ShareNews/sharenews-api#readme",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "express": "^4.13.3",
     "mongodb": "^2.1.4",
     "mongoose": "^4.3.7"
