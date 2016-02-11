@@ -3,9 +3,9 @@ exports.registerModels = function(mongoose){
     	
     try {
         
-        
         var schemas = [
             require('./CategoriaNoticia'),
+            require('./Usuario')
         ];
         
         schemas.forEach(model => {

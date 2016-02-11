@@ -1,12 +1,7 @@
 
-var CategoriaNoticiaController = require('../controllers/CategoriaNoticiaController');
-
-
-
-
 module.exports = function(app) {
     
-    var controller = CategoriaNoticiaController;
+    var controller = require('../controllers/CategoriaNoticiaController');
     
     app.route('/categoriaNoticia')
         .get(controller.listarCategoriaNoticias)

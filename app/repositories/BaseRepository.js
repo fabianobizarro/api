@@ -17,6 +17,10 @@ class BaseRepository {
     find(condition, callback) {
         return this.Model.find(condition, callback);
     }
+    
+    findOne(condition, callback){
+        return this.Model.findOne(condition, callback);
+    }
 
     findById(id, callback) {
         this.Model.findById(id, callback);

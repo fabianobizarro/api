@@ -1,31 +1,64 @@
-var model = (function(){
-   
-   var mongoose = require('mongoose'),
-        Schema = mongoose.Schema;
-        
-        
-    var NoticiaSchema = new Schema({
-        
+var model = (function () {
+
+    var mongoose = require('mongoose'),
+        Schema = mongoose.Schema,
+        crypto = require('crypto');
+
+
+    var UsuarioSchema = new Schema({
+
         nome: {
             type: String,
-            required: 'O nome do notícia é obrigatório'
+            required: 'O nome do usuário é obrigatório',
+            match: [
+                /^[a-zA-Zà-ú ']*$/,
+                'O nome do usuário não pode conter caracteres especiais'
+            ]
+        },
+        email: {
+            type: String,
+            required: 'O email é obrigatório',
+            match: [/.+\@.+\..+/, "O endereço de email está no formato inválido"]
         },
         login: {
             type: String,
-            required: '',
+            required: 'O login do usuário é obrigatório',
             unique: true,
-            index: true
+            trim: true,
+            index: true,
         },
         senha: {
             required: 'A senha do usuário é obrigatória',
-            type: String
+            type: String,
+            validate: [
+                function (passwd) {
+                    return passwd.length >= 6;
+                },
+                'A senha deve ter possuir 6 caracteres ou mais'
+            ]
+        },
+        salt: { type: String }
+
+    });
+
+    UsuarioSchema.pre('save', function (next) {
+        console.log('senha: ' + this.senha);
+        if (this.senha) {
+            
+            this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+            this.senha = this.hashPassword(this.senha);
         }
         
+        next();
     });
-    
+
+    UsuarioSchema.methods.hashPassword = function (password) {
+        return crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
+    };
+
     return {
-        schemaName: 'usuarios',
-        schema: NoticiaSchema
+        schemaName: 'Usuario',
+        schema: UsuarioSchema
     }
 })()
 
