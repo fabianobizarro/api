@@ -39,9 +39,7 @@ exports.atualizarCategoria = function (req, res, next) {
         res.json({
             mensagem: 'Categoria de notícia atualizada com sucesso.'
         });
-    })
-    
-    
+    });
 }
 
 exports.excluirCategoria = function (req, res, next) {
@@ -60,12 +58,20 @@ exports.excluirCategoria = function (req, res, next) {
 }
 
 exports.categoriaNoticiaPorId = function (req, res, next, id) {
+    
     repository.findById(id, (err, doc) => {
-
-        if (err) return next(err);
-        if (!doc) return next(new Error('Não foi possível encontrar um registro com o id ' + id));
-
-        req.categoriaNoticia = doc;
-        next();
+        
+        if (err) 
+            return next(err);
+        
+        if (doc)
+        {
+            req.categoriaNoticia = doc;
+            next();    
+        } 
+        else
+        {
+            return next(new Error('Não foi possível encontrar um registro com o id ' + id));    
+        }
     });
 }

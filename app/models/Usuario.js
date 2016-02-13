@@ -37,29 +37,43 @@ var model = (function () {
                 'A senha deve ter possuir 6 caracteres ou mais'
             ]
         },
+        admin: {
+            type: Boolean,
+            default: false
+        },
         salt: { type: String }
 
     });
 
     UsuarioSchema.pre('save', function (next) {
-        console.log('senha: ' + this.senha);
+
         if (this.senha) {
-            
+
             this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
             this.senha = this.hashPassword(this.senha);
         }
-        
+
         next();
     });
 
+    UsuarioSchema.pre('update', function (next) {
+        if (this.senha) {
+            this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+            this.senha = this.hashPassword(this.senha);
+        }
+        next();
+    });
+    
     UsuarioSchema.methods.hashPassword = function (password) {
         return crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
     };
+    
 
     return {
         schemaName: 'Usuario',
         schema: UsuarioSchema
     }
+    
 })()
 
 module.exports = model;

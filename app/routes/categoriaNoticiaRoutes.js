@@ -1,16 +1,16 @@
+'use strict';
+module.exports = function (app) {
 
-module.exports = function(app) {
-    
-    var controller = require('../controllers/CategoriaNoticiaController');
-    
+    let controller = require('../controllers/CategoriaNoticiaController');
+
     app.route('/categoriaNoticia')
         .get(controller.listarCategoriaNoticias)
         .post(controller.adicionarCategoria);
 
-    app.route('/categoriaNoticia/:id')
+    app.route('/categoriaNoticia/:idCategoriaNoticia')
         .get(controller.obterCategoriaNoticia)
         .put(controller.atualizarCategoria)
         .delete(controller.excluirCategoria);
-        
-    app.param('id', controller.categoriaNoticiaPorId);
+
+    app.param('idCategoriaNoticia', controller.categoriaNoticiaPorId);
 }

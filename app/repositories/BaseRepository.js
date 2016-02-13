@@ -32,7 +32,8 @@ class BaseRepository {
     }
 
     update(model, callback) {
-        this.Model.update(model, callback);
+        console.log(typeof(model));
+        model.save(callback);
     }
 
     delete(model, callback) {

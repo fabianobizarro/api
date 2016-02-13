@@ -36,6 +36,7 @@ exports.registerRoutes = function (app) {
         return res
             .status(500)
             .json({
+                sucesso: false, 
                 erro: 'Não foi possível completar a requisição.',
                 mensagem: getErrorMessage(err)
             });
