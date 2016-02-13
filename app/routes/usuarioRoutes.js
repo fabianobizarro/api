@@ -1,16 +1,21 @@
 'use strict';
-module.exports = function (app) {
-
+module.exports = function () {
+    
+    let express = require("express");
     let controller = require('../controllers/UsuarioController');
 
-    app.route('/usuario')
+    let rotas = express.Router();
+    
+    rotas.route('/usuario')
         .get(controller.listarUsuarios)
         .post(controller.adicionarUsuario);
 
-    app.route("/usuario/:idUsuario")
+    rotas.route("/usuario/:idUsuario")
         .get(controller.dadosUsuario)
         .put(controller.alterarUsuario)
         .delete(controller.excluirUsuario);
 
-    app.param('idUsuario', controller.obterUsuarioPorId);
+    rotas.param('idUsuario', controller.obterUsuarioPorId);
+    
+    return rotas;
 }

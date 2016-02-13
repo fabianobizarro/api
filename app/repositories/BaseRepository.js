@@ -32,7 +32,6 @@ class BaseRepository {
     }
 
     update(model, callback) {
-        console.log(typeof(model));
         model.save(callback);
     }
 

@@ -18,6 +18,7 @@ exports.adicionarUsuario = function (req, res, next) {
 }
 
 exports.listarUsuarios = function (req, res, next) {
+
     repository.getAll((err, usuarios) => {
         if (err) return next(err);
 

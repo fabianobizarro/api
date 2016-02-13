@@ -20,10 +20,9 @@
     "body-parser": "^1.14.2",
     "crypto": "0.0.3",
     "express": "^4.13.3",
+    "jsonwebtoken": "^5.5.4",
     "mongodb": "^2.1.4",
     "mongoose": "^4.3.7",
-    "passport": "^0.3.2",
-    "passport-local": "^1.0.0",
     "swagger-ui": "^2.1.4"
   }
 }

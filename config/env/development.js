@@ -1,3 +1,4 @@
 module.exports = {
-	databaseUri: "mongodb://localhost/sharenews"
+	databaseUri: "mongodb://localhost/sharenews",
+    secret: 'secret'
 };
