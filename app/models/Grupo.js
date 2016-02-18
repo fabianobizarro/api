@@ -10,7 +10,8 @@ var model = (function(){
             type: String,
             required: 'O nome do grupo é obrigatório',
             unique: true,
-            index: true
+            index: true,
+            trim: true
         },
         descricao: {
             type: String,
@@ -24,7 +25,7 @@ var model = (function(){
     });
         
    return {
-       schemaName: 'grupos',
+       schemaName: 'Grupo',
        schema: GrupoSchema
    }
     

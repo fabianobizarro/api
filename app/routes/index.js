@@ -5,9 +5,12 @@
 exports.registerRoutes = function (app) {
     let authController =    require('../controllers/authController');
     let errorService =      require('../services/errorService');
-    let categoriaNoticiaRotas = require('./categoriaNoticiaRoutes')(app);
-    let usuarioRotas = require('./usuarioRoutes')(app);
     let authRoutes = require('./authRoutes');
+    
+    let categoriaNoticiaRotas = require('./categoriaNoticiaRoutes')();
+    let usuarioRotas = require('./usuarioRoutes')();
+    let grupoRotas = require('./grupoRoutes')();
+    
 
     app.get('/', (req, res) => { 
         res.json({
@@ -25,7 +28,8 @@ exports.registerRoutes = function (app) {
     
     app.use('/api', [
         categoriaNoticiaRotas, 
-        usuarioRotas
+        usuarioRotas,
+        grupoRotas
     ]);
     
     // Handler de erros padrão

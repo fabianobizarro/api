@@ -37,11 +37,12 @@ var model = (function () {
                 'A senha deve ter possuir 6 caracteres ou mais'
             ]
         },
+        salt: { type: String },
         admin: {
             type: Boolean,
             default: false
         },
-        salt: { type: String }
+        grupos: [Schema.Types.ObjectId]
 
     });
 

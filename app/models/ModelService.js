@@ -5,7 +5,8 @@ exports.registerModels = function(mongoose){
         
         var schemas = [
             require('./CategoriaNoticia'),
-            require('./Usuario')
+            require('./Usuario'),
+            require('./Grupo')
         ];
         
         schemas.forEach(model => {
