@@ -47,7 +47,7 @@ exports.checkToken = function (req, res, next) {
             else
             {
                 req.decoded = decoded
-                req.userToken = decoded._doc;
+                req.requestUser = decoded._doc;
                 next();
             }
         });
