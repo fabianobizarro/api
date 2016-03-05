@@ -21,7 +21,8 @@ var model = (function(){
         grupoPublico: {
             type: Boolean,
             default: false
-        }
+        },
+        noticias: [Schema.Types.ObjectId]
     });
         
    return {

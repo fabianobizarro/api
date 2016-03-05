@@ -34,6 +34,37 @@ exports.signIn = function (req, res, next) {
     });
 }
 
+exports.signUp = function (req, res, next) {
+
+    let repo = new UsuarioRepository();
+    
+    let novoUsuario = {
+        login: req.body.login,
+        senha: req.body.senha,
+        email: req.body.email,
+        nome: req.body.nome
+    } 
+    
+    repo.add(novoUsuario, (err, usuario) => {
+        
+        if (err)
+            return next(err);
+        
+        let token = authService.signIn(usuario);
+            
+        res.json({
+            sucesso: true,
+            mensagem: 'Usuário criado com sucesso',
+            token: token
+        });
+        
+        
+        
+
+    });
+
+}
+
 exports.checkToken = function (req, res, next) {
 
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -44,8 +75,7 @@ exports.checkToken = function (req, res, next) {
             if (err) {
                 res.json({ sucesso: false, mensagem: 'Falha na autenticação do token.' })
             }
-            else
-            {
+            else {
                 req.decoded = decoded
                 req.requestUser = decoded._doc;
                 next();

@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 exports.registerRoutes = function (app) {
     let authController =    require('../controllers/authController');
     let errorService =      require('../services/errorService');
@@ -10,6 +8,7 @@ exports.registerRoutes = function (app) {
     let categoriaNoticiaRotas = require('./categoriaNoticiaRoutes')();
     let usuarioRotas = require('./usuarioRoutes')();
     let grupoRotas = require('./grupoRoutes')();
+    let noticiaRotas = require('./noticiaRoutes')();
     
 
     app.get('/', (req, res) => { 
@@ -20,7 +19,6 @@ exports.registerRoutes = function (app) {
 
     // Registrar todas as rotas    
 
-    
     app.use('/auth', authRoutes(app));
     
     // Middleware para validar o token antes das rotas
@@ -29,7 +27,8 @@ exports.registerRoutes = function (app) {
     app.use('/api', [
         categoriaNoticiaRotas, 
         usuarioRotas,
-        grupoRotas
+        grupoRotas,
+        noticiaRotas
     ]);
     
     // Handler de erros padrão

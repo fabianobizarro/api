@@ -21,6 +21,10 @@ class BaseRepository {
     findOne(condition, callback){
         return this.Model.findOne(condition, callback);
     }
+    
+    findOneAndUpdate(id, update, callback){
+        return this.Model.findOneAndUpdate(id, update, callback);
+    }
 
     findById(id, callback) {
         this.Model.findById(id, callback);
@@ -41,4 +45,3 @@ class BaseRepository {
 }
 
 module.exports = BaseRepository;
-

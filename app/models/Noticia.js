@@ -5,6 +5,9 @@ var model = (function(){
         
     var NoticiaSchema = new Schema({
      
+        grupoId: {
+            type: Schema.Types.ObjectId,
+        },
         titulo: {
             type: String,
             required: 'O título da notícia é obrigatório',
@@ -13,7 +16,7 @@ var model = (function(){
         resumo: {
             type: String,
             trim: true
-        } ,
+        },
         conteudo: {
             type: String,
             required: 'O conteúdo da notícia é obrigatório',
@@ -21,7 +24,12 @@ var model = (function(){
         },
         data: {
             type: Date,
-            required: 'A data da notícia é obrigatória'
+            required: 'A data da notícia é obrigatória',
+            default: Date.now
+        },
+        categoriaNoticia:{
+            type: Schema.Types.ObjectId,
+            required: 'A categoria de notícia é obrigatória'
         },
         imagemPrincipal: {
             type: Schema.Types.ObjectId
@@ -52,7 +60,7 @@ var model = (function(){
     });
     
     return {
-        schemaName: 'noticias',
+        schemaName: 'Noticia',
         schema: NoticiaSchema
     }
 })()
