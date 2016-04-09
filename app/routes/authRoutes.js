@@ -8,6 +8,7 @@ module.exports = function(){
     var rotas = express.Router();
     
     rotas.post('/signIn', controller.signIn);
+    rotas.post('/signIn/admin', controller.signInAdmin);
     rotas.post('/signUp', controller.signUp);
  
     return rotas;   

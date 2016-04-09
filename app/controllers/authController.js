@@ -2,11 +2,12 @@
 var UsuarioRepository = require('../repositories/UsuarioRepository'),
     authService = require("../services/authService");
 
-exports.signIn = function (req, res, next) {
+exports.signIn = function(req, res, next) {
 
     let repo = new UsuarioRepository();
     let usuario = req.body.login;
     let senha = req.body.senha;
+
 
     repo.findOne({ login: usuario }, (err, usuario) => {
 
@@ -14,11 +15,11 @@ exports.signIn = function (req, res, next) {
             return next(err);
 
         if (!usuario) // Verifica se o usuário existe
-            return next(new Error('Usuário não encontrado.'));
+            return next(new Error('Usuário/Senha inválidos.'));
         else {
             if (usuario.senha !== usuario.hashPassword(senha)) // Verifica se a senha está correta
             {
-                return next(new Error('Usuário e/ou senha inválidos.'))
+                return next(new Error('Usuário/Senha inválidos.'))
             }
             else {
                 // se tudo estiver ok, gera o token e retorna ao usuário
@@ -34,38 +35,71 @@ exports.signIn = function (req, res, next) {
     });
 }
 
-exports.signUp = function (req, res, next) {
+exports.signInAdmin = function(req, res, next) {
+    let repo = new UsuarioRepository();
+    let usuario = req.body.login;
+    let senha = req.body.senha;
+
+
+    repo.findOne({ login: usuario }, (err, usuario) => {
+
+        if (err)
+            return next(err);
+
+        if (!usuario) // Verifica se o usuário existe
+            return next(new Error('Usuário/Senha inválidos.'));
+        else {
+            if (usuario.senha !== usuario.hashPassword(senha)) // Verifica se a senha está correta
+            {
+                return next(new Error('Usuário/Senha inválidos.'))
+            }
+            else {
+
+                if (usuario.admin) {
+                    // se tudo estiver ok, gera o token e retorna ao usuário
+                    let token = authService.signIn(usuario);
+
+                    res.json({
+                        sucesso: true,
+                        mensagem: 'Usuário autenticado com sucesso.',
+                        token: token
+                    });
+                }
+                else {
+                    return next(new Error('Usuário não possui permissão.'))
+                }
+            }
+        }
+    });
+}
+
+exports.signUp = function(req, res, next) {
 
     let repo = new UsuarioRepository();
-    
+
     let novoUsuario = {
         login: req.body.login,
         senha: req.body.senha,
         email: req.body.email,
         nome: req.body.nome
-    } 
-    
+    }
+
     repo.add(novoUsuario, (err, usuario) => {
-        
+
         if (err)
             return next(err);
-        
+
         let token = authService.signIn(usuario);
-            
+
         res.json({
             sucesso: true,
             mensagem: 'Usuário criado com sucesso',
             token: token
         });
-        
-        
-        
-
     });
-
 }
 
-exports.checkToken = function (req, res, next) {
+exports.checkToken = function(req, res, next) {
 
     var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
