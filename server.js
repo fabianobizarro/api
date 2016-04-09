@@ -1,5 +1,5 @@
-var port = process.env.PORT = 3000;
-var host = process.env.HOST = 'localhost';
+var port = process.env.PORT || 3000;
+var host = process.env.HOST || 'localhost';
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var database = require('./config/database'),
@@ -16,7 +16,7 @@ database.initialize((err) => {
     var server = _server();
 
     server.listen(port, () => {
-        console.log("Server running at http://" + host + ":" + port);
+        console.log("Server running at port " + port);
     });    
         
 });
