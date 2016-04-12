@@ -33,8 +33,9 @@ exports.registerRoutes = function (app) {
     
     // Handler de erros padrão
     app.use((err, req, res, next) => {
+        var statusCode = res.statusCode || 500;
         return res
-            .status(500)
+            .status(statusCode)
             .json({
                 sucesso: false, 
                 erro: 'Não foi possível completar a requisição.',
