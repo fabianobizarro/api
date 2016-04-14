@@ -27,15 +27,15 @@ exports.adicionarCategoria = function (req, res, next) {
 }
 
 exports.atualizarCategoria = function (req, res, next) {
-    
+
     var categoriaNoticia = req.categoriaNoticia;
-    
+
     categoriaNoticia.nome = req.body.nome;
-    
-    repository.update(categoriaNoticia, (err)=>{
+
+    repository.update(categoriaNoticia, (err) => {
         if (err)
             return next(err);
-        
+
         res.json({
             mensagem: 'Categoria de notícia atualizada com sucesso.'
         });
@@ -49,29 +49,54 @@ exports.excluirCategoria = function (req, res, next) {
     repository.delete(categoriaNoticia, (err) => {
         if (err)
             return next(err);
-            
+
         res.json({
             mensagem: 'Categoria de notícia excluída com sucesso.'
         });
     });
-    
+
 }
 
 exports.categoriaNoticiaPorId = function (req, res, next, id) {
-    
+
     repository.findById(id, (err, doc) => {
-        
-        if (err) 
+
+        if (err)
             return next(err);
-        
-        if (doc)
-        {
+
+        if (doc) {
             req.categoriaNoticia = doc;
-            next();    
-        } 
-        else
-        {
-            return next(new Error('Não foi possível encontrar um registro com o id ' + id));    
+            next();
+        }
+        else {
+            return next(new Error('Não foi possível encontrar um registro com o id ' + id));
         }
     });
+}
+
+exports.pesquisaCategoriaNoticia = function (req, res, next) {
+
+    var search = req.params.q;
+
+    var query = {
+        "$or": [
+            { "nome": { "$regex": search } },
+            { "descricao": { "$regex": search } },
+            { "tags": { "$elemMatch": query } }
+        ]
+
+    };
+
+    console.log(query);
+
+    repository.find(query, (err, data) => {
+
+        if (err)
+            return next(err);
+
+        console.log(data);
+
+        res.json({ sucess: true });
+    });
+
 }

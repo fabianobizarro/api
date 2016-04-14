@@ -18,6 +18,7 @@ var model = (function(){
 			type: String,
 			trim: true 
 		},
+		tags: [String],
 		createdOn: {
 			type: Date,
 			default: Date.now
