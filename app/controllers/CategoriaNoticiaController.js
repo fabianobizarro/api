@@ -77,16 +77,21 @@ exports.categoriaNoticiaPorId = function (req, res, next, id) {
 exports.pesquisaCategoriaNoticia = function (req, res, next) {
 
     var search = req.params.q;
-
-    var query = {
-        "$or": [
-            { "nome": { "$regex": search } },
-            { "descricao": { "$regex": search } },
-            { "tags": { "$elemMatch": query } }
-        ]
-
-    };
-
+    console.log(search)
+    console.log([search])
+    let query;
+    if (search == '') {
+        query = {};
+    }
+    else {
+        query = {
+            "$or": [
+                { "nome": { "$regex": new RegExp(search), '$options': 'i' } },
+                { "descricao": { "$regex": new RegExp(search), '$options': 'i' } },
+                { "tags": search }
+            ]
+        };
+    }
     console.log(query);
 
     repository.find(query, (err, data) => {
@@ -94,9 +99,7 @@ exports.pesquisaCategoriaNoticia = function (req, res, next) {
         if (err)
             return next(err);
 
-        console.log(data);
-
-        res.json({ sucess: true });
+        res.json(data);
     });
 
 }

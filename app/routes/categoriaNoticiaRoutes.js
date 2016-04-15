@@ -7,7 +7,7 @@ module.exports = function () {
 
     rotas.route('/categoriaNoticia/q/:q')
         .get(controller.pesquisaCategoriaNoticia);
-    
+
     rotas.route('/categoriaNoticia')
         .get(controller.listarCategoriaNoticias)
         .post(controller.adicionarCategoria);
@@ -16,7 +16,7 @@ module.exports = function () {
         .get(controller.obterCategoriaNoticia)
         .put(controller.atualizarCategoria)
         .delete(controller.excluirCategoria);
-        
+
 
     rotas.param('idCategoriaNoticia', controller.categoriaNoticiaPorId);
 
