@@ -9,6 +9,7 @@ exports.registerRoutes = function (app) {
     let usuarioRotas = require('./usuarioRoutes')();
     let grupoRotas = require('./grupoRoutes')();
     let noticiaRotas = require('./noticiaRoutes')();
+    let unilesteRotas = require('./unilesteRoutes')();
 
 
     app.get('/', (req, res) => {
@@ -34,7 +35,8 @@ exports.registerRoutes = function (app) {
         categoriaNoticiaRotas,
         usuarioRotas,
         grupoRotas,
-        noticiaRotas
+        noticiaRotas,
+        unilesteRotas
     ]);
 
     // Handler de erros padrão

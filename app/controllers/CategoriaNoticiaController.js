@@ -31,6 +31,7 @@ exports.atualizarCategoria = function (req, res, next) {
     var categoriaNoticia = req.categoriaNoticia;
 
     categoriaNoticia.nome = req.body.nome;
+    categoriaNoticia.descricao = req.body.descricao;   
 
     repository.update(categoriaNoticia, (err) => {
         if (err)
