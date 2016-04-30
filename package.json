@@ -4,7 +4,8 @@
   "description": "API principal do ShareNews",
   "main": "server.js",
   "scripts": {
-    "start": "node bin/www"
+    "start": "node server.js",
+    "watch": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,8 @@
     "morgan": "^1.7.0",
     "swagger-ui": "^2.1.4",
     "swaggerize-ui": "^1.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.2"
   }
 }
