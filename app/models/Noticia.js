@@ -2,9 +2,9 @@ var model = (function(){
 
     var mongoose = require("mongoose"),
         Schema = mongoose.Schema;
-        
+
     var NoticiaSchema = new Schema({
-     
+
         grupoId: {
             type: Schema.Types.ObjectId,
         },
@@ -17,6 +17,7 @@ var model = (function(){
             type: String,
             trim: true
         },
+        tags:[String],
         conteudo: {
             type: String,
             required: 'O conteúdo da notícia é obrigatório',
@@ -54,11 +55,11 @@ var model = (function(){
                 idUsuario: {
                     type: Schema.Types.ObjectId
                 }
-            }    
+            }
         ]
-        
+
     });
-    
+
     return {
         schemaName: 'Noticia',
         schema: NoticiaSchema
@@ -66,4 +67,3 @@ var model = (function(){
 })()
 
 module.exports = model;
-

@@ -124,7 +124,7 @@ exports.checkToken = function(req, res, next) {
 
         authService.verifyToken(token, (err, decoded) => {
             if (err) {
-                res.json({ sucesso: false, mensagem: 'Falha na autenticação do token.' })
+                res.status(403).json({ sucesso: false, mensagem: 'Falha na autenticação do token.' })
             }
             else {
                 req.decoded = decoded
