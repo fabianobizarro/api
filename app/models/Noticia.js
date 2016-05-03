@@ -9,6 +9,7 @@ var model = (function(){
             type: Schema.Types.ObjectId,
         },
         titulo: {
+            unique: true,
             type: String,
             required: 'O título da notícia é obrigatório',
             trim: true,
