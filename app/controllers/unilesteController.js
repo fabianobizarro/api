@@ -39,3 +39,34 @@ exports.cadastrarNoticiaUnileste = function (req, res, next) {
   //res.json(noticia);
 
 };
+
+exports.exibirNoticia = function (req, res, next) {
+  res.json(req.noticia);
+};
+
+exports.alterarNoticia = function (req, res, next) {
+  res.end('Not implemented');
+};
+
+exports.excluirNoticia = function (req, res, next) {
+  res.end('Not implemented');
+};
+
+exports.noticiaPorId = function (req, res, next, idNoticia) {
+  console.log(idNoticia);
+  repository.findById(idNoticia, (err, noticia) => {
+    if (err) {
+      res.statusCode = 500;
+      return next(err);
+    }
+    else if (noticia) {
+      req.noticia = noticia;
+      next();
+    }
+    else {
+      res.statusCode = 404;
+      return next(new Error('Não foi possível encontrar uma notícia com o id ' + idNoticia));
+    }
+
+  });
+};

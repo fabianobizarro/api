@@ -8,12 +8,11 @@ module.exports = function () {
     rotas.route('/unileste')
         .get(controller.listarNoticiasUnileste)
         .post(controller.cadastrarNoticiaUnileste);
-    // rotas.route('/grupo/:idGrupo')
-    //     .get(controller.exibirGrupo)
-    //     .put(controller.alterarGrupo)
-    //     .delete(controller.excluirGrupo);
+    rotas.route('/unileste/:idNoticia')
+        .get(controller.exibirNoticia)
+        .put(controller.alterarNoticia)
+        .delete(controller.excluirNoticia);
 
-    // rotas.param('idGrupo', controller.obterGrupoPorId);
-
+    rotas.param('idNoticia', controller.noticiaPorId);
     return rotas;
 };
