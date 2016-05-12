@@ -14,14 +14,15 @@ exports.listarCategoriaNoticias = function (req, res) {
 
 exports.adicionarCategoria = function (req, res, next) {
     let categoriaNoticia = req.body;
-
+    categoriaNoticia._id = categoriaNoticia.nome;
+    
     repository.add(categoriaNoticia, (err) => {
         if (err) {
             return next(err);
         }
         else
             res.json({
-                resposta: 'Categoria de noícia inserida com sucesso'
+                resposta: 'Categoria de notícia inserida com sucesso'
             });
     });
 }
@@ -30,7 +31,7 @@ exports.atualizarCategoria = function (req, res, next) {
 
     var categoriaNoticia = req.categoriaNoticia;
 
-    categoriaNoticia.nome = req.body.nome;
+    categoriaNoticia._id = req.body._id;
     categoriaNoticia.descricao = req.body.descricao;   
 
     repository.update(categoriaNoticia, (err) => {
@@ -55,7 +56,6 @@ exports.excluirCategoria = function (req, res, next) {
             mensagem: 'Categoria de notícia excluída com sucesso.'
         });
     });
-
 }
 
 exports.categoriaNoticiaPorId = function (req, res, next, id) {
@@ -78,8 +78,6 @@ exports.categoriaNoticiaPorId = function (req, res, next, id) {
 exports.pesquisaCategoriaNoticia = function (req, res, next) {
 
     var search = req.params.q;
-    console.log(search)
-    console.log([search])
     let query;
     if (search == '') {
         query = {};
@@ -87,13 +85,12 @@ exports.pesquisaCategoriaNoticia = function (req, res, next) {
     else {
         query = {
             "$or": [
-                { "nome": { "$regex": new RegExp(search), '$options': 'i' } },
+                { "_id": { "$regex": new RegExp(search), '$options': 'i' } },
                 { "descricao": { "$regex": new RegExp(search), '$options': 'i' } },
                 { "tags": search }
             ]
         };
     }
-    console.log(query);
 
     repository.find(query, (err, data) => {
 

@@ -30,7 +30,7 @@ var model = (function(){
             default: Date.now
         },
         categoriaNoticia:{
-            type: Schema.Types.ObjectId,
+            type: String,
             required: 'A categoria de notícia é obrigatória'
         },
         imagemPrincipal: {
@@ -55,6 +55,15 @@ var model = (function(){
                 },
                 idUsuario: {
                     type: Schema.Types.ObjectId
+                }
+            }
+        ],
+        comentarios:[
+            {
+                data:{
+                    usuario: String,
+                    type: Date,
+                    default: Date.now
                 }
             }
         ]
