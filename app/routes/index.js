@@ -25,11 +25,11 @@ exports.registerRoutes = function (app) {
     // Middleware para validar o token antes das rotas
     app.use(authController.checkToken);
 
-    app.use((req, res, next) => {
-        setTimeout(() => {
-            return next();
-        }, 2500);
-    });
+    // app.use((req, res, next) => {
+    //     setTimeout(() => {
+    //         return next();
+    //     }, 2500);
+    // });
 
     app.use('/api', [
         categoriaNoticiaRotas,

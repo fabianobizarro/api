@@ -51,7 +51,7 @@ exports.adicionarNoticia = function (req, res, next) {
 
 
             });
-        
+
         grupoRepo.update(grupo, (err) => {
 
 
@@ -61,10 +61,10 @@ exports.adicionarNoticia = function (req, res, next) {
 
 exports.exibirNoticia = function (req, res, next) {
     res.json(req.noticia);
-}
+};
 
 exports.obterNoticiaPorId = function (req, res, next, idNoticia) {
-    
+
     //console.log(idNoticia);
 
     repository.findById(idNoticia, (err, noticia) => {
@@ -74,7 +74,7 @@ exports.obterNoticiaPorId = function (req, res, next, idNoticia) {
         req.noticia = noticia;
         return next();
     });
-}
+};
 
 exports.excluirNoticia = function (req, res, next) {
 
@@ -93,7 +93,7 @@ exports.excluirNoticia = function (req, res, next) {
             });
         })
     });
-}
+};
 
 exports.alterarNoticia = function (req, res, next) {
 
@@ -114,4 +114,54 @@ exports.alterarNoticia = function (req, res, next) {
             mensagem: 'A notícia foi alterada com sucesso!'
         });
     });
-}
+};
+
+exports.adicionarComentario = function (req, res, next) {
+
+    var descComentario = req.body.comentario;
+    if (!descComentario) {
+        res.statusCode = 400;
+        return next(new Error('O comentário é obrigatório'));
+    }
+
+    var comentario = {
+        _id: new ObjectId(),
+        usuario: req.requestUser.login,
+        comentario: descComentario,
+        data: Date.now()
+    };
+
+    repository.findOneAndUpdate({ _id: req.noticia._id },
+        { '$addToSet': { comentarios: comentario } },
+        (err, model) => {
+            if (err) {
+                res.statusCode = 500;
+                return next(err);
+            }
+            res.json({
+                sucesso: true,
+                mensagem: 'Comentário adicionado com sucesso',
+                comentario: comentario
+            });
+        });
+};
+
+exports.removerComentario = function (req, res, next) {
+    var idNoticia = req.params.idNoticia;
+    var idComentario = req.params.idComentario;
+
+    repository.findOneAndUpdate(
+        { _id: idNoticia }, 
+        { '$pull': { comentarios: { _id: idComentario } } }, 
+        (err) => { 
+            if (err){
+                res.statusCode = 500;
+                return next(err);
+            }
+            
+            res.json({
+                sucesso: true,
+                mensagem: 'Comentário excluído com sucesso.'
+            });
+        });
+};

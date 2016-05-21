@@ -16,7 +16,15 @@ module.exports = function(){
         .put(controller.alterarNoticia)
         .delete(controller.excluirNoticia);
         
-    
+    router.route('/noticia/:idNoticia')
+        .get(controller.exibirNoticia);
+        
+    router.route('/noticia/:idNoticia/comentarios')
+        .post(controller.adicionarComentario);
+        
+    router.route('/noticia/:idNoticia/comentarios/:idComentario')
+        .delete(controller.removerComentario);
+        
     router.param('idGrupo', grupoController.obterGrupoPorId);
     router.param('idNoticia', controller.obterNoticiaPorId);
     

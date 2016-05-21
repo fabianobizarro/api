@@ -18,7 +18,6 @@ exports.cadastrarNoticiaUnileste = function (req, res, next) {
 
   var noticia = req.body;
   noticia.grupoId = config.unilesteId;
-  //console.log(noticia);
 
   repository.add(noticia, (err, result) => {
 
@@ -35,9 +34,6 @@ exports.cadastrarNoticiaUnileste = function (req, res, next) {
     }
 
   });
-
-  //res.json(noticia);
-
 };
 
 exports.exibirNoticia = function (req, res, next) {

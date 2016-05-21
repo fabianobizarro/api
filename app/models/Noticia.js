@@ -1,4 +1,4 @@
-var model = (function(){
+var model = (function () {
 
     var mongoose = require("mongoose"),
         Schema = mongoose.Schema;
@@ -18,7 +18,7 @@ var model = (function(){
             type: String,
             trim: true
         },
-        tags:[String],
+        tags: [String],
         conteudo: {
             type: String,
             required: 'O conteúdo da notícia é obrigatório',
@@ -29,7 +29,7 @@ var model = (function(){
             required: 'A data da notícia é obrigatória',
             default: Date.now
         },
-        categoriaNoticia:{
+        categoriaNoticia: {
             type: String,
             required: 'A categoria de notícia é obrigatória'
         },
@@ -58,10 +58,14 @@ var model = (function(){
                 }
             }
         ],
-        comentarios:[
+        comentarios: [
             {
-                data:{
-                    usuario: String,
+                usuario: String,
+                comentario: {
+                    type: String,
+                    maxlength: 140
+                }, 
+                data: {
                     type: Date,
                     default: Date.now
                 }
