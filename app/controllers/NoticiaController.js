@@ -151,17 +151,53 @@ exports.removerComentario = function (req, res, next) {
     var idComentario = req.params.idComentario;
 
     repository.findOneAndUpdate(
-        { _id: idNoticia }, 
-        { '$pull': { comentarios: { _id: idComentario } } }, 
-        (err) => { 
-            if (err){
+        { _id: idNoticia },
+        { '$pull': { comentarios: { _id: idComentario } } },
+        (err) => {
+            if (err) {
+                res.statusCode = 500;
+                return next(err);
+            }
+
+            res.json({
+                sucesso: true,
+                mensagem: 'Comentário excluído com sucesso.'
+            });
+        });
+};
+
+exports.curtirNoticia = function (req, res, next) {
+
+    var idNoticia = req.params.idNoticia;
+    var idUsuario = req.requestUser._id;
+    var updateStatement = {};
+    var curtir = null;
+
+    if (req.noticia.curtidas.indexOf(idUsuario) == -1) {
+        // Notícia não foi curtida pelo usuário
+        updateStatement = { '$addToSet': { curtidas: idUsuario } };
+        curtir = true;
+    }
+    else {
+        // notícia já foi curtida pelo usuário
+        updateStatement = { '$pull': { curtidas: idUsuario } };
+        curtir = false;
+    }
+
+    repository.findOneAndUpdate(
+        { _id: idNoticia },
+        updateStatement,
+        (err) => {
+            
+            if (err) {
                 res.statusCode = 500;
                 return next(err);
             }
             
             res.json({
                 sucesso: true,
-                mensagem: 'Comentário excluído com sucesso.'
+                curtir: curtir,
+                mensagem: 'Curtida adicionada/removida com sucesso.'
             });
         });
 };

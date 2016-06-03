@@ -48,16 +48,17 @@ var model = (function () {
                 }
             }
         ],
-        curtidas: [
-            {
-                dataCurtida: {
-                    type: Date
-                },
-                idUsuario: {
-                    type: Schema.Types.ObjectId
-                }
-            }
-        ],
+        curtidas:[String],
+        // curtidas: [
+        //     {
+        //         dataCurtida: {
+        //             type: Date
+        //         },
+        //         idUsuario: {
+        //             type: Schema.Types.ObjectId
+        //         }
+        //     }
+        // ],
         comentarios: [
             {
                 usuario: String,

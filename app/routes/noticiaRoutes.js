@@ -25,6 +25,9 @@ module.exports = function(){
     router.route('/noticia/:idNoticia/comentarios/:idComentario')
         .delete(controller.removerComentario);
         
+    router.route('/noticia/:idNoticia/curtir')
+        .post(controller.curtirNoticia);
+        
     router.param('idGrupo', grupoController.obterGrupoPorId);
     router.param('idNoticia', controller.obterNoticiaPorId);
     
