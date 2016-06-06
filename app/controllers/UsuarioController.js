@@ -65,6 +65,28 @@ exports.excluirUsuario = function (req, res, next) {
     });
 }
 
+exports.infoUsuario = function (req, res, next) {
+
+    if (!req.requestUser) {
+        res.statusCode = 403;
+        res.json({
+            sucesso: false,
+            mensagem: "Operação não autorizada. É obrigatório o token."
+        });
+    }
+    else {
+        let user = req.requestUser;
+
+        res.json({
+            _id: user._id,
+            nome: user.nome,
+            email: user.email,
+            login: user.login
+        });
+    }
+
+}
+
 exports.obterUsuarioPorId = function (req, res, next, id) {
 
     repository.findById(id, (err, usuario) => {
@@ -80,3 +102,4 @@ exports.obterUsuarioPorId = function (req, res, next, id) {
             return next(new Error('Não foi possível encontrar um registro com o id + ' + id));
     });
 }
+
