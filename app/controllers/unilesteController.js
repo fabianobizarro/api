@@ -41,11 +41,44 @@ exports.exibirNoticia = function (req, res, next) {
 };
 
 exports.alterarNoticia = function (req, res, next) {
-  res.end('Not implemented');
+
+
+  var noticia = req.noticia;
+  var newNoticia = req.body;
+
+  noticia.titulo = newNoticia.titulo || noticia.titulo;
+  noticia.resumo = newNoticia.resumo || noticia.resumo;
+  noticia.conteudo = newNoticia.conteudo || noticia.conteudo;
+  noticia.tags = newNoticia.tags || noticia.tags;
+  noticia.categoriaNoticia = newNoticia.categoriaNoticia || noticia.categoriaNoticia;
+
+  repository.update(noticia, (err) => {
+
+    if (err)
+      return next(err);
+
+    res.json({
+      sucesso: true,
+      mensagem: 'A notícia foi alterada com sucesso!'
+    });
+  });
+
 };
 
 exports.excluirNoticia = function (req, res, next) {
-  res.end('Not implemented');
+
+  repository.delete(req.noticia, (err) => {
+    if (err) {
+      res.statusCode = 500;
+      return next(err);
+    }
+
+    res.json({
+      sucesso: true,
+      mensagem: 'A notícia foi excluída com sucesso.'
+    });
+
+  });
 };
 
 exports.noticiaPorId = function (req, res, next, idNoticia) {
