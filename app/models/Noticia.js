@@ -13,16 +13,19 @@ var model = (function () {
             type: String,
             required: 'O título da notícia é obrigatório',
             trim: true,
+            maxlength: [100, 'O campo `{PATH}` deve ter o tamanho máximo de ({MAXLENGTH}) caracteres.']
         },
         resumo: {
             type: String,
-            trim: true
+            trim: true,
+            maxlength: [200, 'O campo `{PATH}` deve ter o tamanho máximo de ({MAXLENGTH}) caracteres.']
         },
         tags: [String],
         conteudo: {
             type: String,
             required: 'O conteúdo da notícia é obrigatório',
-            trim: true
+            trim: true,
+            maxlength: [5000, 'O campo `{PATH}` deve ter o tamanho máximo de ({MAXLENGTH}) caracteres.']
         },
         data: {
             type: Date,
@@ -64,7 +67,7 @@ var model = (function () {
                 usuario: String,
                 comentario: {
                     type: String,
-                    maxlength: 140
+                    maxlength: [140, 'O campo `{PATH}` deve ter o tamanho máximo de ({MAXLENGTH}) caracteres.']
                 }, 
                 data: {
                     type: Date,
@@ -78,7 +81,7 @@ var model = (function () {
     return {
         schemaName: 'Noticia',
         schema: NoticiaSchema
-    }
-})()
+    };
+})();
 
 module.exports = model;
