@@ -106,8 +106,10 @@ exports.alterarNoticia = function (req, res, next) {
 
     repository.update(noticia, (err) => {
 
-        if (err)
+        if (err){
+            res.statusCode = 500;
             return next(err);
+        }
 
         res.json({
             sucesso: true,
