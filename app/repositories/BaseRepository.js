@@ -42,6 +42,10 @@ class BaseRepository {
     delete(model, callback) {
         this.Model.remove(model, callback);
     }
+
+    count(condition, callback){
+        this.Model.count(condition, callback);
+    }
 }
 
 module.exports = BaseRepository;
