@@ -9,7 +9,7 @@ module.exports = function () {
     rotas.route('/usuario')
         .get(controller.listarUsuarios)
         .post(controller.adicionarUsuario);
-        
+
     rotas.route('/usuario/info')
         .get(controller.infoUsuario);
 
@@ -18,6 +18,11 @@ module.exports = function () {
         .put(controller.alterarUsuario)
         .delete(controller.excluirUsuario);
 
+    rotas.route('/usuario/pesquisa/:pesquisa')
+        .get(controller.pesquisaUsuario);
+
+    rotas.route('/usuario/:idUsuario/tAdmin')
+        .post(controller.alternarAdminUsuario);
 
 
     rotas.param('idUsuario', controller.obterUsuarioPorId);

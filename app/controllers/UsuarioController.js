@@ -15,7 +15,7 @@ exports.adicionarUsuario = function (req, res, next) {
             mensagem: 'O usuário foi cadastrado com sucesso!'
         })
     });
-}
+};
 
 exports.listarUsuarios = function (req, res, next) {
 
@@ -24,11 +24,11 @@ exports.listarUsuarios = function (req, res, next) {
 
         res.json(usuarios);
     })
-}
+};
 
 exports.dadosUsuario = function (req, res, next) {
     res.json(req.usuario);
-}
+};
 
 exports.alterarUsuario = function (req, res, next) {
 
@@ -38,18 +38,20 @@ exports.alterarUsuario = function (req, res, next) {
     usuario.email = req.body.email || usuario.email;
     usuario.login = req.body.login || usuario.login;
     usuario.senha = req.body.senha || usuario.senha;
-    usuario.admin = req.body.admin || usuario.admin;
 
     repository.update(usuario, (err) => {
-        if (err)
+
+        if (err) {
+            res.statusCode = 500;
             return next(err);
+        }
 
         res.json({
             sucesso: true,
             mensagem: 'Cadastro do usuário atualizado com sucesso.'
         });
     });
-}
+};
 
 exports.excluirUsuario = function (req, res, next) {
     var usuario = req.usuario;
@@ -63,7 +65,7 @@ exports.excluirUsuario = function (req, res, next) {
             mensagem: 'Usuário excluído com sucesso!'
         })
     });
-}
+};
 
 exports.infoUsuario = function (req, res, next) {
 
@@ -85,7 +87,30 @@ exports.infoUsuario = function (req, res, next) {
         });
     }
 
-}
+};
+
+exports.pesquisaUsuario = function (req, res, next) {
+
+    var pesquisa = req.params.pesquisa;
+    var query = {
+        '$or': [
+            { nome: { '$regex': new RegExp(pesquisa), '$options': 'i' } },
+            { login: { '$regex': new RegExp(pesquisa), '$options': 'i' } },
+        ]
+    };
+
+    repository.find(query, (err, usuarios) => {
+
+        if (err) {
+            res.statusCode = 500;
+            return next(err);
+        }
+
+        res.json(usuarios);
+
+    });
+
+};
 
 exports.obterUsuarioPorId = function (req, res, next, id) {
 
@@ -101,5 +126,48 @@ exports.obterUsuarioPorId = function (req, res, next, id) {
         else
             return next(new Error('Não foi possível encontrar um registro com o id + ' + id));
     });
-}
+};
+
+exports.alternarAdminUsuario = function (req, res, next) {
+
+    var _atualizarUsuario = function () {
+        repository.update(req.usuario, (err) => {
+            if (err) {
+                req.statusCode = 500;
+                return next(err);
+            }
+
+            res.json({
+                sucesso: true,
+                mensagem: 'Operação realizada com sucesso',
+                admin: req.usuario.admin
+            });
+        });
+    };
+
+    if (req.requestUser.admin === false) {
+        res.statusCode = 401;
+        return next(new Error('Você não tem permissão para realizar esta operação'));
+    }
+
+    req.usuario.admin = !req.usuario.admin;
+
+    if (req.usuario.admin === false) {
+        repository.count({ admin: true }, (err, count) => {
+
+            if (count == 1) {
+                res.statusCode = 403;
+                return next(new Error('Você não pode remover o provilégio de administrador deste usuário, pois atualmente ele é o único usuário administrador do sistema.'));
+            }
+            _atualizarUsuario();
+
+
+        });
+    }
+    else {
+        _atualizarUsuario();
+    }
+
+
+};
 
