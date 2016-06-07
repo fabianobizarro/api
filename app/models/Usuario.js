@@ -35,6 +35,10 @@ var model = (function () {
                     return passwd.length >= 6;
                 },
                 'A senha deve ter possuir 6 caracteres ou mais'
+            ],
+            match: [
+                /[A-Z.]/,
+                'A senha deve conter pelo menos uma letra maiúscula'
             ]
         },
         salt: { type: String },
@@ -64,17 +68,17 @@ var model = (function () {
         }
         next();
     });
-    
+
     UsuarioSchema.methods.hashPassword = function (password) {
         return crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
     };
-    
+
 
     return {
         schemaName: 'Usuario',
         schema: UsuarioSchema
     }
-    
+
 })()
 
 module.exports = model;

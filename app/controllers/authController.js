@@ -8,17 +8,6 @@ exports.signIn = function(req, res, next) {
     let usuario = req.body.login;
     let senha = req.body.senha;
 
-    // if (usuario == '' || usuario == null || usuario == undefined) {
-    //     res.statusCode = 400;
-    //     return next(new Error("O login do usuário deve ser informado."));
-    // }
-
-    // if (senha == '' || senha == null || senha == undefined) {
-    //     res.statusCode = 400;
-    //     return next(new Error("A senha do usuário deve ser informado."));
-    // }
-
-
     repo.findOne({ login: usuario }, (err, usuario) => {
 
         if (err)
@@ -40,7 +29,16 @@ exports.signIn = function(req, res, next) {
             }
             else {
                 // se tudo estiver ok, gera o token e retorna ao usuário
-                let token = authService.signIn(usuario);
+                
+                var _user = {
+                    _id: usuario._id,
+                    nome: usuario.nome,
+                    login: usuario.login,
+                    email: usuario.email,
+                    admin: usuario.admin
+                };
+
+                let token = authService.signIn(_user);
 
                 res.status(200).json({
                     sucesso: true,
@@ -118,7 +116,7 @@ exports.signUp = function(req, res, next) {
 
 exports.checkToken = function(req, res, next) {
 
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    var token = req.body.snt || req.query.snt || req.headers['snt'];
 
     if (token) {
 
