@@ -24,6 +24,9 @@ module.exports = function () {
     rotas.route('/usuario/:idUsuario/tAdmin')
         .post(controller.alternarAdminUsuario);
 
+    rotas.route('/usuario/:idUsuario/alterarSenha')
+        .post(controller.alterarSenha);
+
 
     rotas.param('idUsuario', controller.obterUsuarioPorId);
 

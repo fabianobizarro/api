@@ -37,7 +37,6 @@ exports.alterarUsuario = function (req, res, next) {
     usuario.nome = req.body.nome || usuario.nome;
     usuario.email = req.body.email || usuario.email;
     usuario.login = req.body.login || usuario.login;
-    usuario.senha = req.body.senha || usuario.senha;
 
     repository.update(usuario, (err) => {
 
@@ -171,3 +170,30 @@ exports.alternarAdminUsuario = function (req, res, next) {
 
 };
 
+exports.alterarSenha = function (req, res, next) {
+
+    if (req.requestUser._id != req.usuario._id) {
+        res.statusCode = 403;
+        res.json({
+            sucesso: false,
+            mensagem: 'Você não tem permissão para alterar a senha deste usuário'
+        });
+    }
+
+    var user = req.usuario;
+    user.senha = req.body.senha;
+
+    repository.update(user, (err) => {
+
+        if (err) {
+            res.statusCode = 500;
+            return next(err);
+        }
+
+        res.json({
+            sucesso: true,
+            mensagem: 'A senha foi alterada com sucesso.'
+        });
+
+    });
+};
