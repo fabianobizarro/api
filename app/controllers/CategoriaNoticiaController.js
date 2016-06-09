@@ -4,17 +4,16 @@ var CategoriaNoticiaRepository = require('../repositories/CategoriaNoticiaReposi
 
 exports.obterCategoriaNoticia = function (req, res) {
     res.json(req.categoriaNoticia);
-}
+};
 
 exports.listarCategoriaNoticias = function (req, res) {
     repository.getAll((err, docs) => {
         res.json(docs);
     });
-}
+};
 
 exports.adicionarCategoria = function (req, res, next) {
     let categoriaNoticia = req.body;
-    categoriaNoticia._id = categoriaNoticia.nome;
 
     repository.add(categoriaNoticia, (err) => {
         if (err) {
@@ -31,10 +30,7 @@ exports.atualizarCategoria = function (req, res, next) {
 
     var categoriaNoticia = req.categoriaNoticia;
 
-    console.log(categoriaNoticia);
-    console.log(req.body);
-
-    categoriaNoticia._id = req.body._id;
+    categoriaNoticia.nome = req.body.nome;
     categoriaNoticia.descricao = req.body.descricao;
 
     repository.update(categoriaNoticia, (err) => {
@@ -46,7 +42,7 @@ exports.atualizarCategoria = function (req, res, next) {
             mensagem: 'Categoria de notícia atualizada com sucesso.'
         });
     });
-}
+};
 
 exports.excluirCategoria = function (req, res, next) {
 

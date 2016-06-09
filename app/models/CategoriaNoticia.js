@@ -1,48 +1,44 @@
-var model = (function(){
-	
+var model = (function () {
+
 	var mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
-		
+		Schema = mongoose.Schema;
+
 	var CategoriaNoticiaSchema = new Schema({
-		_id:{
+		nome: {
 			type: String,
+			required: 'O nome é obrigatório',
+            unique: true,
 			trim: true,
             match: [
-                /^[a-zA-Zà-ú 0-9]*$/, 
+                /^[a-zA-Zà-ú 0-9]*$/,
                 'Este campo não pode conter caracteres especiais'
             ]
 		},
-		// nome:{
-		// 	type: String,
-		// 	required: 'O nome é obrigatório',
-        //     unique: true,
-		// 	trim: true,
-        //     match: [
-        //         /^[a-zA-Zà-ú 0-9]*$/, 
-        //         'Este campo não pode conter caracteres especiais'
-        //     ] 
-		// },
-		descricao:{
+		descricao: {
 			type: String,
-			trim: true 
+			trim: true,
+			match: [
+                /^[a-zA-Zà-ú 0-9]*$/,
+                'Este campo não pode conter caracteres especiais'
+            ]
 		},
 		createdOn: {
 			type: Date,
 			default: Date.now
 		},
-		createdBy:{
-			type:String,
+		createdBy: {
+			type: String,
 		}
 	});
-	
+
 	return {
 		schemaName: 'CategoriaNoticia',
 		schema: CategoriaNoticiaSchema
-	}
-	
-})()
+	};
 
-module.exports = { 
-	schemaName: model.schemaName, 
-	schema: model.schema 
-}
+})();
+
+module.exports = {
+	schemaName: model.schemaName,
+	schema: model.schema
+};

@@ -18,8 +18,6 @@ exports.registerRoutes = function (app) {
         })
     });
 
-    // Registrar todas as rotas    
-
     app.use('/auth', authRoutes(app));
 
     // Middleware para validar o token antes das rotas
@@ -39,9 +37,9 @@ exports.registerRoutes = function (app) {
         unilesteRotas
     ]);
 
-    // Handler de erros padrão
+    // Error handler
     app.use((err, req, res, next) => {
-        var statusCode = res.statusCode || 500;
+        var statusCode = 500;
         return res
             .status(statusCode)
             .json({

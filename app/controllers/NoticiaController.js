@@ -106,7 +106,7 @@ exports.alterarNoticia = function (req, res, next) {
 
     repository.update(noticia, (err) => {
 
-        if (err){
+        if (err) {
             res.statusCode = 500;
             return next(err);
         }
@@ -190,16 +190,53 @@ exports.curtirNoticia = function (req, res, next) {
         { _id: idNoticia },
         updateStatement,
         (err) => {
-            
+
             if (err) {
                 res.statusCode = 500;
                 return next(err);
             }
-            
+
             res.json({
                 sucesso: true,
                 curtir: curtir,
                 mensagem: 'Curtida adicionada/removida com sucesso.'
             });
         });
+};
+
+exports.pesquisarNoticias = function (req, res, next) {
+
+    var query = {};
+
+    if (req.body.categoriaNoticia)
+        query['categoriaNoticia'] = new ObjectId(req.body.categoriaNoticia);
+
+    if (req.body.dataInicio || req.body.dataTermino) {
+
+        if (req.body.dataInicio && req.body.dataTermino) {
+            query['dataCadastro'] =
+                {
+                    '$gte': new Date(req.body.dataInicio),
+                    '$lte': new Date(req.body.dataTermino)
+                };
+        } else
+            if (req.body.dataInicio) {
+                query['dataCadastro'] = { '$gte': '', };
+            }
+            else if (req.body.dataTermino) {
+                query['dataCadastro'] = { '$gte': '', };
+            }
+    }
+
+    console.log(query);
+    res.end('ok');
+
+    // repository.find(query, (err, results)=>{
+    //     if(err)
+    //         return next(err);
+
+    //     res.json(results);
+    // });
+
+
 };
