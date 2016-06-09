@@ -130,18 +130,21 @@ exports.obterUsuarioPorId = function (req, res, next, id) {
 exports.alternarAdminUsuario = function (req, res, next) {
 
     var _atualizarUsuario = function () {
-        repository.update(req.usuario, (err) => {
-            if (err) {
-                req.statusCode = 500;
-                return next(err);
-            }
+        repository.findOneAndUpdate(
+            { _id: req.usuario._id },
+            { '$set': { admin: !req.usuario.admin } },
+            (err) => {
+                if (err) {
+                    res.statusCode = 500;
+                    return next(err);
+                }
 
-            res.json({
-                sucesso: true,
-                mensagem: 'Operação realizada com sucesso',
-                admin: req.usuario.admin
+                res.json({
+                    sucesso: true,
+                    mensagem: 'Operação realizada com sucesso',
+                    admin: !req.usuario.admin
+                });
             });
-        });
     };
 
     if (req.requestUser.admin === false) {
@@ -149,9 +152,9 @@ exports.alternarAdminUsuario = function (req, res, next) {
         return next(new Error('Você não tem permissão para realizar esta operação'));
     }
 
-    req.usuario.admin = !req.usuario.admin;
+    //req.usuario.admin = !req.usuario.admin;
 
-    if (req.usuario.admin === false) {
+    if (req.usuario.admin === true) {
         repository.count({ admin: true }, (err, count) => {
 
             if (count == 1) {
