@@ -3,7 +3,8 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
     GrupoRepository = require('../repositories/GrupoRepository'),
     repository = new NoticiaRepository(),
     grupoRepo = new GrupoRepository(),
-    ObjectId = require('mongoose').Types.ObjectId;
+    ObjectId = require('mongoose').Types.ObjectId,
+    dateService = require('../services/dateService');
 
 
 exports.listarNoticias = function (req, res, next) {
@@ -206,37 +207,58 @@ exports.curtirNoticia = function (req, res, next) {
 
 exports.pesquisarNoticias = function (req, res, next) {
 
+    var query = queryPesquisa(req);
+
+    repository.find(query, (err, results) => {
+        if (err)
+            return next(err);
+
+        res.json(results);
+    });
+
+};
+
+var queryPesquisa = function (req) {
+
     var query = {};
+    query['$or'] = [];
+
 
     if (req.body.categoriaNoticia)
-        query['categoriaNoticia'] = new ObjectId(req.body.categoriaNoticia);
+        query['$or'].push({ categoriaNoticia: new ObjectId(req.body.categoriaNoticia) });
+
+    if (req.body.titulo)
+        query['$or'] = { titulo: { '$regex': RegExp(req.body.titulo), "$options": 'i' } };
+
+    if (req.body.resumo)
+        query['$or'] = { titulo: { '$regex': RegExp(req.body.resumo), "$options": 'i' } };
+
+    if (req.body.conteudo)
+        query['$or'] = { titulo: { '$regex': RegExp(req.body.conteudo), "$options": 'i' } };
+
+
 
     if (req.body.dataInicio || req.body.dataTermino) {
 
+        // formata as datas de 00/00/00 para um objeto => { dia: 00, mes: 00, ano: 0000 }
+        var dataInicioFormatada = dateService.dataFormatada(req.body.dataInicio || Date());
+        var dataTerminoFormatada = dateService.dataFormatada(req.body.dataTermino || Date());
+
         if (req.body.dataInicio && req.body.dataTermino) {
-            query['dataCadastro'] =
+            query['data'] =
                 {
-                    '$gte': new Date(req.body.dataInicio),
-                    '$lte': new Date(req.body.dataTermino)
+                    '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia),
+                    '$lte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia)
                 };
         } else
             if (req.body.dataInicio) {
-                query['dataCadastro'] = { '$gte': '', };
+                query['data'] = { '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia) };
             }
             else if (req.body.dataTermino) {
-                query['dataCadastro'] = { '$gte': '', };
+                query['data'] = { '$gte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia) };
             }
     }
 
-    console.log(query);
-    res.end('ok');
-
-    // repository.find(query, (err, results)=>{
-    //     if(err)
-    //         return next(err);
-
-    //     res.json(results);
-    // });
-
+    return query;
 
 };
