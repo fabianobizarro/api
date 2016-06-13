@@ -5,11 +5,12 @@ exports.registerRoutes = function (app) {
     let errorService = require('../services/errorService');
     let authRoutes = require('./authRoutes');
 
-    let categoriaNoticiaRotas = require('./categoriaNoticiaRoutes')();
-    let usuarioRotas = require('./usuarioRoutes')();
-    let grupoRotas = require('./grupoRoutes')();
-    let noticiaRotas = require('./noticiaRoutes')();
-    let unilesteRotas = require('./unilesteRoutes')();
+    let categoriaNoticiaRoutes = require('./categoriaNoticiaRoutes')();
+    let usuarioRoutes = require('./usuarioRoutes')();
+    let grupoRoutes = require('./grupoRoutes')();
+    let noticiaRoutes = require('./noticiaRoutes')();
+    let unilesteRoutes = require('./unilesteRoutes')();
+    let reportsRoutes = require('./reportRoutes')();
 
 
     app.get('/', (req, res) => {
@@ -30,11 +31,12 @@ exports.registerRoutes = function (app) {
     // });
 
     app.use('/api', [
-        categoriaNoticiaRotas,
-        usuarioRotas,
-        grupoRotas,
-        noticiaRotas,
-        unilesteRotas
+        categoriaNoticiaRoutes,
+        usuarioRoutes,
+        grupoRoutes,
+        noticiaRoutes,
+        unilesteRoutes,
+        reportsRoutes
     ]);
 
     // Error handler
