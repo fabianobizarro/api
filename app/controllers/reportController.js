@@ -1,7 +1,7 @@
-
 var dateService = require('../services/dateservice');
 var categoriaNoticiaRepository = require('../repositories/CategoriaNoticiaRepository');
-var NoticiaRepository = require('../repositories/NoticiaRepository');
+var reportService = require('../services/reportService');
+require('../services/arrayService');
 
 exports.index = function (req, res, next) {
     res.end('Index');
@@ -10,30 +10,43 @@ exports.index = function (req, res, next) {
 exports.qt_noticiasPorCategoria = function (req, res, next) {
 
     var categoriaRepo = new categoriaNoticiaRepository();
-    var noticiaRepo = new NoticiaRepository();
 
     var dataInicio = dateService.dataFormatada(req.params.dti);
     var dataTermino = dateService.dataFormatada(req.params.dtt);
 
     if (dataInicio && dataTermino) {
 
-        categoriaRepo.getAll((err, categorias) => {
-            if (err)
-                return next(err);
+        dataInicio = new Date(dataInicio.ano, dataInicio.mes, dataInicio.dia);
+        dataTermino = new Date(dataTermino.ano, dataTermino.mes, dataTermino.dia);
 
-            res.json(categorias);
+
+        categoriaRepo.getAll((err, categorias) => {
+
+            if (err) return next(err);
+
+            categorias = categorias.map(item => {
+                return {
+                    _id: item._id, nome: item.nome
+                }
+            });
+
+            reportService.quanditateNoticiaPorCategoria(dataInicio, dataTermino, (err, result) => {
+                if (err)
+                    return next(err);
+
+                console.log(categorias)
+
+                result.forEach(item => {
+                    item.nome = categorias.where(i => {return i._id == item._id} )[0].nome;
+                });
+
+                res.json(result);
+            });
+
         });
 
-
-        // res.json({
-        //     dataInicio: req.params.dti,
-        //     dataTermino: req.params.dtt
-        // });
-
     }
-    else {
-
+    else
         return next(new Error('A requisição possui parâmetros inválidos'));
-    }
 
 };

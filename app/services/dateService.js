@@ -7,7 +7,6 @@ exports.dataFormatada = function (stringDate) {
     if (regexDataBR.test(stringDate)) {
 
         var data = stringDate.split('/');
-        console.log(data)
         return {
             dia: data[0],
             mes: data[1],
@@ -19,7 +18,6 @@ exports.dataFormatada = function (stringDate) {
     else if (regexDataUS.test(stringDate)) {
 
         var data = stringDate.split('-');
-        console.log(data)
         return {
             dia: data[2],
             mes: data[1],
