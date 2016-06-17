@@ -4,14 +4,27 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
   repository = new NoticiaRepository(),
   config = require('../../config/config');
 
+require ('../services/Date');
+
 
 exports.listarNoticiasUnileste = function (req, res, next) {
-  repository.find({ grupoId: config.unilesteId }, (err, result) => {
-    if (err)
-      return next(err);
 
-    res.json(result);
-  });
+  var dateNow = new Date().date();
+
+  repository.find(
+    {
+      grupoId: config.unilesteId,
+      data: { '$gte': dateNow }
+    }, null,
+    {
+      sort: { data: -1 }
+    },
+    (err, result) => {
+      if (err)
+        return next(err);
+
+      res.json(result);
+    });
 };
 
 exports.cadastrarNoticiaUnileste = function (req, res, next) {

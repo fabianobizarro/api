@@ -10,19 +10,19 @@ class BaseRepository {
         this.Model = mongoose.model(collectionName);
     }
 
-    getAll(callback) {
-        return this.Model.find({}, callback);
+    getAll(fields, options, callback) {
+        return this.Model.find({}, fields, options, callback);
     }
 
-    find(condition, callback) {
-        return this.Model.find(condition, callback);
+    find(condition, fields, options, callback) {
+        return this.Model.find(condition, fields, options, callback);
     }
-    
-    findOne(condition, callback){
-        return this.Model.findOne(condition, callback);
+
+    findOne(condition, fields, options, callback) {
+        return this.Model.findOne(condition, fields, options, callback);
     }
-    
-    findOneAndUpdate(id, update, callback){
+
+    findOneAndUpdate(id, update, callback) {
         return this.Model.findOneAndUpdate(id, update, callback);
     }
 
@@ -43,7 +43,7 @@ class BaseRepository {
         this.Model.remove(model, callback);
     }
 
-    count(condition, callback){
+    count(condition, callback) {
         this.Model.count(condition, callback);
     }
 }
