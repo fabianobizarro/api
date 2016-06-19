@@ -126,7 +126,11 @@ exports.checkToken = function(req, res, next) {
             }
             else {
                 req.decoded = decoded
-                req.requestUser = decoded._doc;
+                if(!decoded._doc)
+                	req.requestUser = decoded;
+                else
+                    req.requestUser = decoded._doc;
+
                 next();
             }
         });
