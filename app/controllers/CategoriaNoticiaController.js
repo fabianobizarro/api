@@ -1,6 +1,8 @@
 'use strict';
 var CategoriaNoticiaRepository = require('../repositories/CategoriaNoticiaRepository'),
-    repository = new CategoriaNoticiaRepository();
+    repository = new CategoriaNoticiaRepository(),
+    NoticiaRepository = require('../repositories/NoticiaRepository'),
+    noticiaRepo = new NoticiaRepository();
 
 exports.obterCategoriaNoticia = function (req, res) {
     res.json(req.categoriaNoticia);
@@ -48,14 +50,36 @@ exports.excluirCategoria = function (req, res, next) {
 
     var categoriaNoticia = req.categoriaNoticia;
 
-    repository.delete(categoriaNoticia, (err) => {
-        if (err)
-            return next(err);
+    noticiaRepo.count({ categoriaNoticia: categoriaNoticia._id }, (err, count) => {
 
-        res.json({
-            mensagem: 'Categoria de notícia excluída com sucesso.'
-        });
+        if (count > 0) {
+            res.status(401)
+                .json({
+                    sucesso: false,
+                    mensagem: 'Não é possível exlcluir esta categoria pois existem notícias vinculadas'
+                });
+        }
+        else {
+            repository.delete(categoriaNoticia, (err) => {
+                if (err)
+                    return next(err);
+
+                res.json({
+                    sucesso: true,
+                    mensagem: 'Categoria de notícia excluída com sucesso'
+                });
+            })
+        }
     });
+
+    // repository.delete(categoriaNoticia, (err) => {
+    //     if (err)
+    //         return next(err);
+
+    //     res.json({
+    //         mensagem: 'Categoria de notícia excluída com sucesso.'
+    //     });
+    // });
 };
 
 exports.categoriaNoticiaPorId = function (req, res, next, id) {
