@@ -149,6 +149,10 @@ exports.adicionarComentario = function (req, res, next) {
         });
 };
 
+exports.exibirComentarios = function (req, res, next) {
+    res.status(501).end("Not implemented");
+}
+
 exports.removerComentario = function (req, res, next) {
     var idNoticia = req.params.idNoticia;
     var idComentario = req.params.idComentario;

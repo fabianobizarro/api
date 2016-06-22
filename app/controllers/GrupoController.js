@@ -91,3 +91,12 @@ exports.obterGrupoPorId = function (req, res, next, id) {
         next();
     });
 }
+
+
+exports.listarNoticias = function(req, res, next){
+    res.status(501).end('Not Implemented');
+}
+
+exports.adicionarNoticia = function (req, res, next) {
+    res.status(501).end("Not Implemented");
+}
