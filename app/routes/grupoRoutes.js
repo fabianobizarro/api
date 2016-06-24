@@ -14,7 +14,7 @@ module.exports = function () {
         .put(controller.alterarGrupo)
         .delete(controller.excluirGrupo);
 
-    router.route('/grupo/:idGrupo/noticia')
+    rotas.route('/grupo/:idGrupo/noticia')
         .get(controller.listarNoticias)
         .post(controller.adicionarNoticia);
 

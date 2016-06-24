@@ -9,6 +9,6 @@ module.exports = function () {
         .get(controller.listarNoticiasUnileste)
         .post(controller.cadastrarNoticiaUnileste);
         
-    rotas.param('idNoticia', controller.noticiaPorId);
+    
     return rotas;
 };
