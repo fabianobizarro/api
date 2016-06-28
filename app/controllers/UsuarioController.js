@@ -114,7 +114,7 @@ exports.pesquisaUsuario = function (req, res, next) {
 exports.obterUsuarioPorId = function (req, res, next, id) {
 
     repository.findOne({
-        attributes: ['Id', 'Nome', 'Login', 'Email', 'Telefone', 'UrlFoto', 'Admin'],
+        //attributes: ['Id', 'Nome', 'Login', 'Email', 'Telefone', 'UrlFoto', 'Admin'],
         where: { Id: id }
     }, (err, usuario) => {
 
@@ -132,69 +132,47 @@ exports.obterUsuarioPorId = function (req, res, next, id) {
 
 exports.alternarAdminUsuario = function (req, res, next) {
 
-    var _atualizarUsuario = function () {
-        repository.findOneAndUpdate(
-            { _id: req.usuario._id },
-            { '$set': { admin: !req.usuario.admin } },
-            (err) => {
-                if (err) {
-                    res.statusCode = 500;
-                    return next(err);
-                }
+    let usuario = req.usuario;
 
-                res.json({
-                    sucesso: true,
-                    mensagem: 'Operação realizada com sucesso',
-                    admin: !req.usuario.admin
-                });
-            });
+    usuario.Admin = !usuario.Admin;
+
+    var query = {
+        where: { Id: usuario.Id },
+        validate: false,
+        hooks: false
     };
 
-    if (req.requestUser.admin === false) {
-        res.statusCode = 401;
-        return next(new Error('Você não tem permissão para realizar esta operação'));
-    }
+    repository.update({ Admin: usuario.Admin }, query, (err) => {
 
-    //req.usuario.admin = !req.usuario.admin;
+        if (err) {
+            return next(err);
+        }
 
-    if (req.usuario.admin === true) {
-        repository.count({ admin: true }, (err, count) => {
-
-            if (count == 1) {
-                res.statusCode = 403;
-                return next(new Error('Você não pode remover o provilégio de administrador deste usuário, pois atualmente ele é o único usuário administrador do sistema.'));
-            }
-            _atualizarUsuario();
-
-
+        res.json({
+            sucesso: true,
+            mensagem: 'Operação realizada com sucesso',
+            admin: usuario.Admin
         });
-    }
-    else {
-        _atualizarUsuario();
-    }
-
+    });
 
 };
 
 exports.alterarSenha = function (req, res, next) {
 
-    if (req.requestUser._id != req.usuario._id) {
-        res.statusCode = 403;
-        res.json({
-            sucesso: false,
-            mensagem: 'Você não tem permissão para alterar a senha deste usuário'
-        });
-    }
+    var user = req.usuario.dataValues;
+    user.Senha = req.body.senha;
 
-    var user = req.usuario;
-    user.senha = req.body.senha;
+    var options = {
+        where: {
+            Id: req.usuario.Id
+        },
+    };
 
-    repository.update(user, (err) => {
+    repository.update({ Senha: user.Senha }, options, (err) => {
 
-        if (err) {
-            res.statusCode = 500;
+        console.log(err)
+        if (err)
             return next(err);
-        }
 
         res.json({
             sucesso: true,
@@ -202,4 +180,58 @@ exports.alterarSenha = function (req, res, next) {
         });
 
     });
+};
+
+/* --- Middlewares para validação --- */
+
+exports.countAdminUsers = function (req, res, next) {
+
+    let usuario = req.usuario;
+
+    if (usuario.Admin == true) {
+
+        repository.count({ where: { Admin: true } }, (err, count) => {
+
+            if (err)
+                return next(err);
+
+            if (count == 1) {
+                res.status(403)
+                    .json({
+                        sucesso: false,
+                        mensagem: 'No momento, você não pode remover o provilégio de administrador deste usuário.',
+                    });
+            }
+            else
+                next();
+        });
+    }
+    else
+        next();
+
+};
+
+exports.requestUserIsAdmin = function (req, res, next) {
+
+    if (req.requestUser.Admin == true)
+        next();
+    else
+        res.status(401)
+            .json({
+                sucesso: false,
+                mensagem: 'Você não tem permissão para realizar esta operação'
+            });
+};
+
+exports.requestUserIsTheOwn = function (req, res, next) {
+
+    if (req.requestUser.Id != req.usuario.Id) {
+        res.status(403)
+            .json({
+                sucesso: false,
+                mensagem: 'Você não tem permissão para alterar a senha deste usuário'
+            });
+    }
+    else
+        next();
 };

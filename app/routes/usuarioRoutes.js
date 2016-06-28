@@ -8,24 +8,25 @@ module.exports = function () {
 
     rotas.route('/usuario')
         .get(controller.listarUsuarios);
-        //.post(controller.adicionarUsuario);
+    //.post(controller.adicionarUsuario);
 
     rotas.route('/usuario/info')
         .get(controller.infoUsuario);
 
-    rotas.route("/usuario/:idUsuario")
+    rotas.route('/usuario/:idUsuario')
         .get(controller.dadosUsuario)
-        .put(controller.alterarUsuario)
-        .delete(controller.excluirUsuario);
+        .put([controller.requestUserIsTheOwn, controller.requestUserIsAdmin, controller.alterarUsuario])
+        .delete([controller.requestUserIsTheOwn, controller.requestUserIsAdmin, controller.excluirUsuario]);
 
     rotas.route('/usuario/pesquisa/:pesquisa')
         .get(controller.pesquisaUsuario);
 
     rotas.route('/usuario/:idUsuario/tAdmin')
-        .post(controller.alternarAdminUsuario);
+        .post([controller.requestUserIsAdmin, controller.countAdminUsers, controller.alternarAdminUsuario]);
 
     rotas.route('/usuario/:idUsuario/alterarSenha')
-        .post(controller.alterarSenha);
+        .post([controller.requestUserIsTheOwn, controller.alterarSenha]);
+
 
 
     rotas.param('idUsuario', controller.obterUsuarioPorId);
