@@ -31,14 +31,8 @@ exports.signIn = function (req, res, next) {
             else {
                 // se tudo estiver ok, gera o token e retorna ao usuário
 
-                var _user = {
-                    Id: usuario.Id,
-                    Nome: usuario.Nome,
-                    Telefone: usuario.Telefone,
-                    Login: usuario.Login,
-                    Email: usuario.Email,
-                    Admin: usuario.Admin
-                };
+                var _user = getUserData(usuario);
+
                 let token = authService.signIn(_user);
 
                 res.status(200).json({
@@ -74,14 +68,7 @@ exports.signInAdmin = function (req, res, next) {
                 if (usuario.Admin) {
                     // se tudo estiver ok, gera o token e retorna ao usuário
 
-                    var _user = {
-                        Id: usuario.Id,
-                        Nome: usuario.Nome,
-                        Telefone: usuario.Telefone,
-                        Login: usuario.Login,
-                        Email: usuario.Email,
-                        Admin: usuario.Admin
-                    };
+                    var _user = getUserData(usuario);
 
                     let token = authService.signIn(_user);
 
@@ -97,7 +84,7 @@ exports.signInAdmin = function (req, res, next) {
             }
         }
     });
-}
+};
 
 exports.signUp = function (req, res, next) {
 
@@ -116,7 +103,9 @@ exports.signUp = function (req, res, next) {
         if (err)
             return next(err);
 
-        let token = authService.signIn(usuario.dataValues);
+        var _user = getUserData(usuario);
+
+        let token = authService.signIn(_user);
 
         res.json({
             sucesso: true,
@@ -124,7 +113,7 @@ exports.signUp = function (req, res, next) {
             token: token
         });
     });
-}
+};
 
 exports.checkToken = function (req, res, next) {
 
@@ -153,7 +142,7 @@ exports.checkToken = function (req, res, next) {
             mensagem: 'Nenhum token foi informado'
         });
     }
-}
+};
 
 exports.validarUsuarioSenha = function (req, res, next) {
     let usuario = req.body.login;
@@ -169,4 +158,15 @@ exports.validarUsuarioSenha = function (req, res, next) {
             return next(new Error("A senha do usuário deve ser informado."));
         }
     return next();
-}
+};
+
+var getUserData = function (user) {
+    return {
+        Id: user.Id,
+        Nome: user.Nome,
+        Telefone: user.Telefone,
+        Login: user.Login,
+        Email: user.Email,
+        Admin: user.Admin
+    };
+};
