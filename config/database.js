@@ -1,12 +1,10 @@
-var config = require('./env'),
-    mongoose = require('mongoose'),
-    modelService = require('../app/models').ModelService;
 var models = require('../app/models');
 
 exports.initialize = function (callback) {
 
-    var force = process.env.FORCE_SYNC || false;
-    if (force)
+    var force = process.env.FORCE_SYNC == 'true' ? true : false;
+
+    if (force == true)
         console.log('Forcing the database sync');
         
     models.sequelize

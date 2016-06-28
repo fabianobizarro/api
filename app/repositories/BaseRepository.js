@@ -37,21 +37,19 @@ class BaseRepository {
     }
 
     findById(id, callback) {
-        throw new Error("Not impelmented")
-        //this.Model.findById(id, callback);
+        return this.Model
+            .findOne({ where: { Id: id } })
+            .then(result => callback(null, result), err => callback(err));
     }
 
     add(model, callback) {
-        //console.log(this.Model);
         return this.Model.create(model)
             .then((result) => callback(null, result), (err) => callback(err));
-        // var _ = new this.Model(model);
-        // _.save(callback);
     }
 
-    update(model, callback) {
+    update(model, options, callback) {
 
-        return this.Model.update(model.dataValues, { where: { Id: model.Id } })
+        return this.Model.update(model, options)
             .then((result) => callback(null, result), (err) => callback(err));
     }
 
@@ -61,7 +59,8 @@ class BaseRepository {
     }
 
     count(condition, callback) {
-        throw new Error("Not impelmented");
+        return this.Model.count(condition)
+            .then(count => callback(null, count), err => callback(err));
     }
 }
 

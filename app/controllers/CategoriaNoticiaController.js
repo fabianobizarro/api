@@ -32,12 +32,10 @@ exports.atualizarCategoria = function (req, res, next) {
 
     var categoriaNoticia = req.categoriaNoticia;
 
-    console.log(req.body);
+    categoriaNoticia.Nome = req.body.Nome || categoriaNoticia.Nome;
+    categoriaNoticia.Descricao = req.body.Descricao || categoriaNoticia.Descricao;
 
-    categoriaNoticia.Nome = req.body.Nome;
-    categoriaNoticia.Descricao = req.body.Descricao;
-
-    repository.update(categoriaNoticia, (err) => {
+    repository.update(categoriaNoticia, null, (err) => {
 
         if (err) return next(err);
 
