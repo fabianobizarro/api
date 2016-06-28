@@ -8,7 +8,5 @@ module.exports = function () {
     rotas.route('/unileste')
         .get(controller.listarNoticiasUnileste)
         .post(controller.cadastrarNoticiaUnileste);
-        
-    
     return rotas;
 };

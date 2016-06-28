@@ -19,7 +19,7 @@ exports.adicionarUsuario = function (req, res, next) {
 
 exports.listarUsuarios = function (req, res, next) {
 
-    repository.getAll((err, usuarios) => {
+    repository.getAll(['Id', 'Nome', 'Login', 'Email', 'Telefone', 'UrlFoto'], (err, usuarios) => {
         if (err) return next(err);
 
         res.json(usuarios);
@@ -79,10 +79,10 @@ exports.infoUsuario = function (req, res, next) {
         let user = req.requestUser;
 
         res.json({
-            _id: user._id,
-            nome: user.nome,
-            email: user.email,
-            login: user.login
+            Id: user.Id,
+            Nome: user.Nome,
+            Email: user.Email,
+            Login: user.Login
         });
     }
 
@@ -113,7 +113,10 @@ exports.pesquisaUsuario = function (req, res, next) {
 
 exports.obterUsuarioPorId = function (req, res, next, id) {
 
-    repository.findById(id, (err, usuario) => {
+    repository.findOne({
+        attributes: ['Id', 'Nome', 'Login', 'Email', 'Telefone', 'UrlFoto', 'Admin'],
+        where: { Id: id }
+    }, (err, usuario) => {
 
         if (err)
             return next(err);
@@ -123,7 +126,7 @@ exports.obterUsuarioPorId = function (req, res, next, id) {
             next();
         }
         else
-            return next(new Error('Não foi possível encontrar um registro com o id + ' + id));
+            return next(new Error(`Não foi possível encontrar um registro com o id ${id}`));
     });
 };
 

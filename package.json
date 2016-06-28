@@ -1,5 +1,5 @@
 {
-  "name": "sharenews-api",
+  "name": "sharenews-api-mysql",
   "version": "1.0.0",
   "description": "API principal do ShareNews",
   "main": "server.js",
@@ -27,6 +27,9 @@
     "mongodb": "^2.1.4",
     "mongoose": "^4.3.7",
     "morgan": "^1.7.0",
+    "mysql": "^2.11.1",
+    "sequelize": "^3.23.3",
+    "sequelize-transforms": "^1.0.0",
     "swagger-ui": "^2.1.4",
     "swaggerize-ui": "^1.0.1"
   },

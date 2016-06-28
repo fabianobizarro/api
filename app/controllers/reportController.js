@@ -1,7 +1,7 @@
 var dateService = require('../services/dateservice');
 var categoriaNoticiaRepository = require('../repositories/CategoriaNoticiaRepository');
 var reportService = require('../services/reportService');
-require('../services/arrayService');
+require('../services/Array');
 
 exports.index = function (req, res, next) {
     res.end('Index');

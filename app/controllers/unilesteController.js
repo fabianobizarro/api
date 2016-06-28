@@ -2,7 +2,7 @@
 
 var NoticiaRepository = require('../repositories/NoticiaRepository'),
   repository = new NoticiaRepository(),
-  config = require('../../config/config');
+  config = require('../../config/env');
 
 require ('../services/Date');
 

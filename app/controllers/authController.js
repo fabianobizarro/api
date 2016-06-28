@@ -2,13 +2,13 @@
 var UsuarioRepository = require('../repositories/UsuarioRepository'),
     authService = require("../services/authService");
 
-exports.signIn = function(req, res, next) {
+exports.signIn = function (req, res, next) {
 
     let repo = new UsuarioRepository();
     let usuario = req.body.login;
     let senha = req.body.senha;
 
-    repo.findOne({ login: usuario }, (err, usuario) => {
+    repo.findOne({ where: { Login: usuario } }, (err, usuario) => {
 
         if (err)
             return next(err);
@@ -20,7 +20,8 @@ exports.signIn = function(req, res, next) {
             });
         }
         else {
-            if (usuario.senha !== usuario.hashPassword(senha)) // Verifica se a senha está correta
+
+            if (usuario.Senha !== usuario.hashPassword(senha)) // Verifica se a senha está correta
             {
                 res.status(401).json({
                     sucesso: false,
@@ -29,15 +30,15 @@ exports.signIn = function(req, res, next) {
             }
             else {
                 // se tudo estiver ok, gera o token e retorna ao usuário
-                
-                var _user = {
-                    _id: usuario._id,
-                    nome: usuario.nome,
-                    login: usuario.login,
-                    email: usuario.email,
-                    admin: usuario.admin
-                };
 
+                var _user = {
+                    Id: usuario.Id,
+                    Nome: usuario.Nome,
+                    Telefone: usuario.Telefone,
+                    Login: usuario.Login,
+                    Email: usuario.Email,
+                    Admin: usuario.Admin
+                };
                 let token = authService.signIn(_user);
 
                 res.status(200).json({
@@ -50,7 +51,7 @@ exports.signIn = function(req, res, next) {
     });
 }
 
-exports.signInAdmin = function(req, res, next) {
+exports.signInAdmin = function (req, res, next) {
     let repo = new UsuarioRepository();
     let usuario = req.body.login;
     let senha = req.body.senha;
@@ -64,15 +65,25 @@ exports.signInAdmin = function(req, res, next) {
         if (!usuario) // Verifica se o usuário existe
             return next(new Error('Usuário/Senha inválidos.'));
         else {
-            if (usuario.senha !== usuario.hashPassword(senha)) // Verifica se a senha está correta
+            if (usuario.Senha !== usuario.hashPassword(senha)) // Verifica se a senha está correta
             {
                 return next(new Error('Usuário/Senha inválidos.'))
             }
             else {
 
-                if (usuario.admin) {
+                if (usuario.Admin) {
                     // se tudo estiver ok, gera o token e retorna ao usuário
-                    let token = authService.signIn(usuario);
+
+                    var _user = {
+                        Id: usuario.Id,
+                        Nome: usuario.Nome,
+                        Telefone: usuario.Telefone,
+                        Login: usuario.Login,
+                        Email: usuario.Email,
+                        Admin: usuario.Admin
+                    };
+
+                    let token = authService.signIn(_user);
 
                     res.json({
                         sucesso: true,
@@ -88,15 +99,16 @@ exports.signInAdmin = function(req, res, next) {
     });
 }
 
-exports.signUp = function(req, res, next) {
+exports.signUp = function (req, res, next) {
 
     let repo = new UsuarioRepository();
 
     let novoUsuario = {
-        login: req.body.login,
-        senha: req.body.senha,
-        email: req.body.email,
-        nome: req.body.nome
+        Login: req.body.login,
+        Senha: req.body.senha,
+        Email: req.body.email,
+        Nome: req.body.nome,
+        Telefone: req.body.telefone
     }
 
     repo.add(novoUsuario, (err, usuario) => {
@@ -104,7 +116,7 @@ exports.signUp = function(req, res, next) {
         if (err)
             return next(err);
 
-        let token = authService.signIn(usuario);
+        let token = authService.signIn(usuario.dataValues);
 
         res.json({
             sucesso: true,
@@ -114,7 +126,7 @@ exports.signUp = function(req, res, next) {
     });
 }
 
-exports.checkToken = function(req, res, next) {
+exports.checkToken = function (req, res, next) {
 
     var token = req.body.snt || req.query.snt || req.headers['snt'];
 
@@ -126,8 +138,8 @@ exports.checkToken = function(req, res, next) {
             }
             else {
                 req.decoded = decoded
-                if(!decoded._doc)
-                	req.requestUser = decoded;
+                if (!decoded._doc)
+                    req.requestUser = decoded;
                 else
                     req.requestUser = decoded._doc;
 

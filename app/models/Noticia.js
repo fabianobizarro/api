@@ -1,87 +1,90 @@
-var model = (function () {
+'use strict'
+module.exports = function (sequelize, DataTypes) {
 
-    var mongoose = require("mongoose"),
-        Schema = mongoose.Schema;
+    var Noticia = sequelize.define('Noticia',
+        {
 
-    var NoticiaSchema = new Schema({
+            Id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
+            },
+            Titulo: {
+                type: DataTypes.STRING(50),
+                allowNull: false,
+            },
+            Alias: {
+                type: DataTypes.STRING(40),
+                allowNull: true,
+            },
+            Resumo: {
+                type: DataTypes.STRING(100),
+                allowNull: false
+            },
+            Conteudo: {
+                type: DataTypes.STRING(500),
+                allowNull: false,
+            },
+            Data: {
+                type: DataTypes.DATE,
+                allowNull: false
+            },
+            UrlImagem: {
+                type: DataTypes.STRING(150),
+                allowNull: true,
+            },
+            CategoriaNoticiaId: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            GrupoId: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            UsuarioId: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
 
-        grupoId: {
-            type: Schema.Types.ObjectId,
         },
-        titulo: {
-            unique: true,
-            type: String,
-            required: 'O título da notícia é obrigatório',
-            trim: true,
-            maxlength: [100, 'O campo `{PATH}` deve ter o tamanho máximo de ({MAXLENGTH}) caracteres.']
-        },
-        resumo: {
-            type: String,
-            trim: true,
-            maxlength: [200, 'O campo `{PATH}` deve ter o tamanho máximo de ({MAXLENGTH}) caracteres.']
-        },
-        tags: [String],
-        conteudo: {
-            type: String,
-            required: 'O conteúdo da notícia é obrigatório',
-            trim: true,
-            maxlength: [5000, 'O campo `{PATH}` deve ter o tamanho máximo de ({MAXLENGTH}) caracteres.']
-        },
-        data: {
-            type: Date,
-            required: 'A data da notícia é obrigatória',
-            default: Date.now
-        },
-        categoriaNoticia: {
-            type: String,
-            required: 'A categoria de notícia é obrigatória'
-        },
-        imagemPrincipal: {
-            type: Schema.Types.ObjectId
-        },
-        arquivos: [
-            {
-                tipo: {
-                    type: String,
-                    required: 'O tipo de arquivo é obrigatório'
-                },
-                nomeArquivo: {
-                    type: String,
-                    required: 'O nome do arquivo é obrigatório'
+        {
+            freezeTableName: true,
+            tableName: 'Noticia',
+            classMethods: {
+                associate: function (models) {
+
+                    Noticia.belongsTo(models.CategoriaNoticia, {
+                        foreignKey: 'CategoriaNoticiaId',
+                        contraints: true,
+                        as: 'CategoriaNoticia_Noticia'
+                    });
+
+                    Noticia.belongsTo(models.Usuario, {
+                        foreignKey: 'UsuarioId',
+                        contraints: true,
+                        as: 'Usuario_Noticia',
+                    });
+
+                    Noticia.hasMany(models.Arquivos, {
+                        foreignKey: 'NoticiaId',
+                        constraint: true
+                    });
+
+                    Noticia.hasMany(models.Tags, {
+                        foreignKey: 'NoticiaId',
+                        contraints: true,
+                        as: 'Noticia_Tags'
+                    });
+
+                    Noticia.hasMany(models.Comentario, {
+                        foreignKey: 'NoticiaId',
+                        contraints: true,
+                        as: 'Noticia_Comentarios'
+                    });
                 }
             }
-        ],
-        curtidas:[String],
-        // curtidas: [
-        //     {
-        //         dataCurtida: {
-        //             type: Date
-        //         },
-        //         idUsuario: {
-        //             type: Schema.Types.ObjectId
-        //         }
-        //     }
-        // ],
-        comentarios: [
-            {
-                usuario: String,
-                comentario: {
-                    type: String,
-                    maxlength: [140, 'O campo `{PATH}` deve ter o tamanho máximo de ({MAXLENGTH}) caracteres.']
-                }, 
-                data: {
-                    type: Date,
-                    default: Date.now
-                }
-            }
-        ]
+        });
 
-    });
+    return Noticia;
 
-    return {
-        schemaName: 'Noticia',
-        schema: NoticiaSchema
-    };
-})();
-
-module.exports = model;
+};

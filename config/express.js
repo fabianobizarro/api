@@ -1,6 +1,6 @@
 'use strict'
 var express = require('express'),
-    routeService = require('../app/routes'),
+    routes = require('../app/routes'),
     bodyParser = require('body-parser'),
     swaggerUi = require('swaggerize-ui'),
     cors = require('cors'),
@@ -39,7 +39,7 @@ module.exports = function () {
     // })
 
     // Registrando as rotas
-    routeService.registerRoutes(app);
+    routes.registerRoutes(app);
 
 
 

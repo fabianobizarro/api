@@ -1,15 +1,14 @@
 'use strict';
 var CategoriaNoticiaRepository = require('../repositories/CategoriaNoticiaRepository'),
-    repository = new CategoriaNoticiaRepository(),
-    NoticiaRepository = require('../repositories/NoticiaRepository'),
-    noticiaRepo = new NoticiaRepository();
+    repository = new CategoriaNoticiaRepository();
+
 
 exports.obterCategoriaNoticia = function (req, res) {
     res.json(req.categoriaNoticia);
 };
 
 exports.listarCategoriaNoticias = function (req, res) {
-    repository.getAll((err, docs) => {
+    repository.getAll({}, (err, docs) => {
         res.json(docs);
     });
 };
@@ -23,7 +22,8 @@ exports.adicionarCategoria = function (req, res, next) {
         }
         else
             res.json({
-                resposta: 'Categoria de notícia inserida com sucesso'
+                sucesso: true,
+                mensagem: 'Categoria de notícia cadastrada com sucesso'
             });
     });
 };
@@ -32,12 +32,14 @@ exports.atualizarCategoria = function (req, res, next) {
 
     var categoriaNoticia = req.categoriaNoticia;
 
-    categoriaNoticia.nome = req.body.nome;
-    categoriaNoticia.descricao = req.body.descricao;
+    console.log(req.body);
+
+    categoriaNoticia.Nome = req.body.Nome;
+    categoriaNoticia.Descricao = req.body.Descricao;
 
     repository.update(categoriaNoticia, (err) => {
-        if (err)
-            return next(err);
+
+        if (err) return next(err);
 
         res.json({
             sucesso: true,
@@ -50,27 +52,37 @@ exports.excluirCategoria = function (req, res, next) {
 
     var categoriaNoticia = req.categoriaNoticia;
 
-    noticiaRepo.count({ categoriaNoticia: categoriaNoticia._id }, (err, count) => {
+    repository.delete({ where: { Id: categoriaNoticia.Id } }, (err) => {
+        if (err)
+            return next(err);
 
-        if (count > 0) {
-            res.status(401)
-                .json({
-                    sucesso: false,
-                    mensagem: 'Não é possível exlcluir esta categoria pois existem notícias vinculadas'
-                });
-        }
-        else {
-            repository.delete(categoriaNoticia, (err) => {
-                if (err)
-                    return next(err);
-
-                res.json({
-                    sucesso: true,
-                    mensagem: 'Categoria de notícia excluída com sucesso'
-                });
-            })
-        }
+        res.json({
+            sucesso: true,
+            mensagem: 'Categoria de notícia excluída com sucesso'
+        });
     });
+
+    // noticiaRepo.count({ categoriaNoticia: categoriaNoticia._id }, (err, count) => {
+
+    //     if (count > 0) {
+    //         res.status(401)
+    //             .json({
+    //                 sucesso: false,
+    //                 mensagem: 'Não é possível exlcluir esta categoria pois existem notícias vinculadas'
+    //             });
+    //     }
+    //     else {
+    //         repository.delete(categoriaNoticia, (err) => {
+    //             if (err)
+    //                 return next(err);
+
+    //             res.json({
+    //                 sucesso: true,
+    //                 mensagem: 'Categoria de notícia excluída com sucesso'
+    //             });
+    //         })
+    //     }
+    // });
 
     // repository.delete(categoriaNoticia, (err) => {
     //     if (err)
@@ -84,7 +96,10 @@ exports.excluirCategoria = function (req, res, next) {
 
 exports.categoriaNoticiaPorId = function (req, res, next, id) {
 
-    repository.findById(id, (err, doc) => {
+    repository.findOne({ where: { Id: id } }, (err, doc) => {
+
+        // console.log(doc.dataValues)
+        // console.log(err)
 
         if (err) {
             res.statusCode = 500;
@@ -100,6 +115,23 @@ exports.categoriaNoticiaPorId = function (req, res, next, id) {
             next();
         }
     });
+
+    // repository.findById(id, (err, doc) => {
+
+    //     if (err) {
+    //         res.statusCode = 500;
+    //         return next(err);
+    //     }
+
+    //     if (!doc) {
+    //         res.statusCode = 404;
+    //         return next(new Error('Não foi possível encontrar um registro com o id ' + id));
+    //     }
+    //     else {
+    //         req.categoriaNoticia = doc;
+    //         next();
+    //     }
+    // });
 };
 
 exports.pesquisaCategoriaNoticia = function (req, res, next) {

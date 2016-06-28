@@ -1,11 +1,11 @@
 /// <reference path="./BaseRepository.js" /> 
 "use strict";
-var Noticia = require('mongoose').model('Noticia'),
-    BaseRepository = require('./BaseRepository');
+//var Noticia = require('mongoose').model('Noticia'),
+var BaseRepository = require('./BaseRepository');
 
 class NoticiaRepository extends BaseRepository {
     constructor() {
-        super('Noticia', Noticia)
+        super('Noticia');
     }
 }
 

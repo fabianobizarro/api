@@ -1,44 +1,53 @@
-var model = (function () {
+'use strict'
 
-	var mongoose = require('mongoose'),
-		Schema = mongoose.Schema;
+var sequelizeTransforms = require('sequelize-transforms');
 
-	var CategoriaNoticiaSchema = new Schema({
-		nome: {
-			type: String,
-			required: 'O nome é obrigatório',
-            unique: true,
-			trim: true,
-            match: [
-                /^[a-zA-Zà-ú 0-9]*$/,
-                'Este campo não pode conter caracteres especiais'
-            ]
-		},
-		descricao: {
-			type: String,
-			trim: true,
-			match: [
-                /^[a-zA-Zà-ú 0-9]*$/,
-                'Este campo não pode conter caracteres especiais'
-            ]
-		},
-		createdOn: {
-			type: Date,
-			default: Date.now
-		},
-		createdBy: {
-			type: String,
-		}
-	});
+module.exports = function (sequelize, DataTypes) {
 
-	return {
-		schemaName: 'CategoriaNoticia',
-		schema: CategoriaNoticiaSchema
-	};
+    var CategoriaNoticia = sequelize.define('CategoriaNoticia',
+        {
 
-})();
+            Id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
+            },
+            Nome: {
+                type: DataTypes.STRING(50),
+                allowNull: false,
+                unique: true,
+                validate: {
+                    is: { args: /^[a-zA-Zà-ú 0-9]*$/, msg: 'Este campo não pode conter caracteres especiais' }
+                },
+                trim: true
+            },
+            Descricao: {
+                type: DataTypes.STRING(70),
+                allowNull: false,
+                validate: {
+                    is: { args: /^[a-zA-Zà-ú 0-9]*$/, msg: 'Este campo não pode conter caracteres especiais' }
+                },
+                trim: true
+            }
 
-module.exports = {
-	schemaName: model.schemaName,
-	schema: model.schema
+        },
+        {
+            frezzeTableName: true,
+            tableName: 'CategoriaNoticia',
+            classMethods: {
+                associate: function (models) {
+                    CategoriaNoticia.hasMany(models.Noticia, {
+                        foreignKey: 'CategoriaNoticiaId',
+                        contraints: true,
+                        as: 'CategoriaNoticia_Noticia',
+                        onDelete: 'NO ACTION'
+                    });
+                }
+            }
+        });
+
+    sequelizeTransforms(CategoriaNoticia);
+    
+    return CategoriaNoticia;
+
 };

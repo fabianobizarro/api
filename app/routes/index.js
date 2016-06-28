@@ -46,8 +46,8 @@ exports.registerRoutes = function (app) {
             .status(statusCode)
             .json({
                 sucesso: false,
-                erro: 'Não foi possível completar a requisição.',
-                mensagem: errorService.getErrorMessage(err)
+                mensagem: 'Não foi possível completar a requisição.',
+                erro: errorService.getErrorMessage(err)
             });
     });
 }

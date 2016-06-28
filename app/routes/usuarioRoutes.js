@@ -7,8 +7,8 @@ module.exports = function () {
     let rotas = express.Router();
 
     rotas.route('/usuario')
-        .get(controller.listarUsuarios)
-        .post(controller.adicionarUsuario);
+        .get(controller.listarUsuarios);
+        //.post(controller.adicionarUsuario);
 
     rotas.route('/usuario/info')
         .get(controller.infoUsuario);

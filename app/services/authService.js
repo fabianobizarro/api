@@ -1,4 +1,4 @@
-var config = require('../../config/config'),
+var config = require('../../config/env'),
     jwt = require('jsonwebtoken');
 
 var defaultOptions = {
