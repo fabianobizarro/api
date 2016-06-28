@@ -16,22 +16,20 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: false,
                 validate: {
                     is: { args: /^[a-zA-Zà-ú ']*$/, msg: 'O nome do usuário não pode conter caracteres especiais' }
-                }
+                },
             },
             Login: {
                 type: DataTypes.STRING(30),
                 allowNull: false,
-                unique: true,
-                validate:{
-                    is:{ args: /^[a-zA-Z0-9_-]{3,15}$/, msg: '' }
-                }
+                unique: { msg: 'Já existe um usuário com este login' },
+                validate: { is: { args: /^[a-zA-Z0-9_-]{3,15}$/, msg: `O login deve conter de 3 a 15 caracteres e somente letras, números e os caracteres '_' e '-' ` } }
             },
             Email: {
                 type: DataTypes.STRING(70),
                 allowNull: false,
                 unique: true,
-                isEmail: {
-                    msg: 'O endereço de email está no formato inválido.'
+                validate: {
+                    isEmail: { msg: 'O endereço de email está no formato inválido.' }
                 }
             },
             Telefone: {
@@ -69,14 +67,14 @@ module.exports = function (sequelize, DataTypes) {
         },
         {
             validate: {
-                TamanhoSenha: function () {
+                TamanhoSenha: function (t, i) {
                     let minLength = 6;
                     if (this.Senha.length < minLength)
                         throw new Error(`A senha deve ter possuir ${minLength} caracteres ou mais`);
                 }
             },
-            //createdAt: 'CreatedOn',
-            //updatedAt: 'UpdatedOn',
+            // createdAt: 'CreatedOn',
+            // updatedAt: 'UpdatedOn',
             freezeTableName: true,
             tableName: 'Usuario',
             classMethods: {
@@ -130,17 +128,44 @@ module.exports = function (sequelize, DataTypes) {
                     console.log(password);
                     return crypto.pbkdf2Sync(password, this.Salt, 10000, 64).toString('base64');
                 }
+            },
+            hooks: {
+                beforeUpdate: function (user, options) {
+                    console.log('before Updating');
+                    console.log(user.Salt)
+                    console.log(user.Senha)
+                    if (user.Senha) {
+                        user.Salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+                        user.Senha = user.hashPassword(user.Senha);
+                    }
+                    console.log('Updated');
+                    console.log(user.Salt)
+                    console.log(user.Senha)
+                }
             }
         });
 
-    Usuario.beforeCreate(function (user, options) {
-
+    Usuario.hook('beforeCreate', function (user, options) {
+        console.log('before Creating');
         if (user.Senha) {
             user.Salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
             user.Senha = user.hashPassword(user.Senha);
         }
 
     });
+
+    // Usuario.hook('beforeBulkUpdate', function (user, options) {
+    //     console.log('before Updating');
+    //     console.log(user.Salt)
+    //     console.log(user.Senha)
+    //     if (user.Senha) {
+    //         user.Salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+    //         user.Senha = user.hashPassword(user.Senha);
+    //     }
+    //     console.log('Updated');
+    //     console.log(user.Salt)
+    //     console.log(user.Senha)
+    // });
 
     return Usuario;
 

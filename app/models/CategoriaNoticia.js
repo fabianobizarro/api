@@ -15,7 +15,7 @@ module.exports = function (sequelize, DataTypes) {
             Nome: {
                 type: DataTypes.STRING(50),
                 allowNull: false,
-                unique: true,
+                unique: { msg: 'Já existe um registro com este nome' },
                 validate: {
                     is: { args: /^[a-zA-Zà-ú 0-9]*$/, msg: 'Este campo não pode conter caracteres especiais' }
                 },
@@ -47,7 +47,7 @@ module.exports = function (sequelize, DataTypes) {
         });
 
     sequelizeTransforms(CategoriaNoticia);
-    
+
     return CategoriaNoticia;
 
 };
