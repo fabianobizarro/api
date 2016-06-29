@@ -27,7 +27,14 @@ exports.listarUsuarios = function (req, res, next) {
 };
 
 exports.dadosUsuario = function (req, res, next) {
-    res.json(req.usuario);
+    res.json({
+        Nome: req.usuario.Nome,
+        Login: req.usuario.Login,
+        Email: req.usuario.Email,
+        Telefone: req.usuario.Telefone,
+        UrlFoto: req.usuario.UrlFoto,
+        Admin: req.usuario.Admin
+    });
 };
 
 exports.alterarUsuario = function (req, res, next) {
@@ -41,7 +48,6 @@ exports.alterarUsuario = function (req, res, next) {
     repository.update(usuario, (err) => {
 
         if (err) {
-            res.statusCode = 500;
             return next(err);
         }
 
@@ -170,9 +176,8 @@ exports.alterarSenha = function (req, res, next) {
 
     repository.update({ Senha: user.Senha }, options, (err) => {
 
-        console.log(err)
-        if (err)
-            return next(err);
+        if (err) return res.json(err)
+            //return next(err);
 
         res.json({
             sucesso: true,
