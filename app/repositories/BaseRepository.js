@@ -12,14 +12,14 @@ class BaseRepository {
     }
 
     getAll(fields, callback) {
-        return this.Model.findAll({ attributes: fields })
+        return this.Model.findAll(fields)
             .then((results) => callback(null, results), (err) => callback(err));
         //return this.Model.find({}, fields, options, callback);
     }
 
-    find(condition, fields, options, callback) {
-        throw new Error("Not impelmented")
-        //return this.Model.find(condition, fields, options, callback);
+    find(fields, options, callback) {
+        return this.Model.findAll(fields)
+            .then((results) => callback(null, results), (err) => callback(err));
     }
 
     findOne(options, callback) {
@@ -49,8 +49,21 @@ class BaseRepository {
 
     update(model, options, callback) {
 
-        return this.Model.update(model, options)
-            .then((result) => callback(null, result), (err) => callback(err));
+        options = options || {};
+        if (typeof model.save == 'function') {
+
+            let o;
+            if (typeof options.fields == 'object')
+                o = { fields: options.fields };
+            else o = {};
+
+            return model.save(o)
+                .then((result) => callback(null, result), (err) => callback(err));
+        }
+        else {
+            return this.Model.update(model, options)
+                .then((result) => callback(null, result), (err) => callback(err));
+        }
     }
 
     delete(options, callback) {
@@ -61,6 +74,21 @@ class BaseRepository {
     count(condition, callback) {
         return this.Model.count(condition)
             .then(count => callback(null, count), err => callback(err));
+    }
+
+
+    query(query, options, callback) {
+
+        if (options !== null)
+            if (options.type == undefined)
+                options.type = this.Model.sequelize.QueryTypes.SELECT;
+
+        return this.Model.sequelize.query(query, options)
+            .spread(function (results, metadata) {
+                callback(null, results, metadata);
+            }).catch(function (err) {
+                callback(err);
+            });
     }
 }
 

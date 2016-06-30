@@ -1,5 +1,5 @@
-/// <reference path="./BaseRepository.js" /> 
 "use strict";
+/// <reference path="./BaseRepository.js" /> 
 //var CategoriaNoticia = require('mongoose').model('CategoriaNoticia'),
 var BaseRepository = require('./BaseRepository');
 

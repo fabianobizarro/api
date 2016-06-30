@@ -17,7 +17,10 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.STRING(70),
                 allowNull: false,
             },
-            Publico: DataTypes.BOOLEAN
+            Publico: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false
+            }
 
         },
         {

@@ -79,7 +79,11 @@ exports.signInAdmin = function (req, res, next) {
                     });
                 }
                 else {
-                    return next(new Error('Usuário não possui permissão.'))
+                    res.status(401)
+                        .json({
+                            sucesso: false,
+                            mensagem: 'Acesso negado.'
+                        });
                 }
             }
         }

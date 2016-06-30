@@ -124,48 +124,25 @@ module.exports = function (sequelize, DataTypes) {
 
             instanceMethods: {
                 hashPassword: function (password) {
-                    console.log(this.Salt);
-                    console.log(password);
                     return crypto.pbkdf2Sync(password, this.Salt, 10000, 64).toString('base64');
                 }
             },
-            hooks: {
-                beforeUpdate: function (user, options) {
-                    console.log('before Updating');
-                    console.log(user.Salt)
-                    console.log(user.Senha)
-                    if (user.Senha) {
-                        user.Salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
-                        user.Senha = user.hashPassword(user.Senha);
-                    }
-                    console.log('Updated');
-                    console.log(user.Salt)
-                    console.log(user.Senha)
-                }
-            }
         });
 
     Usuario.hook('beforeCreate', function (user, options) {
-        console.log('before Creating');
         if (user.Senha) {
             user.Salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
             user.Senha = user.hashPassword(user.Senha);
         }
-
     });
 
-    // Usuario.hook('beforeBulkUpdate', function (user, options) {
-    //     console.log('before Updating');
-    //     console.log(user.Salt)
-    //     console.log(user.Senha)
-    //     if (user.Senha) {
-    //         user.Salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
-    //         user.Senha = user.hashPassword(user.Senha);
-    //     }
-    //     console.log('Updated');
-    //     console.log(user.Salt)
-    //     console.log(user.Senha)
-    // });
+    Usuario.hook('beforeUpdate', function (user, options) {
+
+        if (user.Senha !== user._previousDataValues.Senha) {
+            user.Salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
+            user.Senha = user.hashPassword(user.Senha);
+        }
+    });
 
     return Usuario;
 

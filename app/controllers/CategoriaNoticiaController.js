@@ -4,17 +4,25 @@ var CategoriaNoticiaRepository = require('../repositories/CategoriaNoticiaReposi
 
 
 exports.obterCategoriaNoticia = function (req, res) {
-    res.json(req.categoriaNoticia);
+    res.json({
+        Id: req.categoriaNoticia.Id,
+        Nome: req.categoriaNoticia.Nome,
+        Descricao: req.categoriaNoticia.Descricao
+    });
 };
 
 exports.listarCategoriaNoticias = function (req, res) {
-    repository.getAll({}, (err, docs) => {
+    repository.getAll({ attributes: ['Id', 'Nome', 'Descricao'] }, (err, docs) => {
         res.json(docs);
     });
 };
 
 exports.adicionarCategoria = function (req, res, next) {
-    let categoriaNoticia = req.body;
+
+    let categoriaNoticia = {
+        Nome: req.body.Nome,
+        Descricao: req.body.Descricao
+    };
 
     repository.add(categoriaNoticia, (err) => {
         if (err) {
@@ -59,48 +67,13 @@ exports.excluirCategoria = function (req, res, next) {
             mensagem: 'Categoria de notícia excluída com sucesso'
         });
     });
-
-    // noticiaRepo.count({ categoriaNoticia: categoriaNoticia._id }, (err, count) => {
-
-    //     if (count > 0) {
-    //         res.status(401)
-    //             .json({
-    //                 sucesso: false,
-    //                 mensagem: 'Não é possível exlcluir esta categoria pois existem notícias vinculadas'
-    //             });
-    //     }
-    //     else {
-    //         repository.delete(categoriaNoticia, (err) => {
-    //             if (err)
-    //                 return next(err);
-
-    //             res.json({
-    //                 sucesso: true,
-    //                 mensagem: 'Categoria de notícia excluída com sucesso'
-    //             });
-    //         })
-    //     }
-    // });
-
-    // repository.delete(categoriaNoticia, (err) => {
-    //     if (err)
-    //         return next(err);
-
-    //     res.json({
-    //         mensagem: 'Categoria de notícia excluída com sucesso.'
-    //     });
-    // });
 };
 
 exports.categoriaNoticiaPorId = function (req, res, next, id) {
 
     repository.findOne({ where: { Id: id } }, (err, doc) => {
 
-        // console.log(doc.dataValues)
-        // console.log(err)
-
         if (err) {
-            res.statusCode = 500;
             return next(err);
         }
 
@@ -114,22 +87,6 @@ exports.categoriaNoticiaPorId = function (req, res, next, id) {
         }
     });
 
-    // repository.findById(id, (err, doc) => {
-
-    //     if (err) {
-    //         res.statusCode = 500;
-    //         return next(err);
-    //     }
-
-    //     if (!doc) {
-    //         res.statusCode = 404;
-    //         return next(new Error('Não foi possível encontrar um registro com o id ' + id));
-    //     }
-    //     else {
-    //         req.categoriaNoticia = doc;
-    //         next();
-    //     }
-    // });
 };
 
 exports.pesquisaCategoriaNoticia = function (req, res, next) {

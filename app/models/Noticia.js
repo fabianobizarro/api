@@ -10,7 +10,7 @@ module.exports = function (sequelize, DataTypes) {
                 autoIncrement: true
             },
             Titulo: {
-                type: DataTypes.STRING(50),
+                type: DataTypes.STRING(100),
                 allowNull: false,
             },
             Alias: {
@@ -22,7 +22,7 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: false
             },
             Conteudo: {
-                type: DataTypes.STRING(500),
+                type: DataTypes.TEXT,
                 allowNull: false,
             },
             Data: {
@@ -32,6 +32,10 @@ module.exports = function (sequelize, DataTypes) {
             UrlImagem: {
                 type: DataTypes.STRING(150),
                 allowNull: true,
+            },
+            Tags:{
+                type: DataTypes.TEXT,
+                allowNull: true
             },
             CategoriaNoticiaId: {
                 type: DataTypes.INTEGER,
@@ -68,12 +72,6 @@ module.exports = function (sequelize, DataTypes) {
                     Noticia.hasMany(models.Arquivos, {
                         foreignKey: 'NoticiaId',
                         constraint: true
-                    });
-
-                    Noticia.hasMany(models.Tags, {
-                        foreignKey: 'NoticiaId',
-                        contraints: true,
-                        as: 'Noticia_Tags'
                     });
 
                     Noticia.hasMany(models.Comentario, {

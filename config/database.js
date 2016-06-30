@@ -2,8 +2,10 @@ var models = require('../app/models');
 
 exports.initialize = function (callback) {
 
+    
     var force = process.env.FORCE_SYNC == 'true' ? true : false;
 
+    console.log('force sync: ' + force)
     if (force == true)
         console.log('Forcing the database sync');
         

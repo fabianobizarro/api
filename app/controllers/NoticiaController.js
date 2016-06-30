@@ -61,7 +61,19 @@ exports.adicionarNoticia = function (req, res, next) {
 }
 
 exports.exibirNoticia = function (req, res, next) {
-    res.json(req.noticia);
+
+    res.json({
+        Id: req.noticia.Id,
+        Titulo: req.noticia.Titulo,
+        Alias: req.noticia.Alias,
+        Resumo: req.noticia.Resumo,
+        Conteudo: req.noticia.Conteudo,
+        Tags: req.noticia.Tags.split(','),
+        UrlImagem: req.noticia.UrlImagem,
+        CategoriaNoticiaId: req.noticia.CategoriaNoticiaId,
+        GrupoId: req.noticia.GrupoId,
+        Data: req.noticia.Data
+    });
 };
 
 exports.obterNoticiaPorId = function (req, res, next, idNoticia) {
@@ -101,11 +113,16 @@ exports.alterarNoticia = function (req, res, next) {
     var noticia = req.noticia;
     var newNoticia = req.body;
 
-    noticia.titulo = newNoticia.titulo || noticia.titulo;
-    noticia.resumo = newNoticia.resumo || noticia.resumo;
-    noticia.conteudo = newNoticia.conteudo || noticia.conteudo;
+    noticia.Titulo = newNoticia.Titulo || noticia.Titulo;
+    noticia.Resumo = newNoticia.Resumo || noticia.Resumo;
+    noticia.Conteudo = newNoticia.Conteudo || noticia.Conteudo;
+    noticia.Alias = newNoticia.Alias || noticia.Alias;
+    noticia.Tags = newNoticia.Tags || noticia.Tags;
 
-    repository.update(noticia, (err) => {
+    if (typeof noticia.Tags == 'object')
+        noticia.Tags = noticia.Tags.toString();
+
+    repository.update(noticia, {}, (err) => {
 
         if (err) {
             res.statusCode = 500;

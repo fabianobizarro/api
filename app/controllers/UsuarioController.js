@@ -19,35 +19,44 @@ exports.adicionarUsuario = function (req, res, next) {
 
 exports.listarUsuarios = function (req, res, next) {
 
-    repository.getAll(['Id', 'Nome', 'Login', 'Email', 'Telefone', 'UrlFoto'], (err, usuarios) => {
+    let fields = {
+        attributes: ['Id', 'Nome', 'Login', 'Email', 'Telefone', 'UrlFoto']
+    };
+
+    repository.getAll(fields, (err, usuarios) => {
         if (err) return next(err);
 
         res.json(usuarios);
-    })
+    });
 };
 
 exports.dadosUsuario = function (req, res, next) {
-    res.json(req.usuario);
+    res.json({
+        Nome: req.usuario.Nome,
+        Login: req.usuario.Login,
+        Email: req.usuario.Email,
+        Telefone: req.usuario.Telefone,
+        UrlFoto: req.usuario.UrlFoto,
+    });
 };
 
 exports.alterarUsuario = function (req, res, next) {
 
     var usuario = req.usuario;
 
-    usuario.nome = req.body.nome || usuario.nome;
-    usuario.email = req.body.email || usuario.email;
-    usuario.login = req.body.login || usuario.login;
+    usuario.Nome = req.body.nome || usuario.Nome;
+    usuario.Telefone = req.body.telefone || usuario.Telefone;
+    usuario.UrlFoto = req.body.urlFoto || usuario.UrlFoto;
 
-    repository.update(usuario, (err) => {
+    repository.update(usuario, {}, (err) => {
 
         if (err) {
-            res.statusCode = 500;
             return next(err);
         }
 
         res.json({
             sucesso: true,
-            mensagem: 'Cadastro do usuário atualizado com sucesso.'
+            mensagem: 'Dados do usuário atualizados com sucesso.'
         });
     });
 };
@@ -55,15 +64,21 @@ exports.alterarUsuario = function (req, res, next) {
 exports.excluirUsuario = function (req, res, next) {
     var usuario = req.usuario;
 
-    repository.delete(usuario, (err) => {
+    let options = {
+        where: { Id: usuario.Id },
+        validate: false,
+        hooks: false
+    }
+
+    repository.update({ Ativo: false }, options, (err) => {
         if (err)
             return next(err);
 
         res.json({
             sucesso: true,
-            mensagem: 'Usuário excluído com sucesso!'
-        })
-    });
+            mensagem: 'Usuário excluído com sucesso'
+        });
+    })
 };
 
 exports.infoUsuario = function (req, res, next) {
@@ -114,8 +129,7 @@ exports.pesquisaUsuario = function (req, res, next) {
 exports.obterUsuarioPorId = function (req, res, next, id) {
 
     repository.findOne({
-        //attributes: ['Id', 'Nome', 'Login', 'Email', 'Telefone', 'UrlFoto', 'Admin'],
-        where: { Id: id }
+        where: { '$and': { Id: id, Ativo: true } }
     }, (err, usuario) => {
 
         if (err)
@@ -159,18 +173,15 @@ exports.alternarAdminUsuario = function (req, res, next) {
 
 exports.alterarSenha = function (req, res, next) {
 
-    var user = req.usuario.dataValues;
+    var user = req.usuario;
     user.Senha = req.body.senha;
 
     var options = {
-        where: {
-            Id: req.usuario.Id
-        },
+        fields: ['Senha']
     };
 
-    repository.update({ Senha: user.Senha }, options, (err) => {
+    repository.update(user, options, (err) => {
 
-        console.log(err)
         if (err)
             return next(err);
 

@@ -7,16 +7,15 @@ module.exports = function () {
     let rotas = express.Router();
 
     rotas.route('/usuario')
-        .get(controller.listarUsuarios);
-    //.post(controller.adicionarUsuario);
+        .get([controller.requestUserIsAdmin, controller.listarUsuarios]);
 
     rotas.route('/usuario/info')
         .get(controller.infoUsuario);
 
     rotas.route('/usuario/:idUsuario')
         .get(controller.dadosUsuario)
-        .put([controller.requestUserIsTheOwn, controller.requestUserIsAdmin, controller.alterarUsuario])
-        .delete([controller.requestUserIsTheOwn, controller.requestUserIsAdmin, controller.excluirUsuario]);
+        .put([controller.requestUserIsTheOwn, controller.alterarUsuario])
+        .delete([controller.requestUserIsTheOwn, controller.excluirUsuario]);
 
     rotas.route('/usuario/pesquisa/:pesquisa')
         .get(controller.pesquisaUsuario);
@@ -26,8 +25,6 @@ module.exports = function () {
 
     rotas.route('/usuario/:idUsuario/alterarSenha')
         .post([controller.requestUserIsTheOwn, controller.alterarSenha]);
-
-
 
     rotas.param('idUsuario', controller.obterUsuarioPorId);
 

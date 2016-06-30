@@ -5,7 +5,7 @@
     "database": "sn",
     "host": "192.168.99.100",
     "dialect": "mysql",
-    "logging": false
+    "logging": true
   },
   "test": {
     "username": "root",

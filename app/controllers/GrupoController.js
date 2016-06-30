@@ -5,7 +5,7 @@ var GrupoRepository = require('../repositories/GrupoRepository'),
 
 
 exports.listarGrupos = function (req, res, next) {
-    repository.getAll((err, grupos) => {
+    repository.getAll({}, (err, grupos) => {
         if (err)
             return next(err);
         else
@@ -15,12 +15,11 @@ exports.listarGrupos = function (req, res, next) {
 
 exports.adicionarGrupo = function (req, res, next) {
 
-    let grupo = req.body;
-
-    grupo.administradores = [];
-    grupo.integrantes = [];
-    grupo.administradores.push(req.requestUser._id);
-    grupo.integrantes.push(req.requestUser._id);
+    let grupo = {
+        Nome: req.body.nome,
+        Descricao: req.body.descricao,
+        Publico: req.body.publico
+    };
 
     repository.add(grupo, (err) => {
         if (err)
@@ -29,7 +28,7 @@ exports.adicionarGrupo = function (req, res, next) {
             res.json({
                 sucesso: true,
                 mensagem: 'Grupo criado com sucesso.'
-            })
+            });
     });
 }
 
@@ -91,7 +90,6 @@ exports.obterGrupoPorId = function (req, res, next, id) {
         next();
     });
 }
-
 
 exports.listarNoticias = function(req, res, next){
     res.status(501).end('Not Implemented');
