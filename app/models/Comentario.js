@@ -34,13 +34,13 @@ module.exports = function (sequelize, DataTypes) {
                     Comentario.belongsTo(models.Noticia, {
                         foreignKey: 'NoticiaId',
                         contraints: true,
-                        as: 'Noticia_Comentarios'
+                        as: 'Noticia'
                     });
 
                     Comentario.belongsTo(models.Usuario, {
                         foreignKey: 'UsuarioId',
                         contraints: true,
-                        as: 'Usuario_Comentarios'
+                        as: 'Usuario'
                     });
                 }
             }

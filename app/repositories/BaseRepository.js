@@ -14,7 +14,6 @@ class BaseRepository {
     getAll(fields, callback) {
         return this.Model.findAll(fields)
             .then((results) => callback(null, results), (err) => callback(err));
-        //return this.Model.find({}, fields, options, callback);
     }
 
     find(fields, options, callback) {
@@ -26,14 +25,10 @@ class BaseRepository {
         return this.Model
             .findOne(options)
             .then((result) => callback(null, result), (err) => callback(err));
-
-        //return this.Model.findOne(condition, fields, options, callback);
-
     }
 
     findOneAndUpdate(id, update, callback) {
         throw new Error("Not impelmented")
-        //return this.Model.findOneAndUpdate(id, update, callback);
     }
 
     findById(id, callback) {

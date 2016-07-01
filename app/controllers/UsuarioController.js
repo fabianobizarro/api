@@ -37,10 +37,7 @@ exports.dadosUsuario = function (req, res, next) {
         Email: req.usuario.Email,
         Telefone: req.usuario.Telefone,
         UrlFoto: req.usuario.UrlFoto,
-<<<<<<< HEAD
-=======
         Admin: req.usuario.Admin
->>>>>>> 877e83983bd7cdd7279c7feebb3b4259aee20e41
     });
 };
 

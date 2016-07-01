@@ -30,13 +30,15 @@ module.exports = function (sequelize, DataTypes) {
                     Curtida.belongsTo(models.Noticia, {
                         foreignKey: 'NoticiaId',
                         contraints: true,
-                        as: 'Noticia_Curtidas',
+                        as: 'Noticia',
                     });
+
+                    
 
                     Curtida.belongsTo(models.Usuario, {
                         foreignKey: 'UsuarioId',
                         contraints: true,
-                        as: 'Usuario_Curtidas'
+                        as: 'Usuario'
                     });
                 }
             }

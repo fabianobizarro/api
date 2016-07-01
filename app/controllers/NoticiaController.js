@@ -1,10 +1,17 @@
 'use strict';
 var NoticiaRepository = require('../repositories/NoticiaRepository'),
     GrupoRepository = require('../repositories/GrupoRepository'),
+    ComentarioRepository = require('../repositories/ComentarioRepository'),
+
+
     repository = new NoticiaRepository(),
     grupoRepo = new GrupoRepository(),
+    comentarioRepo = new ComentarioRepository(),
+
     ObjectId = require('mongoose').Types.ObjectId,
-    dateService = require('../services/dateService');
+    dateService = require('../services/dateService'),
+    models = require('../models');
+
 
 
 exports.listarNoticias = function (req, res, next) {
@@ -140,54 +147,84 @@ exports.adicionarComentario = function (req, res, next) {
 
     var descComentario = req.body.comentario;
     if (!descComentario) {
-        res.statusCode = 400;
-        return next(new Error('O comentário é obrigatório'));
+        res.status(400)
+            .json({
+                sucesso: false,
+                mensagem: 'O comentário é obrigatório'
+            });
     }
 
     var comentario = {
-        _id: new ObjectId(),
-        usuario: req.requestUser.login,
-        comentario: descComentario,
-        data: Date.now()
+        UsuarioId: req.requestUser.Id,
+        NoticiaId: req.noticia.Id,
+        Conteudo: descComentario,
+        Data: Date.now()
     };
 
-    repository.findOneAndUpdate({ _id: req.noticia._id },
-        { '$addToSet': { comentarios: comentario } },
-        (err, model) => {
-            if (err) {
-                res.statusCode = 500;
-                return next(err);
-            }
+    console.log(req.noticia.setComentarios);
+    console.log(comentario);
+
+    req.noticia.createComentario(comentario)
+        .then(function (result) {
             res.json({
                 sucesso: true,
                 mensagem: 'Comentário adicionado com sucesso',
                 comentario: comentario
             });
+        }, function (err) {
+            return next(err);
         });
 };
 
 exports.exibirComentarios = function (req, res, next) {
-    res.status(501).end("Not implemented");
+
+    req.noticia.getComentarios({
+        attributes: ['Id', 'Conteudo', 'Data'],
+        include: [
+            {
+                model: models.Usuario,
+                as: 'Usuario',
+                where: { Id: models.sequelize.col('UsuarioId') },
+                attributes: ['Login']
+            }
+        ]
+    })
+        .then(function (results) {
+            res.json(results);
+        }, function (err) {
+            return next(err);
+        });
+
+
 }
 
 exports.removerComentario = function (req, res, next) {
     var idNoticia = req.params.idNoticia;
     var idComentario = req.params.idComentario;
 
-    repository.findOneAndUpdate(
-        { _id: idNoticia },
-        { '$pull': { comentarios: { _id: idComentario } } },
-        (err) => {
-            if (err) {
-                res.statusCode = 500;
-                return next(err);
-            }
+    let where = {
+        Id: idComentario,
+        NoticiaId: idNoticia
+    };
 
+    comentarioRepo.delete({ where: where }, (err, result) => {
+        if (err)
+            return next(err);
+
+        if (result == 0) {
+            res.status(404).json({
+                sucesso: false,
+                mensagem: 'Comentário não encontrado'
+            });
+        }
+        else {
             res.json({
                 sucesso: true,
                 mensagem: 'Comentário excluído com sucesso.'
             });
-        });
+        }
+
+    });
 };
 
 exports.curtirNoticia = function (req, res, next) {
@@ -228,11 +265,41 @@ exports.curtirNoticia = function (req, res, next) {
 
 exports.pesquisarNoticias = function (req, res, next) {
 
-    var query = queryPesquisa(req);
+    let query = queryPesquisa(req);
 
-    repository.find(query, (err, results) => {
+    let include = [
+        {
+            model: models.Comentario,
+            as: 'Comentarios',
+            where: { NoticiaId: models.sequelize.col('Noticia.Id') },
+            required: false
+        },
+        {
+            model: models.Curtida,
+            as: 'Curtidas',
+            where: { NoticiaId: models.sequelize.col('Noticia.Id') },
+            required: false
+        }
+    ]
+    let attributes = [
+        'Id',
+        'Titulo',
+        'Alias',
+        'Resumo',
+        'Conteudo',
+        'Data',
+        'UrlImagem',
+        'Tags',
+    ];
+
+    repository.find({ attributes: attributes, where: query, include: include }, null, (err, results) => {
         if (err)
             return next(err);
+
+        results.forEach((i) => {
+            if (i.Tags)
+                i.Tags = i.Tags.split(',');
+        });
 
         res.json(results);
     });
@@ -242,41 +309,46 @@ exports.pesquisarNoticias = function (req, res, next) {
 var queryPesquisa = function (req) {
 
     var query = {};
-    query['$or'] = [];
+    //query['$or'] = [];
 
 
-    if (req.body.categoriaNoticia)
-        query['$or'].push({ categoriaNoticia: new ObjectId(req.body.categoriaNoticia) });
+    if (req.body.CategoriaNoticia)
+        query['CategoriaNoticiaId'] = req.body.CategoriaNoticia;
+    //query['$or'].push({ categoriaNoticia: new ObjectId(req.body.categoriaNoticia) });
 
-    if (req.body.titulo)
-        query['$or'] = { titulo: { '$regex': RegExp(req.body.titulo), "$options": 'i' } };
+    if (req.body.Titulo)
+        query['Titulo'] = { $like: `%${req.body.Titulo}%` };
+    //query['$or'] = { titulo: { '$regex': RegExp(req.body.titulo), "$options": 'i' } };
 
-    if (req.body.resumo)
-        query['$or'] = { titulo: { '$regex': RegExp(req.body.resumo), "$options": 'i' } };
+    if (req.body.Resumo)
+        query['Resumo'] = { $like: `%${req.body.Resumo}%` };
+    //query['$or'] = { titulo: { '$regex': RegExp(req.body.resumo), "$options": 'i' } };
 
-    if (req.body.conteudo)
-        query['$or'] = { titulo: { '$regex': RegExp(req.body.conteudo), "$options": 'i' } };
+    if (req.body.Conteudo)
+        query['Conteudo'] = { $like: `%${req.body.Conteudo}%` };
+
+    //query['$or'] = { titulo: { '$regex': RegExp(req.body.conteudo), "$options": 'i' } };
 
 
 
-    if (req.body.dataInicio || req.body.dataTermino) {
+    if (req.body.DataInicio || req.body.DataTermino) {
 
         // formata as datas de 00/00/00 para um objeto => { dia: 00, mes: 00, ano: 0000 }
-        var dataInicioFormatada = dateService.dataFormatada(req.body.dataInicio || Date());
-        var dataTerminoFormatada = dateService.dataFormatada(req.body.dataTermino || Date());
+        var dataInicioFormatada = dateService.dataFormatada(req.body.DataInicio || Date());
+        var dataTerminoFormatada = dateService.dataFormatada(req.body.DataTermino || Date());
 
-        if (req.body.dataInicio && req.body.dataTermino) {
-            query['data'] =
+        if (req.body.DataInicio && req.body.DataTermino) {
+            query['Data'] =
                 {
                     '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia),
                     '$lte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia)
                 };
         } else
             if (req.body.dataInicio) {
-                query['data'] = { '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia) };
+                query['Data'] = { '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia) };
             }
             else if (req.body.dataTermino) {
-                query['data'] = { '$gte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia) };
+                query['Data'] = { '$gte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia) };
             }
     }
 

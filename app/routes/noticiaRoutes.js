@@ -30,4 +30,4 @@ module.exports = function () {
     router.param('idNoticia', controller.obterNoticiaPorId);
 
     return router;
-}
+};

@@ -9,7 +9,7 @@ var database = require('./config/database'),
 database.initialize((err) => {
 
     if (err) {
-        console.error(err);
+        throw err;
         process.exit(1);
     }
 

@@ -2,10 +2,10 @@
 /// <reference path="./BaseRepository.js" /> 
 var BaseRepository = require('./BaseRepository');
 
-class AdminGrupoRepository extends BaseRepository {
+class ComentarioRepository extends BaseRepository {
     constructor() {
-        super('AdminGrupo');
+        super('Comentario');
     }
 }
 
-module.exports = AdminGrupoRepository;
+module.exports = ComentarioRepository;

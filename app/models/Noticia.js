@@ -10,15 +10,15 @@ module.exports = function (sequelize, DataTypes) {
                 autoIncrement: true
             },
             Titulo: {
-                type: DataTypes.STRING(100),
+                type: DataTypes.STRING(250),
                 allowNull: false,
             },
             Alias: {
-                type: DataTypes.STRING(40),
+                type: DataTypes.STRING(100),
                 allowNull: true,
             },
             Resumo: {
-                type: DataTypes.STRING(100),
+                type: DataTypes.STRING(250),
                 allowNull: false
             },
             Conteudo: {
@@ -77,7 +77,13 @@ module.exports = function (sequelize, DataTypes) {
                     Noticia.hasMany(models.Comentario, {
                         foreignKey: 'NoticiaId',
                         contraints: true,
-                        as: 'Noticia_Comentarios'
+                        as: 'Comentarios'
+                    });
+
+                    Noticia.hasMany(models.Curtida, {
+                        foreignKey: 'NoticiaId',
+                        contraints: true,
+                        as: 'Curtidas'
                     });
                 }
             }
