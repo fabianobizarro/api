@@ -2,11 +2,13 @@
 var NoticiaRepository = require('../repositories/NoticiaRepository'),
     GrupoRepository = require('../repositories/GrupoRepository'),
     ComentarioRepository = require('../repositories/ComentarioRepository'),
+    CurtidaRepository = require('../repositories/CurtidaRepository'),
 
 
     repository = new NoticiaRepository(),
     grupoRepo = new GrupoRepository(),
     comentarioRepo = new ComentarioRepository(),
+    curtidaRepo = new CurtidaRepository(),
 
     ObjectId = require('mongoose').Types.ObjectId,
     dateService = require('../services/dateService'),
@@ -161,9 +163,6 @@ exports.adicionarComentario = function (req, res, next) {
         Data: Date.now()
     };
 
-    console.log(req.noticia.setComentarios);
-    console.log(comentario);
-
     req.noticia.createComentario(comentario)
         .then(function (result) {
             res.json({
@@ -230,30 +229,38 @@ exports.removerComentario = function (req, res, next) {
 exports.curtirNoticia = function (req, res, next) {
 
     var idNoticia = req.params.idNoticia;
-    var idUsuario = req.requestUser._id;
-    var updateStatement = {};
+    var idUsuario = req.requestUser.Id;
     var curtir = null;
 
-    if (req.noticia.curtidas.indexOf(idUsuario) == -1) {
-        // Notícia não foi curtida pelo usuário
-        updateStatement = { '$addToSet': { curtidas: idUsuario } };
+    var addCurtida = function () {
+
+        var curtida = {
+            Data: Date(),
+            NoticiaId: idNoticia,
+            UsuarioId: idUsuario
+        };
         curtir = true;
-    }
-    else {
-        // notícia já foi curtida pelo usuário
-        updateStatement = { '$pull': { curtidas: idUsuario } };
-        curtir = false;
-    }
-
-    repository.findOneAndUpdate(
-        { _id: idNoticia },
-        updateStatement,
-        (err) => {
-
-            if (err) {
-                res.statusCode = 500;
+        req.noticia.createCurtida(curtida)
+            .then((r) => {
+                res.json({
+                    sucesso: true,
+                    curtir: curtir,
+                    mensagem: 'Curtida adicionada/removida com sucesso.'
+                });
+            }, (err) => {
                 return next(err);
-            }
+            });
+
+    };
+
+    var removeCurida = function () {
+        curtir = false;
+        let condition = {
+            UsuarioId: idUsuario,
+            NoticiaId: idNoticia
+        };
+        curtidaRepo.delete({ where: condition }, (err, rows) => {
+            if (err) return next(err);
 
             res.json({
                 sucesso: true,
@@ -261,6 +268,46 @@ exports.curtirNoticia = function (req, res, next) {
                 mensagem: 'Curtida adicionada/removida com sucesso.'
             });
         });
+
+    };
+
+    req.noticia.getCurtidas({ where: { UsuarioId: idUsuario } })
+        .then((results) => {
+            if (results.length == 0)
+                addCurtida();
+            else
+                removeCurida();
+        }, (err) => {
+            return next(err);
+        });
+};
+
+exports.obterCurtidas = function (req, res, next) {
+
+    let options = {
+        attributes:['UsuarioId'],
+        include: [
+            {
+                model: models.Usuario,
+                as: 'Usuario',
+                where: { Id: models.sequelize.col('NoticiaId') },
+                attributes: ['Login']
+            }
+        ]
+    }
+
+    req.noticia.getCurtidas(options)
+        .then((results) => {
+
+            results = results.map((i)=>{
+                return i.Usuario.Login; 
+            });
+
+            res.json(results);
+        }, (err) => {
+            return next(err);
+        });
+
 };
 
 exports.pesquisarNoticias = function (req, res, next) {

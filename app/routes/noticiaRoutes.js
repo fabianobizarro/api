@@ -24,6 +24,9 @@ module.exports = function () {
     router.route('/noticia/:idNoticia/curtir')
         .post(controller.curtirNoticia);
 
+    router.route('/noticia/:idNoticia/curtidas')
+        .get(controller.obterCurtidas);
+
     router.route('/noticia/pesquisa')
         .post(controller.pesquisarNoticias);
 
