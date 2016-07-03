@@ -1,6 +1,6 @@
 {
   "name": "sharenews-api-mysql",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "API principal do ShareNews",
   "main": "server.js",
   "scripts": {
