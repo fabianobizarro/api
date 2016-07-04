@@ -2,7 +2,7 @@
 module.exports = function () {
 
     let express = require('express');
-    let controller = require('../controllers/unilesteController');
+    let controller = require('../controllers/UnilesteController');
     let rotas = express.Router();
 
     rotas.route('/unileste')

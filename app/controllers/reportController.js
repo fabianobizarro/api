@@ -1,4 +1,4 @@
-var dateService = require('../services/dateservice');
+var dateService = require('../services/dateService');
 var categoriaNoticiaRepository = require('../repositories/CategoriaNoticiaRepository');
 var reportService = require('../services/reportService');
 require('../services/Array');

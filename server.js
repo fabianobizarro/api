@@ -1,5 +1,4 @@
-var port = process.env.PORT || 3000;
-var host = process.env.HOST || 'localhost';
+var port = 3000;
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var database = require('./config/database'),
@@ -10,7 +9,7 @@ database.initialize((err) => {
 
     if (err) {
         throw err;
-        process.exit(1);
+        //process.exit(1);
     }
 
     console.log('Initializing application...');

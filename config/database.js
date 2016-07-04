@@ -1,21 +1,19 @@
-var models = require('../app/models');
+'use strict';
 
 exports.initialize = function (callback) {
 
-    
-    var force = process.env.FORCE_SYNC == 'true' ? true : false;
+    let models = require('../app/models');
 
-    console.log('force sync: ' + force)
-    if (force == true)
-        console.log('Forcing the database sync');
-        
+    let forceSync = process.env.FORCE_SYNC == 'true' ? true : false;
+
+    console.log(`Synchronizing database | Force Sync: ${forceSync}`);
+
     models.sequelize
-        .sync({ force: force })
+        .sync({ force: forceSync })
         .then(function (database) {
             callback(null, database);
         }).catch(function (err) {
             callback(err);
         });
-}
 
-
+};
