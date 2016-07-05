@@ -8,7 +8,7 @@ WORKDIR /app
 
 RUN npm install
 
-ENV CONNECTION_STRING ''
+ENV DB_CONN_URI ''
 ENV NODE_ENV ''
 ENV FORCE_SYNC ''
 
