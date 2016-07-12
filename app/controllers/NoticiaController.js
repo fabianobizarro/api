@@ -4,6 +4,7 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
     ComentarioRepository = require('../repositories/ComentarioRepository'),
     CurtidaRepository = require('../repositories/CurtidaRepository'),
 
+    noticiaService = require('../services/noticiaService'),
 
     repository = new NoticiaRepository(),
     grupoRepo = new GrupoRepository(),
@@ -70,26 +71,12 @@ exports.adicionarNoticia = function (req, res, next) {
 }
 
 exports.exibirNoticia = function (req, res, next) {
-
-    res.json({
-        Id: req.noticia.Id,
-        Titulo: req.noticia.Titulo,
-        Alias: req.noticia.Alias,
-        Resumo: req.noticia.Resumo,
-        Conteudo: req.noticia.Conteudo,
-        Tags: req.noticia.Tags.split(','),
-        UrlImagem: req.noticia.UrlImagem,
-        CategoriaNoticiaId: req.noticia.CategoriaNoticiaId,
-        GrupoId: req.noticia.GrupoId,
-        Data: req.noticia.Data
-    });
+    return res.json(req.noticia);
 };
 
 exports.obterNoticiaPorId = function (req, res, next, idNoticia) {
 
-    //console.log(idNoticia);
-
-    repository.findById(idNoticia, (err, noticia) => {
+    noticiaService.obterNoticiaPorId(idNoticia, (err, noticia) => {
         if (err) return next(err);
         if (!noticia) return next(new Error('Não foi possível encontrar uma notícia com o id ' + idNoticia));
 
@@ -100,20 +87,25 @@ exports.obterNoticiaPorId = function (req, res, next, idNoticia) {
 
 exports.excluirNoticia = function (req, res, next) {
 
-    repository.delete(req.noticia, (err) => {
+    repository.delete({ where: { Id: req.noticia.Id } }, (err) => {
         if (err)
             return next(err);
 
 
-        grupoRepo.findOneAndUpdate(req.grupo._id, {
-            '$pull': { 'noticias': req.noticia._id }
-        }, (err) => {
+        res.json({
+            sucesso: true,
+            mensagem: 'A notícia foi excluída com sucesso.'
+        });
 
-            res.json({
-                sucesso: true,
-                mensagem: 'A notícia foi excluída com sucesso.'
-            });
-        })
+        // grupoRepo.findOneAndUpdate(req.grupo._id, {
+        //     '$pull': { 'noticias': req.noticia._id }
+        // }, (err) => {
+
+        //     res.json({
+        //         sucesso: true,
+        //         mensagem: 'A notícia foi excluída com sucesso.'
+        //     });
+        // })
     });
 };
 
@@ -131,7 +123,7 @@ exports.alterarNoticia = function (req, res, next) {
     if (typeof noticia.Tags == 'object')
         noticia.Tags = noticia.Tags.toString();
 
-    repository.update(noticia, {}, (err) => {
+    repository.update(noticia, { where: { Id: req.noticia.Id } }, (err) => {
 
         if (err) {
             res.statusCode = 500;
@@ -147,7 +139,7 @@ exports.alterarNoticia = function (req, res, next) {
 
 exports.adicionarComentario = function (req, res, next) {
 
-    var descComentario = req.body.comentario;
+    var descComentario = req.body.Comentario;
     if (!descComentario) {
         res.status(400)
             .json({
@@ -163,41 +155,29 @@ exports.adicionarComentario = function (req, res, next) {
         Data: Date.now()
     };
 
-    req.noticia.createComentario(comentario)
-        .then(function (result) {
-            res.json({
-                sucesso: true,
-                mensagem: 'Comentário adicionado com sucesso',
-                comentario: comentario
-            });
-        }, function (err) {
-            return next(err);
+    comentarioRepo.add(comentario, (err) => {
+        if (err) return next(err);
+
+        return res.json({
+            sucesso: true,
+            mensagem: 'Comentário adicionado com sucesso',
+            comentario: comentario
         });
+    });
 };
 
 exports.exibirComentarios = function (req, res, next) {
 
-    req.noticia.getComentarios({
-        attributes: ['Id', 'Conteudo', 'Data'],
-        include: [
-            {
-                model: models.Usuario,
-                as: 'Usuario',
-                where: { Id: models.sequelize.col('UsuarioId') },
-                attributes: ['Login']
-            }
-        ]
-    })
-        .then(function (results) {
-            res.json(results);
-        }, function (err) {
-            return next(err);
+    noticiaService
+        .obterComentarios(req.noticia.Id, (err, comentarios) => {
+            if (err) return next(err);
+
+            return res.json(comentarios);
         });
-
-
 }
 
 exports.removerComentario = function (req, res, next) {
+
     var idNoticia = req.params.idNoticia;
     var idComentario = req.params.idComentario;
 
@@ -240,17 +220,16 @@ exports.curtirNoticia = function (req, res, next) {
             UsuarioId: idUsuario
         };
         curtir = true;
-        req.noticia.createCurtida(curtida)
-            .then((r) => {
-                res.json({
-                    sucesso: true,
-                    curtir: curtir,
-                    mensagem: 'Curtida adicionada/removida com sucesso.'
-                });
-            }, (err) => {
+        curtidaRepo.add(curtida, (err) => {
+            if (err)
                 return next(err);
-            });
 
+            return res.json({
+                sucesso: true,
+                curtir: curtir,
+                mensagem: 'Curtida adicionada/removida com sucesso.'
+            });
+        });
     };
 
     var removeCurida = function () {
@@ -271,21 +250,20 @@ exports.curtirNoticia = function (req, res, next) {
 
     };
 
-    req.noticia.getCurtidas({ where: { UsuarioId: idUsuario } })
-        .then((results) => {
-            if (results.length == 0)
-                addCurtida();
-            else
-                removeCurida();
-        }, (err) => {
-            return next(err);
-        });
+    noticiaService.obterCurtidas(idNoticia, (err, results) => {
+        
+        let usuarioCurtiu = results.where(n => n.Usuario == req.requestUser.Login).length;
+        if (usuarioCurtiu == 0)
+            addCurtida();
+        else
+            removeCurida();
+    });
 };
 
 exports.obterCurtidas = function (req, res, next) {
 
     let options = {
-        attributes:['UsuarioId'],
+        attributes: ['UsuarioId'],
         include: [
             {
                 model: models.Usuario,
@@ -296,18 +274,15 @@ exports.obterCurtidas = function (req, res, next) {
         ]
     }
 
-    req.noticia.getCurtidas(options)
-        .then((results) => {
+    noticiaService.obterCurtidas(req.noticia.Id, (err, curtidas) => {
+        if (err) return next(err);
 
-            results = results.map((i)=>{
-                return i.Usuario.Login; 
-            });
-
-            res.json(results);
-        }, (err) => {
-            return next(err);
+        curtidas = curtidas.map((i) => {
+            return i.Usuario;
         });
 
+        return res.json(curtidas)
+    });
 };
 
 exports.pesquisarNoticias = function (req, res, next) {
@@ -356,26 +331,18 @@ exports.pesquisarNoticias = function (req, res, next) {
 var queryPesquisa = function (req) {
 
     var query = {};
-    //query['$or'] = [];
-
 
     if (req.body.CategoriaNoticia)
         query['CategoriaNoticiaId'] = req.body.CategoriaNoticia;
-    //query['$or'].push({ categoriaNoticia: new ObjectId(req.body.categoriaNoticia) });
 
     if (req.body.Titulo)
         query['Titulo'] = { $like: `%${req.body.Titulo}%` };
-    //query['$or'] = { titulo: { '$regex': RegExp(req.body.titulo), "$options": 'i' } };
 
     if (req.body.Resumo)
         query['Resumo'] = { $like: `%${req.body.Resumo}%` };
-    //query['$or'] = { titulo: { '$regex': RegExp(req.body.resumo), "$options": 'i' } };
 
     if (req.body.Conteudo)
         query['Conteudo'] = { $like: `%${req.body.Conteudo}%` };
-
-    //query['$or'] = { titulo: { '$regex': RegExp(req.body.conteudo), "$options": 'i' } };
-
 
 
     if (req.body.DataInicio || req.body.DataTermino) {

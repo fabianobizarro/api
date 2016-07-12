@@ -13,18 +13,21 @@ class BaseRepository {
 
     getAll(fields, callback) {
         return this.Model.findAll(fields)
-            .then((results) => callback(null, results), (err) => callback(err));
+            .then((results) => callback(null, results), (err) => callback(err))
+            .catch(err => callback(err));
     }
 
     find(fields, options, callback) {
         return this.Model.findAll(fields)
-            .then((results) => callback(null, results), (err) => callback(err));
+            .then((results) => callback(null, results), (err) => callback(err))
+            .catch(err => callback(err));
     }
 
     findOne(options, callback) {
         return this.Model
             .findOne(options)
-            .then((result) => callback(null, result), (err) => callback(err));
+            .then((result) => callback(null, result), (err) => callback(err))
+            .catch(err => callback(err));
     }
 
     findOneAndUpdate(id, update, callback) {
@@ -34,12 +37,14 @@ class BaseRepository {
     findById(id, callback) {
         return this.Model
             .findOne({ where: { Id: id } })
-            .then(result => callback(null, result), err => callback(err));
+            .then(result => callback(null, result), err => callback(err))
+            .catch(err => callback(err));
     }
 
     add(model, callback) {
         return this.Model.create(model)
-            .then((result) => callback(null, result), (err) => callback(err));
+            .then((result) => callback(null, result), (err) => callback(err))
+            .catch(err => callback(err));
     }
 
     update(model, options, callback) {
@@ -53,32 +58,36 @@ class BaseRepository {
             else o = {};
 
             return model.save(o)
-                .then((result) => callback(null, result), (err) => callback(err));
+                .then((result) => callback(null, result), (err) => callback(err))
+                .catch(err => callback(err));
         }
         else {
             return this.Model.update(model, options)
-                .then((result) => callback(null, result), (err) => callback(err));
+                .then((result) => callback(null, result), (err) => callback(err))
+                .catch(err => callback(err));
         }
     }
 
     delete(options, callback) {
         return this.Model.destroy(options)
-            .then((result) => callback(null, result), (err) => callback(err));
+            .then((result) => callback(null, result), (err) => callback(err))
+            .catch(err => callback(err));
     }
 
     count(condition, callback) {
         return this.Model.count(condition)
-            .then(count => callback(null, count), err => callback(err));
+            .then(count => callback(null, count), err => callback(err))
+            .catch(err => callback(err));
     }
 
 
-    query(query, options, callback) {
+    static query(query, options, callback) {
 
-        if (options !== null)
-            if (options.type == undefined)
-                options.type = this.Model.sequelize.QueryTypes.SELECT;
+        // if (options !== null)
+        //     if (options.type == undefined)
+        //         options.type = this.Model.sequelize.QueryTypes.SELECT;
 
-        return this.Model.sequelize.query(query, options)
+        return models.sequelize.query(query, options)
             .spread(function (results, metadata) {
                 callback(null, results, metadata);
             }).catch(function (err) {

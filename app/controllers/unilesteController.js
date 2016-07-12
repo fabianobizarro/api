@@ -3,7 +3,9 @@
 var NoticiaRepository = require('../repositories/NoticiaRepository'),
   repository = new NoticiaRepository(),
   config = require('../../config/env'),
-  sequelize = require('sequelize');
+  sequelize = require('sequelize'),
+
+  noticiaService = require('../services/noticiaService');
 
 require('../services/Date');
 
@@ -12,58 +14,34 @@ exports.listarNoticiasUnileste = function (req, res, next) {
 
   var dateNow = new Date().yyyyMMdd();
 
-  var sql = `SELECT 
-              N.Id, N.Titulo, N.Alias, N.Resumo, N.Conteudo, N.Data, CN.Nome as CategoriaNoticia, N.Tags, COUNT(C.ID) AS Curtidas, COUNT(CO.ID) AS Comentarios
-
-              FROM Noticia N
-
-              INNER JOIN CATEGORIANOTICIA CN 
-              ON N.CATEGORIANOTICIAID = CN.ID
-
-              LEFT JOIN CURTIDA C
-              ON N.ID = C.NOTICIAID
-
-              LEFT JOIN COMENTARIO CO
-              ON N.ID = CO.NOTICIAID
-
-              WHERE date(N.DATA) = '${dateNow}'
-              AND N.GRUPOID = ${config.unilesteId}
-
-              GROUP BY N.Id, N.Titulo, N.Alias, N.Resumo, N.Conteudo, N.Data, CN.Nome
-              ORDER BY N.DATA DESC;`;
-
-  repository.query(sql, null, (err, result) => {
+  noticiaService.obterNoticiasPorDataeGrupo(dateNow, config.unilesteId, (err, noticias) => {
     if (err)
       return next(err);
 
-    result.forEach((i) => {
-      if (i.Tags)
-        i.Tags = i.Tags.split(',');
-    });
+    res.json(noticias);
+  });
 
-    res.json(result);
-  })
 };
 
 exports.cadastrarNoticiaUnileste = function (req, res, next) {
 
   var noticia = {
-    Titulo: req.body.titulo,
-    Resumo: req.body.resumo,
-    Conteudo: req.body.conteudo,
-    CategoriaNoticiaId: req.body.categoriaNoticia,
+    Titulo: req.body.Titulo,
+    Resumo: req.body.Resumo,
+    Conteudo: req.body.Conteudo,
+    CategoriaNoticiaId: req.body.CategoriaNoticia,
     GrupoId: config.unilesteId,
     Data: new Date(),
-    UsuarioId: req.requestUser.Id
+    UsuarioId: req.requestUser.Id,
+    UrlImagem: req.body.UrlImagem,
   };
 
-  if (req.body.tags)
-    noticia.Tags = req.body.tags.toString();
+  if (req.body.Tags)
+    noticia.Tags = noticia.Tags == null ? "" : req.body.Tags.toString();
 
   repository.add(noticia, (err, result) => {
 
     if (err) {
-      console.log(err);
       res.statusCode = 500;
       return next(err);
     }
