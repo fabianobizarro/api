@@ -60,13 +60,19 @@ module.exports = function (sequelize, DataTypes) {
                     Noticia.belongsTo(models.CategoriaNoticia, {
                         foreignKey: 'CategoriaNoticiaId',
                         contraints: true,
-                        as: 'CategoriaNoticia_Noticia'
+                        as: 'CategoriaNoticia'
                     });
 
                     Noticia.belongsTo(models.Usuario, {
                         foreignKey: 'UsuarioId',
                         contraints: true,
                         as: 'Usuario_Noticia',
+                    });
+
+                    Noticia.belongsTo(models.Grupo, {
+                        foreignKey: 'GrupoId',
+                        contraints: true,
+                        as: 'Grupo',
                     });
 
                     Noticia.hasMany(models.Arquivos, {

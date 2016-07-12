@@ -55,6 +55,12 @@ module.exports = function (sequelize, DataTypes) {
                         foreignKey: 'GrupoId',
                         contraints: true
                     });
+
+                    Grupo.hasMany(models.Noticia, {
+                        foreignKey: 'GrupoId',
+                        constraint: true,
+                        as: 'Noticias'
+                    });
                 }
             }
         });

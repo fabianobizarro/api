@@ -15,9 +15,11 @@ module.exports = function (sequelize, DataTypes) {
             },
             UsuarioId: {
                 type: DataTypes.INTEGER,
+                unique: 'CurtidaUniqueKey'
             },
             NoticiaId: {
                 type: DataTypes.INTEGER,
+                unique: 'CurtidaUniqueKey'
             }
 
         },
