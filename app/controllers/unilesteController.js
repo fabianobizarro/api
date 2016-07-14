@@ -14,7 +14,7 @@ exports.listarNoticiasUnileste = function (req, res, next) {
 
   var dateNow = new Date().yyyyMMdd();
 
-  noticiaService.obterNoticiasPorDataeGrupo(dateNow, config.unilesteId, (err, noticias) => {
+  noticiaService.obterNoticiasPorDataeGrupo(dateNow, config.unilesteId, req.requestUser.Id, (err, noticias) => {
     if (err)
       return next(err);
 

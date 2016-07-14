@@ -14,37 +14,34 @@ var formatTags = function (noticia) {
         noticia.Tags = [];
 };
 
-exports.obterNoticiasPorDataeGrupo = function (data, idGrupo, callback) {
+exports.obterNoticiasPorDataeGrupo = function (data, idGrupo, idUsuarioToken, callback) {
 
-    let sql = `SELECT 
-              N.Id, 
-              N.Titulo,
-              N.Alias, 
-              N.Resumo, 
-              N.Conteudo,
-              N.Data, 
-              CN.Nome as CategoriaNoticia, 
-              N.Tags, 
-              N.UrlImagem, 
-              COUNT(C.ID) AS Curtidas, 
-              COUNT(CO.ID) AS Comentarios
+    idUsuarioToken = idUsuarioToken || null;
 
-              FROM Noticia N
+    let sql = `SELECT
+                
+                N.Id,
+                N.Titulo,
+                N.Alias,
+                N.Resumo,
+                N.Conteudo,
+                N.Data,
+                CN.Nome as CategoriaNoticia,
+                N.Tags,
+                N.UrlImagem,
+                (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
+                (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
+                (SELECT 1 FROM Curtida WHERE UsuarioId = ${idUsuarioToken} AND NoticiaId = N.Id LIMIT 1) as Curtiu
 
-              INNER JOIN CATEGORIANOTICIA CN 
-              ON N.CATEGORIANOTICIAID = CN.ID
+                FROM
+                    Noticia N
 
-              LEFT JOIN CURTIDA C
-              ON N.ID = C.NOTICIAID
+                    INNER JOIN CategoriaNoticia CN
+                    ON N.CategoriaNoticiaId = CN.ID
 
-              LEFT JOIN COMENTARIO CO
-              ON N.ID = CO.NOTICIAID
-
-              WHERE date(N.DATA) = '${data}'
-              AND N.GRUPOID = ${idGrupo}
-
-              GROUP BY N.Id, N.Titulo, N.Alias, N.Resumo, N.Conteudo, N.Data, CN.Nome
-              ORDER BY N.DATA DESC;`;
+                WHERE date(N.Data) = '${data}'
+                    AND N.GrupoId = ${idGrupo}
+                ORDER BY N.DATA DESC;`;
 
     NoticiaRepository.query(sql, null, (err, results) => {
         if (err) callback(err);
@@ -59,6 +56,8 @@ exports.obterNoticiasPorDataeGrupo = function (data, idGrupo, callback) {
 
 exports.obterNoticiaPorId = function (idNoticia, callback) {
     let sql = `SELECT
+                (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
+                (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
                 N.Id,
                 N.Titulo,
                 N.Alias,
@@ -67,24 +66,15 @@ exports.obterNoticiaPorId = function (idNoticia, callback) {
                 N.Data,
                 CN.Nome as CategoriaNoticia,
                 N.Tags,
-                N.UrlImagem,
-                COUNT(C.ID) AS Curtidas,
-                COUNT(CO.ID) AS Comentarios
+                N.UrlImagem
 
-                FROM Noticia N
+                FROM
+                Noticia N
 
-                INNER JOIN CATEGORIANOTICIA CN
-                ON N.CATEGORIANOTICIAID = CN.ID
-
-                LEFT JOIN CURTIDA C
-                ON N.ID = C.NOTICIAID
-
-                LEFT JOIN COMENTARIO CO
-                ON N.ID = CO.NOTICIAID
+                INNER JOIN CategoriaNoticia CN
+                ON N.CategoriaNoticiaId = CN.ID
 
                 WHERE N.Id = ${idNoticia}
-
-                GROUP BY N.Id, N.Titulo, N.Alias, N.Resumo, N.Conteudo, N.Data, CN.Nome
                 ORDER BY N.DATA DESC;`;
 
     NoticiaRepository.query(sql, null, (err, noticia) => {
