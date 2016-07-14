@@ -252,6 +252,9 @@ exports.curtirNoticia = function (req, res, next) {
 
     noticiaService.obterCurtidas(idNoticia, (err, results) => {
         
+        if (err)
+            return next(err);
+
         let usuarioCurtiu = results.where(n => n.Usuario == req.requestUser.Login).length;
         if (usuarioCurtiu == 0)
             addCurtida();
