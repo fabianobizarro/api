@@ -2,7 +2,7 @@
 
 var NoticiaRepository = require('../repositories/NoticiaRepository'),
   repository = new NoticiaRepository(),
-  config = require('../../config/env'),
+  config = require('../../config/env/env'),
   sequelize = require('sequelize'),
 
   noticiaService = require('../services/noticiaService');

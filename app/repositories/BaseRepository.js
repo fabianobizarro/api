@@ -83,9 +83,17 @@ class BaseRepository {
 
     static query(query, options, callback) {
 
-        // if (options !== null)
-        //     if (options.type == undefined)
-        //         options.type = this.Model.sequelize.QueryTypes.SELECT;
+        if (options !== null) {
+            if (!options.logging)
+                options.logging = false;
+        }
+        else {
+            options = {
+                logging: false
+            };
+        }
+
+
 
         return models.sequelize.query(query, options)
             .spread(function (results, metadata) {

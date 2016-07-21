@@ -31,3 +31,5 @@ typings
 
 #Ambientes 
 config/env
+
+.vscode
