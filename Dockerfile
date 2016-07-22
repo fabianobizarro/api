@@ -8,10 +8,8 @@ WORKDIR /app
 
 RUN npm install
 
-# ENV HOST ''
-# ENV PORT ''
-# ENV DB_CONN_URI ''
-# ENV FORCE_SYNC ''
+ENV DB_CONN_URI ''
+ENV FORCE_SYNC ''
 
 EXPOSE 3000
 
