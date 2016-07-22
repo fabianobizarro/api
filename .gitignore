@@ -30,6 +30,6 @@ node_modules
 typings
 
 #Ambientes 
-config/env
+# config/env
 
 .vscode
