@@ -10,6 +10,9 @@ module.exports = function (sequelize, DataTypes) {
             UsuarioId: {
                 type: DataTypes.STRING(50),
             },
+            Admin: {
+                type: DataTypes.BOOLEAN
+            }
         },
         {
             frezzeTableName: true,

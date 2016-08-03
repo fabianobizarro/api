@@ -94,15 +94,6 @@ module.exports = function (sequelize, DataTypes) {
 
                     Usuario.belongsToMany(models.Grupo, {
                         through: {
-                            model: models.AdminGrupo,
-                            unique: true
-                        },
-                        foreignKey: 'UsuarioId',
-                        contraints: true
-                    });
-
-                    Usuario.belongsToMany(models.Grupo, {
-                        through: {
                             model: models.IntegranteGrupo,
                             unique: true
                         },

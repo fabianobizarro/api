@@ -15,8 +15,8 @@ module.exports = function () {
         .delete(controller.excluirGrupo);
 
     rotas.route('/grupo/:idGrupo/noticia')
-        .get(controller.listarNoticias)
-        .post(controller.adicionarNoticia);
+        .get([controller.usuarioIntegranteGrupo, controller.listarNoticias])
+        .post([controller.usuarioAdminGrupo, controller.adicionarNoticia]);
 
     rotas.param('idGrupo', controller.obterGrupoPorId);
 

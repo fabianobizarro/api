@@ -29,14 +29,6 @@ module.exports = function (sequelize, DataTypes) {
             tableName: 'Grupo',
             classMethods: {
                 associate: function (models) {
-                    Grupo.belongsToMany(models.Usuario, {
-                        through: {
-                            model: models.AdminGrupo,
-                            unique: true
-                        },
-                        foreignKey: 'GrupoId',
-                        contraints: true
-                    });
 
                     Grupo.belongsToMany(models.Usuario, {
                         through: {
@@ -44,7 +36,8 @@ module.exports = function (sequelize, DataTypes) {
                             unique: true
                         },
                         foreignKey: 'GrupoId',
-                        contraints: true
+                        contraints: true,
+                        as: 'Integrante'
                     });
 
                     Grupo.belongsToMany(models.Usuario, {

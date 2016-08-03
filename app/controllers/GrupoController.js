@@ -1,11 +1,22 @@
 'use strict';
 
 var GrupoRepository = require('../repositories/GrupoRepository'),
-    repository = new GrupoRepository();
+    IntegranteGrupoRepository = require('../repositories/IntegranteGrupoRepository'),
+    grupoService = require('../services/grupoService'),
+
+    repository = new GrupoRepository(),
+    integranteGrupoRepo = new IntegranteGrupoRepository();
 
 
 exports.listarGrupos = function (req, res, next) {
-    repository.getAll({}, (err, grupos) => {
+    // repository.getAll({}, (err, grupos) => {
+    //     if (err)
+    //         return next(err);
+    //     else
+    //         res.json(grupos);
+    // });
+
+    grupoService.obterGrupos(req.requestUser.Id, (err, grupos) => {
         if (err)
             return next(err);
         else
@@ -18,17 +29,28 @@ exports.adicionarGrupo = function (req, res, next) {
     let grupo = {
         Nome: req.body.nome,
         Descricao: req.body.descricao,
-        Publico: req.body.publico
+        Publico: req.body.publico || true
     };
 
-    repository.add(grupo, (err) => {
-        if (err)
-            return next(err);
-        else
+    repository.add(grupo, (err, _grupo) => {
+
+        let integrante = {
+            GrupoId: _grupo.Id,
+            UsuarioId: req.requestUser.Id,
+            Admin: true
+        };
+
+        integranteGrupoRepo.add(integrante, (e) => {
+
+            if (err) return next(err);
+
             res.json({
                 sucesso: true,
                 mensagem: 'Grupo criado com sucesso.'
             });
+
+        });
+
     });
 }
 
@@ -59,7 +81,7 @@ exports.alterarGrupo = function (req, res, next) {
 exports.excluirGrupo = function (req, res, next) {
 
     var grupo = req.grupo;
-    
+
 
     if (grupo.administradores.indexOf(req.requestUser._id) == -1) {
         // Usuário não está no grupo de administradores
@@ -69,7 +91,7 @@ exports.excluirGrupo = function (req, res, next) {
         repository.delete(grupo, (err) => {
             if (err)
                 return next(err);
-                
+
             res.json({
                 sucesso: true,
                 mensagem: 'O grupo foi excluído com sucesso.'
@@ -91,10 +113,20 @@ exports.obterGrupoPorId = function (req, res, next, id) {
     });
 }
 
-exports.listarNoticias = function(req, res, next){
+exports.listarNoticias = function (req, res, next) {
     res.status(501).end('Not Implemented');
 }
 
 exports.adicionarNoticia = function (req, res, next) {
     res.status(501).end("Not Implemented");
+}
+
+// Middleware de validação
+
+exports.usuarioIntegranteGrupo = function (req, res, next) {
+    return next();
+};
+
+exports.usuarioAdminGrupo = function (req, res, next) {
+    return next();
 }

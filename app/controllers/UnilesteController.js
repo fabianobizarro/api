@@ -31,7 +31,7 @@ exports.cadastrarNoticiaUnileste = function (req, res, next) {
     Conteudo: req.body.Conteudo,
     CategoriaNoticiaId: req.body.CategoriaNoticia,
     GrupoId: config.unilesteId,
-    Data: new Date(),
+    Data: new Date(Date.now()),
     UsuarioId: req.requestUser.Id,
     UrlImagem: req.body.UrlImagem,
   };
