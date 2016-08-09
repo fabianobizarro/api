@@ -19,3 +19,14 @@ exports.obterGrupos = function (usuarioId, callback) {
     GrupoRepository.query(sql, null, callback);
 
 };
+
+
+exports.obterIntegrantes = function(grupoId, callback) {
+
+    let sql = `SELECT U.Login, IG.Admin
+                FROM integrantegrupo IG INNER JOIN usuario U
+                ON IG.UsuarioId = U.Id
+                WHERE IG.GrupoId = ${grupoId}`;
+
+    GrupoRepository.query(sql, null, callback);
+};

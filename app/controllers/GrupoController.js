@@ -121,6 +121,18 @@ exports.adicionarNoticia = function (req, res, next) {
     res.status(501).end("Not Implemented");
 }
 
+exports.listarIntegrantes = function(req, res, next) {
+
+    grupoService.obterIntegrantes(req.grupo.Id, (err, integrantes) => {
+
+        if (err)
+            return next(err);
+
+        res.json(integrantes);
+
+    });
+};
+
 // Middleware de validação
 
 exports.usuarioIntegranteGrupo = function (req, res, next) {

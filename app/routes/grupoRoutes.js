@@ -18,6 +18,9 @@ module.exports = function () {
         .get([controller.usuarioIntegranteGrupo, controller.listarNoticias])
         .post([controller.usuarioAdminGrupo, controller.adicionarNoticia]);
 
+    rotas.route('/grupo/:idGrupo/integrantes')
+        .get([controller.usuarioIntegranteGrupo, controller.listarIntegrantes]);
+
     rotas.param('idGrupo', controller.obterGrupoPorId);
 
     return rotas;
