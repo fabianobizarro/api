@@ -5,6 +5,9 @@ module.exports = function () {
     let controller = require('../controllers/GrupoController');
     let rotas = express.Router();
 
+    rotas.route('/grupo/pesquisa')
+        .get(controller.pesquisarGrupos);
+        
     rotas.route('/grupo')
         .get(controller.listarGrupos)
         .post(controller.adicionarGrupo);
@@ -36,7 +39,6 @@ module.exports = function () {
     rotas.route('/grupo/:idGrupo/solicitacoes/:idUsuario')
         .post([controller.usuarioAdminGrupo, controller.aceitarSolicitacao])
         .delete([controller.usuarioAdminGrupo, controller.recusarSolicitacao]);
-
 
 
     rotas.param('idGrupo', controller.obterGrupoPorId);

@@ -11,6 +11,8 @@ var GrupoRepository = require('../repositories/GrupoRepository'),
     noticiaRepo = new NoticiaRepository(),
     solicitacaoRepo = new SolicitacaoRepository();
 
+var env = require('../../config/env/env');
+
 require('../services/Array');
 
 exports.listarGrupos = function (req, res, next) {
@@ -245,7 +247,6 @@ exports.exit = function (req, res, next) {
     let usuarioId = req.requestUser.Id;
 
     /**
-     * TO DO:
      * Verifica se o usuário existe no grupo
      * Existe no grupo && somente ele é admin => Informa que deve haver pelo menos um administrador no grupo
      * Existe no grupo && existe mais de um admin => Remove o usuário do grupo
@@ -257,7 +258,6 @@ exports.exit = function (req, res, next) {
 
 
         if (integrante.Admin) {
-
 
             grupoService.obterIntegrantes(grupoId, (err, integrantes) => {
                 if (err) return next(err);
@@ -285,7 +285,6 @@ exports.exit = function (req, res, next) {
                 }
 
             });
-
 
         }
         else {
@@ -369,11 +368,44 @@ exports.recusarSolicitacao = function (req, res, next) {
 }
 
 exports.admin = function (req, res, next) {
-    
+
     res.status(501).end();
 
 
 };
+
+exports.pesquisarGrupos = function (req, res, next) {
+    let pesquisa = req.query.q;
+
+    if (!pesquisa) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: 'O parâmetro `q` deve ser informado na url'
+        });
+    } else
+        if (pesquisa.length < 3) {
+            return res.status(400).json({
+                mensagem: 'O termo de pesquisa deve conter no mínimo 3 caracteres'
+            });
+        }
+
+
+    let options = {
+        where: {
+            $or: [
+                { Nome: { $like: `%${pesquisa}%` } },
+                { Descricao: { $like: `%${pesquisa}%` } },
+            ],
+            Id: { $ne: env.unilesteId }
+        },
+        attributes: ['Id', 'Nome', 'Descricao', 'Publico']
+    };
+    repository.find(options, null, (err, results) => {
+        if (err) return next(err);
+
+        return res.json(results);
+    })
+}
 
 
 // Middleware de validação
