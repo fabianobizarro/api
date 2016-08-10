@@ -6,6 +6,9 @@ module.exports = function () {
 
     var router = require("express").Router();
 
+    router.route('/noticia/pesquisa')
+        .get(controller.pesquisarNoticias);
+
     router.route('/noticia/:idNoticia')
         .get(controller.exibirNoticia)
         .put(controller.alterarNoticia)
@@ -27,8 +30,7 @@ module.exports = function () {
     router.route('/noticia/:idNoticia/curtidas')
         .get(controller.obterCurtidas);
 
-    router.route('/noticia/pesquisa')
-        .post(controller.pesquisarNoticias);
+
 
     router.param('idNoticia', controller.obterNoticiaPorId);
 

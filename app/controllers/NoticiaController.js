@@ -251,7 +251,7 @@ exports.curtirNoticia = function (req, res, next) {
     };
 
     noticiaService.obterCurtidas(idNoticia, (err, results) => {
-        
+
         if (err)
             return next(err);
 
@@ -292,20 +292,6 @@ exports.pesquisarNoticias = function (req, res, next) {
 
     let query = queryPesquisa(req);
 
-    let include = [
-        {
-            model: models.Comentario,
-            as: 'Comentarios',
-            where: { NoticiaId: models.sequelize.col('Noticia.Id') },
-            required: false
-        },
-        {
-            model: models.Curtida,
-            as: 'Curtidas',
-            where: { NoticiaId: models.sequelize.col('Noticia.Id') },
-            required: false
-        }
-    ]
     let attributes = [
         'Id',
         'Titulo',
@@ -323,7 +309,7 @@ exports.pesquisarNoticias = function (req, res, next) {
 
         results.forEach((i) => {
             if (i.Tags)
-                i.Tags = i.Tags.split(',');
+                i.Tags = i.Tags.trim().split(',');
         });
 
         res.json(results);
@@ -335,26 +321,39 @@ var queryPesquisa = function (req) {
 
     var query = {};
 
-    if (req.body.CategoriaNoticia)
-        query['CategoriaNoticiaId'] = req.body.CategoriaNoticia;
+    // if (req.body.CategoriaNoticia)
+    //     query['CategoriaNoticiaId'] = req.body.CategoriaNoticia;
 
-    if (req.body.Titulo)
-        query['Titulo'] = { $like: `%${req.body.Titulo}%` };
+    // if (req.body.Titulo)
+    //     query['Titulo'] = { $like: `%${req.body.Titulo}%` };
 
-    if (req.body.Resumo)
-        query['Resumo'] = { $like: `%${req.body.Resumo}%` };
+    // if (req.body.Resumo)
+    //     query['Resumo'] = { $like: `%${req.body.Resumo}%` };
 
-    if (req.body.Conteudo)
-        query['Conteudo'] = { $like: `%${req.body.Conteudo}%` };
+    // if (req.body.Conteudo)
+    //     query['Conteudo'] = { $like: `%${req.body.Conteudo}%` };
 
+    let pesquisa = req.query.q || '';
 
-    if (req.body.DataInicio || req.body.DataTermino) {
+    query['$or'] = [
+        {
+            Titulo: { $like: `%${pesquisa}%` }
+        },
+        {
+            Resumo: { $like: `%${pesquisa}%` }
+        },
+        {
+            Tags: { $like: `%${pesquisa}%` }
+        }
+    ]
+
+    if (req.query.dataInicio || req.query.dataTermino) {
 
         // formata as datas de 00/00/00 para um objeto => { dia: 00, mes: 00, ano: 0000 }
-        var dataInicioFormatada = dateService.dataFormatada(req.body.DataInicio || Date());
-        var dataTerminoFormatada = dateService.dataFormatada(req.body.DataTermino || Date());
+        var dataInicioFormatada = dateService.dataFormatada(req.query.dataInicio || Date());
+        var dataTerminoFormatada = dateService.dataFormatada(req.query.dataTermino || Date());
 
-        if (req.body.DataInicio && req.body.DataTermino) {
+        if (req.query.dataInicio && req.query.dataTermino) {
             query['Data'] =
                 {
                     '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia),
