@@ -5,7 +5,6 @@ exports.registerRoutes = function (app) {
     let errorService = require('../services/errorService');
     let authRoutes = require('./authRoutes');
 
-    let categoriaNoticiaRoutes = require('./categoriaNoticiaRoutes')();
     let usuarioRoutes = require('./usuarioRoutes')();
     let grupoRoutes = require('./grupoRoutes')();
     let noticiaRoutes = require('./noticiaRoutes')();
@@ -31,7 +30,6 @@ exports.registerRoutes = function (app) {
     // });
 
     app.use('/api', [
-        categoriaNoticiaRoutes,
         usuarioRoutes,
         grupoRoutes,
         noticiaRoutes,

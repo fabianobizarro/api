@@ -26,7 +26,6 @@ exports.obterNoticiasPorDataeGrupo = function (data, idGrupo, idUsuarioToken, ca
                 N.Resumo,
                 N.Conteudo,
                 N.Data,
-                CN.Nome as CategoriaNoticia,
                 N.Tags,
                 N.UrlImagem,
                 (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
@@ -35,9 +34,6 @@ exports.obterNoticiasPorDataeGrupo = function (data, idGrupo, idUsuarioToken, ca
 
                 FROM
                     Noticia N
-
-                    INNER JOIN CategoriaNoticia CN
-                    ON N.CategoriaNoticiaId = CN.ID
 
                 WHERE date(N.Data) = '${data}'
                     AND N.GrupoId = ${idGrupo}
@@ -64,15 +60,11 @@ exports.obterNoticiaPorId = function (idNoticia, callback) {
                 N.Resumo,
                 N.Conteudo,
                 N.Data,
-                CN.Nome as CategoriaNoticia,
                 N.Tags,
                 N.UrlImagem
 
                 FROM
                 Noticia N
-
-                INNER JOIN CategoriaNoticia CN
-                ON N.CategoriaNoticiaId = CN.ID
 
                 WHERE N.Id = ${idNoticia}
                 ORDER BY N.DATA DESC;`;

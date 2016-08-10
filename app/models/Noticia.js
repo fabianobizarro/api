@@ -37,10 +37,6 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.TEXT,
                 allowNull: true
             },
-            CategoriaNoticiaId: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
             GrupoId: {
                 type: DataTypes.INTEGER,
                 allowNull: false
@@ -56,12 +52,6 @@ module.exports = function (sequelize, DataTypes) {
             tableName: 'Noticia',
             classMethods: {
                 associate: function (models) {
-
-                    Noticia.belongsTo(models.CategoriaNoticia, {
-                        foreignKey: 'CategoriaNoticiaId',
-                        contraints: true,
-                        as: 'CategoriaNoticia'
-                    });
 
                     Noticia.belongsTo(models.Usuario, {
                         foreignKey: 'UsuarioId',
