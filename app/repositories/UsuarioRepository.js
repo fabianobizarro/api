@@ -2,10 +2,10 @@
 "use strict";
 var BaseRepository = require('./BaseRepository');
 
-class CategoriaNoticiaRepository extends BaseRepository {
+class UsuarioRepository extends BaseRepository {
     constructor() {
         super('Usuario');
     }
 }
 
-module.exports = CategoriaNoticiaRepository;
+module.exports = UsuarioRepository;
