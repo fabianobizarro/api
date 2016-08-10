@@ -2,19 +2,18 @@
 
 var GrupoRepository = require('../repositories/GrupoRepository'),
     IntegranteGrupoRepository = require('../repositories/IntegranteGrupoRepository'),
+    NoticiaRepository = require('../repositories/NoticiaRepository'),
+    SolicitacaoRepository = require('../repositories/SolicitacaoRepository'),
     grupoService = require('../services/grupoService'),
 
     repository = new GrupoRepository(),
-    integranteGrupoRepo = new IntegranteGrupoRepository();
+    integranteGrupoRepo = new IntegranteGrupoRepository(),
+    noticiaRepo = new NoticiaRepository(),
+    solicitacaoRepo = new SolicitacaoRepository();
 
+require('../services/Array');
 
 exports.listarGrupos = function (req, res, next) {
-    // repository.getAll({}, (err, grupos) => {
-    //     if (err)
-    //         return next(err);
-    //     else
-    //         res.json(grupos);
-    // });
 
     grupoService.obterGrupos(req.requestUser.Id, (err, grupos) => {
         if (err)
@@ -27,12 +26,14 @@ exports.listarGrupos = function (req, res, next) {
 exports.adicionarGrupo = function (req, res, next) {
 
     let grupo = {
-        Nome: req.body.nome,
-        Descricao: req.body.descricao,
-        Publico: req.body.publico || true
+        Nome: req.body.Nome,
+        Descricao: req.body.Descricao,
+        Publico: req.body.Publico || true
     };
 
     repository.add(grupo, (err, _grupo) => {
+
+        if (err) return next(err);
 
         let integrante = {
             GrupoId: _grupo.Id,
@@ -55,7 +56,12 @@ exports.adicionarGrupo = function (req, res, next) {
 }
 
 exports.exibirGrupo = function (req, res, next) {
-    res.json(req.grupo);
+    res.json({
+        Id: req.grupo.Id,
+        Nome: req.grupo.Nome,
+        Descricao: req.grupo.Descricao,
+        Publico: req.grupo.Publico
+    });
 }
 
 exports.alterarGrupo = function (req, res, next) {
@@ -63,11 +69,11 @@ exports.alterarGrupo = function (req, res, next) {
     let novoGrupo = req.body;
     let grupo = req.grupo;
 
-    grupo.nome = novoGrupo.nome || grupo.nome;
-    grupo.descricao = novoGrupo.descricao || grupo.descricao;
-    grupo.grupoPublico = novoGrupo.grupoPublico || grupo.grupoPublico;
+    grupo.Nome = novoGrupo.Nome || grupo.Nome;
+    grupo.Descricao = novoGrupo.Descricao || grupo.Descricao;
+    //grupo.grupoPublico = novoGrupo.Publico || grupo.grupoPublico;
 
-    repository.update(grupo, (err) => {
+    repository.update(grupo, null, (err) => {
         if (err)
             return next(err);
         else
@@ -114,14 +120,48 @@ exports.obterGrupoPorId = function (req, res, next, id) {
 }
 
 exports.listarNoticias = function (req, res, next) {
-    res.status(501).end('Not Implemented');
+
+    grupoService.obterNoticias(req.grupo.Id, req.requestUser.Id, (err, noticias) => {
+
+        if (err) return next(err);
+
+        return res.json(noticias);
+
+    });
+
 }
 
 exports.adicionarNoticia = function (req, res, next) {
-    res.status(501).end("Not Implemented");
+
+    let noticia = {
+        Titulo: req.body.Titulo,
+        Alias: req.body.Alias,
+        Resumo: req.body.Resumo,
+        Conteudo: req.body.Conteudo,
+        Data: new Date(),
+        UrlImagem: req.body.UrlImagem,
+        GrupoId: req.grupo.Id,
+        UsuarioId: req.requestUser.Id,
+        Tags: req.body.Tags
+    };
+
+    if (req.body.Tags)
+        noticia.Tags = noticia.Tags == null ? "" : req.body.Tags.toString();
+
+    noticiaRepo.add(noticia, (err) => {
+
+        if (err)
+            return next(err);
+
+        res.json({
+            sucesso: true,
+            mensagem: 'Notícias cadastrada com sucesso.'
+        });
+    });
+
 }
 
-exports.listarIntegrantes = function(req, res, next) {
+exports.listarIntegrantes = function (req, res, next) {
 
     grupoService.obterIntegrantes(req.grupo.Id, (err, integrantes) => {
 
@@ -131,14 +171,268 @@ exports.listarIntegrantes = function(req, res, next) {
         res.json(integrantes);
 
     });
+
 };
+
+exports.join = function (req, res, next) {
+
+    let grupoId = req.grupo.Id;
+    let usuarioId = req.requestUser.Id;
+
+    /**
+     * TO DO:
+     * Verificar se o usuário já faz parte do grupo
+     * Não existe no grupo - Grupo Público => Adiciona no grupo
+     * Não existe no grupo - Grupo Privado => Adiciona solicitação pendente
+     * */
+    grupoService.usuarioNoGrupo(req.grupo.Id, req.requestUser.Id,
+        (err, eIntegrante) => {
+
+            if (err) return next(err);
+
+            if (eIntegrante == false) {
+
+                // Adiciona o usuário ao grupo
+                if (req.grupo.Publico) {
+
+                    integranteGrupoRepo.add({
+                        GrupoId: req.grupo.Id,
+                        UsuarioId: req.requestUser.Id,
+                        Admin: false
+                    }, (err) => {
+                        if (err) return next(err);
+
+                        return res.json({
+                            sucesso: true,
+                            pendente: false,
+                            mensagem: 'Usuário adicionado ao grupo'
+                        });
+                    });
+
+
+
+                }
+                else { //Adiciona o usuário às solicitações pendentes
+
+                    solicitacaoRepo.add({
+                        GrupoId: grupoId,
+                        UsuarioId: usuarioId
+                    }, (err) => {
+                        if (err) return next(err);
+
+                        return res.json({
+                            sucesso: true,
+                            pendente: true,
+                            mensagem: 'Solicitação pendente'
+                        });
+                    })
+
+                }
+
+            } else {
+                return res.status(200).json({
+                    mensagem: 'Usuário já faz parte do grupo'
+                });
+
+            }
+        });
+
+}
+
+exports.exit = function (req, res, next) {
+
+    let grupoId = req.grupo.Id;
+    let usuarioId = req.requestUser.Id;
+
+    /**
+     * TO DO:
+     * Verifica se o usuário existe no grupo
+     * Existe no grupo && somente ele é admin => Informa que deve haver pelo menos um administrador no grupo
+     * Existe no grupo && existe mais de um admin => Remove o usuário do grupo
+     * Existe no grupo && não é admin => remove o usuário do grupo 
+     */
+
+    integranteGrupoRepo.findOne({ where: { GrupoId: grupoId, UsuarioId: usuarioId } }, (err, integrante) => {
+        if (err) return next(err);
+
+
+        if (integrante.Admin) {
+
+
+            grupoService.obterIntegrantes(grupoId, (err, integrantes) => {
+                if (err) return next(err);
+
+                let adminCount = integrantes.where((i) => { return i.Admin == true; }).length;
+
+                if (adminCount == 1) { // Não pode remover o único usuário admin do grupo
+                    return res.json({
+                        sucesso: false,
+                        mensagem: 'Não é possível sair do grupo, só existe 1 usuário administrador no grupo.'
+                    });
+                }
+                else { // há mais de 1 usuário admin no grupo
+
+                    integranteGrupoRepo.delete({ where: { GrupoId: grupoId, UsuarioId: usuarioId } }, (err) => {
+                        if (err) return next(err);
+
+                        return res.json({
+                            sucesso: true,
+                            mensagem: 'Usuário removido do grupo'
+                        });
+
+                    });
+
+                }
+
+            });
+
+
+        }
+        else {
+            integranteGrupoRepo.delete({ where: { GrupoId: grupoId, UsuarioId: usuarioId } }, (err) => {
+                if (err) return next(err);
+
+                return res.json({
+                    sucesso: true,
+                    mensagem: 'Usuário removido do grupo'
+                });
+
+            });
+        }
+
+
+    })
+}
+
+exports.listarSolicitacoesPendentes = function (req, res, next) {
+    let grupoId = req.grupo.Id;
+
+    grupoService.obterSolicitacoesPendentes(grupoId, (err, results) => {
+        if (err) return next(err);
+
+        return res.json(results);
+    })
+}
+
+exports.aceitarSolicitacao = function (req, res, next) {
+
+    let grupoId = req.grupo.Id;
+    let usuarioId = req.params.idUsuario;
+
+    solicitacaoRepo.delete({ where: { GrupoId: grupoId, UsuarioId: usuarioId } }, (err, linhasAfetadas) => {
+
+        if (linhasAfetadas == 1) {
+            let integrante = {
+                GrupoId: grupoId,
+                UsuarioId: usuarioId,
+                Admin: false
+            };
+            integranteGrupoRepo.add(integrante, (err) => {
+                if (err) return next(err);
+
+                return res.json({
+                    sucesso: true,
+                    mensagem: 'Usuário adicionado ao grupo'
+                });
+            })
+        }
+        else {
+            return res.json({
+                sucesso: false,
+                mensagem: 'Não existe solicitação pendente para o usuário informado'
+            });
+        }
+    })
+
+
+}
+
+exports.recusarSolicitacao = function (req, res, next) {
+
+    let usuarioId = req.params.idUsuario;
+
+    solicitacaoRepo.delete({ where: { UsuarioId: usuarioId } }, (err, linhasExcluidas) => {
+        if (err) return next(err);
+
+        if (linhasExcluidas == 0)
+            return res.json({
+                sucesso: false,
+                mensagem: 'Não existe solicitação pendente para o usuário informado'
+            });
+        else
+            return res.json({
+                sucesso: true,
+                mensagem: 'Solicitação removida com sucesso'
+            });
+    });
+
+}
+
+exports.admin = function (req, res, next) {
+    
+    res.status(501).end();
+
+
+};
+
 
 // Middleware de validação
 
 exports.usuarioIntegranteGrupo = function (req, res, next) {
-    return next();
+
+    grupoService.obterIntegrantes(req.grupo.Id, (err, integrantes) => {
+
+        if (err) return next(err);
+
+        for (var i in integrantes) {
+            let integrante = integrantes[i];
+
+            if (integrante.Login === req.requestUser.Login)
+                return next();
+        }
+
+        return res.status(403).json({
+            sucesso: false,
+            mensagem: 'Usuário não faz parte do grupo'
+        });
+
+    });
+
 };
 
 exports.usuarioAdminGrupo = function (req, res, next) {
-    return next();
+
+    grupoService.obterIntegrantes(req.grupo.Id, (err, integrantes) => {
+
+        if (err) return next(err);
+
+        for (var i in integrantes) {
+            let integrante = integrantes[i];
+
+            if (integrante.Login == req.requestUser.Login && integrante.Admin == true)
+                return next();
+        }
+
+        return res.status(403).json({
+            sucesso: false,
+            mensagem: 'Usuário não é administrador ou não faz parte do grupo'
+        });
+
+    });
+
+}
+
+exports.grupoPublico = function (req, res, next) {
+
+    if (req.grupo.Publico)
+        return next();
+    else {
+        return res.status(403)
+            .json({
+                sucesso: false,
+                mensagem: 'Este grupo é privado.'
+            });
+    }
+
+
 }

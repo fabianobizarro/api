@@ -10,7 +10,7 @@ module.exports = function () {
         .post(controller.adicionarGrupo);
 
     rotas.route('/grupo/:idGrupo')
-        .get(controller.exibirGrupo)
+        .get([controller.grupoPublico, controller.exibirGrupo])
         .put(controller.alterarGrupo)
         .delete(controller.excluirGrupo);
 
@@ -20,6 +20,24 @@ module.exports = function () {
 
     rotas.route('/grupo/:idGrupo/integrantes')
         .get([controller.usuarioIntegranteGrupo, controller.listarIntegrantes]);
+
+    rotas.route('/grupo/:idGrupo/integrantes/:idUsuario/admin')
+        .post([controller.usuarioAdminGrupo, controller.admin]);
+
+    rotas.route('/grupo/:idGrupo/join')
+        .post([controller.join]);
+
+    rotas.route('/grupo/:idGrupo/exit')
+        .post([controller.usuarioIntegranteGrupo, controller.exit]);
+
+    rotas.route('/grupo/:idGrupo/solicitacoes')
+        .get([controller.usuarioAdminGrupo, controller.listarSolicitacoesPendentes]);
+
+    rotas.route('/grupo/:idGrupo/solicitacoes/:idUsuario')
+        .post([controller.usuarioAdminGrupo, controller.aceitarSolicitacao])
+        .delete([controller.usuarioAdminGrupo, controller.recusarSolicitacao]);
+
+
 
     rotas.param('idGrupo', controller.obterGrupoPorId);
 

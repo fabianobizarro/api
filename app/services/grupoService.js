@@ -20,8 +20,7 @@ exports.obterGrupos = function (usuarioId, callback) {
 
 };
 
-
-exports.obterIntegrantes = function(grupoId, callback) {
+exports.obterIntegrantes = function (grupoId, callback) {
 
     let sql = `SELECT U.Login, IG.Admin
                 FROM integrantegrupo IG INNER JOIN usuario U
@@ -29,4 +28,61 @@ exports.obterIntegrantes = function(grupoId, callback) {
                 WHERE IG.GrupoId = ${grupoId}`;
 
     GrupoRepository.query(sql, null, callback);
+};
+
+exports.obterNoticias = function (grupoId, usuarioId, callback) {
+
+    let sql = `
+    SELECT 
+        N.Id,
+        N.Titulo,
+        N.Alias,
+        N.Resumo,
+        N.Conteudo,
+        N.Data,
+        N.Tags,
+        N.UrlImagem,
+        (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
+        (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
+        (SELECT 1 FROM Curtida WHERE UsuarioId = ${usuarioId} AND NoticiaId = N.Id LIMIT 1) as Curtiu
+    FROM Noticia N
+    WHERE N.GrupoId = ${grupoId}`;
+
+    GrupoRepository.query(sql, null, callback);
+
+};
+
+exports.obterSolicitacoesPendentes = function (grupoId, callback) {
+
+    let sql = `
+    SELECT u.Id, u.Login
+    FROM Solicitacaogrupopendente SP
+        INNER JOIN Usuario U
+        ON SP.UsuarioId = U.Id
+    WHERE SP.GrupoId = ${grupoId}`;
+
+    GrupoRepository.query(sql, null, callback);
+
+}
+
+exports.usuarioNoGrupo = function (grupoId, usuarioId, callback) {
+
+    let sql = `
+    SELECT 1 AS Integrante
+    FROM INTEGRANTEGRUPO
+    WHERE GRUPOID = ${grupoId} AND USUARIOID = ${usuarioId}`;
+
+    GrupoRepository.query(sql, null, (err, result, res) => {
+        if (err) callback(err);
+
+        if (result.length == 0)
+            callback(null, false);
+        else {
+            let r = result[0].Integrante == 1;
+
+            callback(null, r);
+        }
+
+    })
+
 };
