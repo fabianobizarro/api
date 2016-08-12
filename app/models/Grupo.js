@@ -54,6 +54,12 @@ module.exports = function (sequelize, DataTypes) {
                         constraint: true,
                         as: 'Noticias'
                     });
+
+                    Grupo.hasMany(models.IntegranteGrupo, {
+                        foreignKey: 'GrupoId',
+                        constraint: true,
+                        as: 'Integrantes'
+                    });
                 }
             }
         });

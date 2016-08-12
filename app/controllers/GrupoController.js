@@ -9,7 +9,10 @@ var GrupoRepository = require('../repositories/GrupoRepository'),
     repository = new GrupoRepository(),
     integranteGrupoRepo = new IntegranteGrupoRepository(),
     noticiaRepo = new NoticiaRepository(),
-    solicitacaoRepo = new SolicitacaoRepository();
+    solicitacaoRepo = new SolicitacaoRepository(),
+
+    models = require('../models'),
+    sequelize = models.sequelize;
 
 var env = require('../../config/env/env');
 
@@ -127,6 +130,13 @@ exports.listarNoticias = function (req, res, next) {
 
         if (err) return next(err);
 
+        noticias.forEach((i) => {
+            if (i.Tags)
+                i.Tags = i.Tags.trim().split(',');
+            else
+                i.Tags = [];
+        });
+
         return res.json(noticias);
 
     });
@@ -225,7 +235,7 @@ exports.join = function (req, res, next) {
                         return res.json({
                             sucesso: true,
                             pendente: true,
-                            mensagem: 'Solicitação pendente'
+                            mensagem: 'Solicitação enviada'
                         });
                     })
 
@@ -376,6 +386,9 @@ exports.admin = function (req, res, next) {
 
 exports.pesquisarGrupos = function (req, res, next) {
     let pesquisa = req.query.q;
+    let usuarioId = req.requestUser.Id;
+
+    let QUANTIDADE_MINIMA_CARACTERES = 2;
 
     if (!pesquisa) {
         return res.status(400).json({
@@ -383,24 +396,36 @@ exports.pesquisarGrupos = function (req, res, next) {
             mensagem: 'O parâmetro `q` deve ser informado na url'
         });
     } else
-        if (pesquisa.length < 3) {
+        if (pesquisa.length < QUANTIDADE_MINIMA_CARACTERES) {
             return res.status(400).json({
-                mensagem: 'O termo de pesquisa deve conter no mínimo 3 caracteres'
+                mensagem: `O termo de pesquisa deve conter no mínimo ${QUANTIDADE_MINIMA_CARACTERES} caracteres`
             });
         }
 
+    // let options = {
+    //     where: {
+    //         $or: [
+    //             { Nome: { $like: `%${pesquisa}%` } },
+    //             { Descricao: { $like: `%${pesquisa}%` } },
+    //         ],
+    //         Id: { $ne: env.unilesteId }
+    //     },
+    //     attributes: ['Id', 'Nome', 'Descricao', 'Publico'],
+    //     include: [
+    //         {
+    //             model: models.IntegranteGrupo,
+    //             as: 'Integrantes',
+    //             where: { Id: sequelize.col('GrupoId')}
+    //         }
+    //     ]
+    // };
+    // repository.find(options, null, (err, results) => {
+    //     if (err) return next(err);
 
-    let options = {
-        where: {
-            $or: [
-                { Nome: { $like: `%${pesquisa}%` } },
-                { Descricao: { $like: `%${pesquisa}%` } },
-            ],
-            Id: { $ne: env.unilesteId }
-        },
-        attributes: ['Id', 'Nome', 'Descricao', 'Publico']
-    };
-    repository.find(options, null, (err, results) => {
+    //     return res.json(results);
+    // })
+
+    grupoService.pesquisarGrupos(pesquisa, usuarioId, (err, results) => {
         if (err) return next(err);
 
         return res.json(results);
@@ -467,4 +492,30 @@ exports.grupoPublico = function (req, res, next) {
     }
 
 
+}
+
+exports.solicitacaoGrupoPendente = function (req, res, next) {
+    let grupoId = req.grupo.Id;
+    let usuarioId = req.requestUser.Id;
+
+    let where =
+        {
+            GrupoId: grupoId,
+            UsuarioId: usuarioId
+        };
+
+    solicitacaoRepo.findOne({ where: where }, (err, result) => {
+
+        if (err) return next(err);
+
+        if (!result) {
+            return next();
+        }
+        else {
+            return res.json({
+                sucesso: false,
+                mensagem: 'Usuário já possui uma solicitação pendente'
+            });
+        }
+    })
 }

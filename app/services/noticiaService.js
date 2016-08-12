@@ -111,3 +111,32 @@ exports.obterComentarios = function (idNoticia, callback) {
 
     NoticiaRepository.query(sql, null, callback);
 }
+
+exports.pesquisarNoticia = function (texto, dataInicio, dataTermino, idUsuario, callback) {
+
+    let sql = `
+        SELECT
+        N.Id,
+        N.Titulo,
+        N.Alias,
+        N.Resumo,
+        N.Conteudo,
+        N.Data,
+        N.Tags,
+        N.UrlImagem,
+        G.NOME AS Grupo,
+        (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
+        (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
+        (SELECT 1 FROM Curtida WHERE UsuarioId = ${idUsuario} AND NoticiaId = N.Id LIMIT 1) as Curtiu
+
+        FROM
+            Noticia N
+            INNER JOIN GRUPO G ON G.ID = N.GRUPOID
+            INNER JOIN INTEGRANTEGRUPO IG ON IG.GRUPOID = G.ID AND IG.USUARIOID = ${idUsuario}
+
+        WHERE 
+            N.Titulo LIKE '%${texto}%' OR N.RESUMO LIKE '%${texto}%' OR N.TAGS LIKE '%${texto}%'`;
+
+    NoticiaRepository.query(sql, null, callback);
+
+}

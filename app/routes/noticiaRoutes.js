@@ -30,8 +30,6 @@ module.exports = function () {
     router.route('/noticia/:idNoticia/curtidas')
         .get(controller.obterCurtidas);
 
-
-
     router.param('idNoticia', controller.obterNoticiaPorId);
 
     return router;

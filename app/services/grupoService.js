@@ -46,7 +46,8 @@ exports.obterNoticias = function (grupoId, usuarioId, callback) {
         (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
         (SELECT 1 FROM Curtida WHERE UsuarioId = ${usuarioId} AND NoticiaId = N.Id LIMIT 1) as Curtiu
     FROM Noticia N
-    WHERE N.GrupoId = ${grupoId}`;
+    WHERE N.GrupoId = ${grupoId}
+    ORDER BY N.Data DESC`;
 
     GrupoRepository.query(sql, null, callback);
 
@@ -86,3 +87,22 @@ exports.usuarioNoGrupo = function (grupoId, usuarioId, callback) {
     })
 
 };
+
+exports.pesquisarGrupos = function (textoPesquisa, idUsuario, callback) {
+
+    let sql = `
+    SELECT 
+        G.Id,
+        G.Nome,
+        G.Descricao,
+        G.Publico,
+        (SELECT 1 FROM integrantegrupo WHERE GrupoId = G.Id AND UsuarioId = ${idUsuario} LIMIT 1) AS Integrante
+    FROM GRUPO G
+    WHERE
+        G.Nome LIKE '%${textoPesquisa}%'
+        OR G.Descricao LIKE '%${textoPesquisa}%'
+        AND G.Id <> ${env.unilesteId}`;
+
+    GrupoRepository.query(sql, null, callback);
+
+}

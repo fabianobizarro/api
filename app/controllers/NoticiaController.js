@@ -290,84 +290,97 @@ exports.obterCurtidas = function (req, res, next) {
 
 exports.pesquisarNoticias = function (req, res, next) {
 
-    let query = queryPesquisa(req);
+    // let query = queryPesquisa(req);
 
-    let attributes = [
-        'Id',
-        'Titulo',
-        'Alias',
-        'Resumo',
-        'Conteudo',
-        'Data',
-        'UrlImagem',
-        'Tags',
-    ];
+    // let attributes = [
+    //     'Id',
+    //     'Titulo',
+    //     'Alias',
+    //     'Resumo',
+    //     'Conteudo',
+    //     'Data',
+    //     'UrlImagem',
+    //     'Tags'
+    // ];
 
-    repository.find({ attributes: attributes, where: query, include: include }, null, (err, results) => {
-        if (err)
-            return next(err);
+    // repository.find({ attributes: attributes, where: query }, null, (err, results) => {
+    //     if (err)
+    //         return next(err);
 
-        results.forEach((i) => {
-            if (i.Tags)
-                i.Tags = i.Tags.trim().split(',');
-        });
+    //     results.forEach((i) => {
+    //         if (i.Tags)
+    //             i.Tags = i.Tags.trim().split(',');
+    //     });
 
-        res.json(results);
-    });
+    //     res.json(results);
+    // });
 
-};
+    /**
+     * TO DO:
+     * Validar o parametro 'q' da query string
+     * Tamanho > 3
+     * Not null
+     */
 
-var queryPesquisa = function (req) {
+    let texto = req.query.q || '';
+    let dataInicio = req.query.dataInicio || req.query.DataInicio;
+    let dataTermino = req.query.dataTermino || req.query.DataTermino;
+    let idUsuario = req.requestUser.Id;
 
-    var query = {};
+    noticiaService.pesquisarNoticia(texto, dataInicio, dataTermino, idUsuario,
+        (err, noticias) => {
+            if (err) return next(err);
 
-    // if (req.body.CategoriaNoticia)
-    //     query['CategoriaNoticiaId'] = req.body.CategoriaNoticia;
+            noticias.forEach((i) => {
+                if (i.Tags)
+                    i.Tags = i.Tags.trim().split(',');
+            });
 
-    // if (req.body.Titulo)
-    //     query['Titulo'] = { $like: `%${req.body.Titulo}%` };
+            res.json(noticias);
 
-    // if (req.body.Resumo)
-    //     query['Resumo'] = { $like: `%${req.body.Resumo}%` };
+            });
 
-    // if (req.body.Conteudo)
-    //     query['Conteudo'] = { $like: `%${req.body.Conteudo}%` };
+        };
 
-    let pesquisa = req.query.q || '';
+    var queryPesquisa = function (req) {
 
-    query['$or'] = [
-        {
-            Titulo: { $like: `%${pesquisa}%` }
-        },
-        {
-            Resumo: { $like: `%${pesquisa}%` }
-        },
-        {
-            Tags: { $like: `%${pesquisa}%` }
+        var query = {};
+
+        let pesquisa = req.query.q || '';
+
+        query['$or'] = [
+            {
+                Titulo: { $like: `%${pesquisa}%` }
+            },
+            {
+                Resumo: { $like: `%${pesquisa}%` }
+            },
+            {
+                Tags: { $like: `%${pesquisa}%` }
+            }
+        ]
+
+        if (req.query.dataInicio || req.query.dataTermino) {
+
+            // formata as datas de 00/00/00 para um objeto => { dia: 00, mes: 00, ano: 0000 }
+            var dataInicioFormatada = dateService.dataFormatada(req.query.dataInicio || Date());
+            var dataTerminoFormatada = dateService.dataFormatada(req.query.dataTermino || Date());
+
+            if (req.query.dataInicio && req.query.dataTermino) {
+                query['Data'] =
+                    {
+                        '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia),
+                        '$lte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia)
+                    };
+            } else
+                if (req.body.dataInicio) {
+                    query['Data'] = { '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia) };
+                }
+                else if (req.body.dataTermino) {
+                    query['Data'] = { '$gte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia) };
+                }
         }
-    ]
 
-    if (req.query.dataInicio || req.query.dataTermino) {
+        return query;
 
-        // formata as datas de 00/00/00 para um objeto => { dia: 00, mes: 00, ano: 0000 }
-        var dataInicioFormatada = dateService.dataFormatada(req.query.dataInicio || Date());
-        var dataTerminoFormatada = dateService.dataFormatada(req.query.dataTermino || Date());
-
-        if (req.query.dataInicio && req.query.dataTermino) {
-            query['Data'] =
-                {
-                    '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia),
-                    '$lte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia)
-                };
-        } else
-            if (req.body.dataInicio) {
-                query['Data'] = { '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia) };
-            }
-            else if (req.body.dataTermino) {
-                query['Data'] = { '$gte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia) };
-            }
-    }
-
-    return query;
-
-};
+    };

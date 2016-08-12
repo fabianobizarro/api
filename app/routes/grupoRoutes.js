@@ -28,7 +28,7 @@ module.exports = function () {
         .post([controller.usuarioAdminGrupo, controller.admin]);
 
     rotas.route('/grupo/:idGrupo/join')
-        .post([controller.join]);
+        .post([controller.solicitacaoGrupoPendente, controller.join]);
 
     rotas.route('/grupo/:idGrupo/exit')
         .post([controller.usuarioIntegranteGrupo, controller.exit]);

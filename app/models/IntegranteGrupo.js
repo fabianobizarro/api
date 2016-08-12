@@ -19,6 +19,12 @@ module.exports = function (sequelize, DataTypes) {
             tableName: 'IntegranteGrupo',
             classMethods: {
                 associate: function (models) {
+
+                    IntegranteGrupo.belongsTo(models.Grupo, {
+                        foreignKey: 'GrupoId',
+                        contraints: true,
+                        as: 'Grupo',
+                    });
                 }
             }
         });
