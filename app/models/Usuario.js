@@ -27,7 +27,7 @@ module.exports = function (sequelize, DataTypes) {
             Email: {
                 type: DataTypes.STRING(70),
                 allowNull: false,
-                unique: true,
+                unique: { msg: 'Já existe uma conta de usuário com este email' },
                 validate: {
                     isEmail: { msg: 'O endereço de email está no formato inválido.' }
                 }
