@@ -9,8 +9,10 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
 
 require('../services/Date');
 
+const NOTICIAS_POR_PAGINA = 3;
 
-exports.listarNoticiasUnileste = function (req, res, next) {
+
+exports.listarNoticiaHojeUnileste = function (req, res, next) {
 
   var dateNow = new Date().yyyyMMdd();
 
@@ -20,6 +22,30 @@ exports.listarNoticiasUnileste = function (req, res, next) {
 
     res.json(noticias);
   });
+
+};
+
+exports.listarTodasNoticiasUnileste = function (req, res, next) {
+
+  let usuarioId = req.requestUser.Id;
+
+  let pagina = req.params.page || 1;
+  if (pagina == 0 || pagina < 0)
+    pagina = 1;
+
+  let skip = NOTICIAS_POR_PAGINA * pagina - NOTICIAS_POR_PAGINA;
+
+  noticiaService.obterNoticiasPorGrupo(config.unilesteId, usuarioId, skip, NOTICIAS_POR_PAGINA,
+    (err, noticias) => {
+      if (err)
+        return next(err);
+
+      return res.json(noticias);
+    });
+
+
+
+  //res.json(['Notícias antigas', `página: ${pagina}`]);
 
 };
 

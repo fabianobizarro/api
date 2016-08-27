@@ -13,7 +13,7 @@ module.exports = function () {
         .post(controller.adicionarGrupo);
 
     rotas.route('/grupo/:idGrupo')
-        .get([controller.grupoPublico, controller.exibirGrupo])
+        .get([controller.usuarioIntegranteGrupo, controller.exibirGrupo])
         .put(controller.alterarGrupo)
         .delete(controller.excluirGrupo);
 

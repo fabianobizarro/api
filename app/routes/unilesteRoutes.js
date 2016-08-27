@@ -6,7 +6,13 @@ module.exports = function () {
     let rotas = express.Router();
 
     rotas.route('/unileste')
-        .get(controller.listarNoticiasUnileste)
         .post(controller.cadastrarNoticiaUnileste);
+
+    rotas.route('/unileste/hoje')
+        .get(controller.listarNoticiaHojeUnileste);
+
+    rotas.route('/unileste/:page?')
+        .get(controller.listarTodasNoticiasUnileste);
+
     return rotas;
 };

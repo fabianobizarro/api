@@ -290,42 +290,23 @@ exports.obterCurtidas = function (req, res, next) {
 
 exports.pesquisarNoticias = function (req, res, next) {
 
-    // let query = queryPesquisa(req);
-
-    // let attributes = [
-    //     'Id',
-    //     'Titulo',
-    //     'Alias',
-    //     'Resumo',
-    //     'Conteudo',
-    //     'Data',
-    //     'UrlImagem',
-    //     'Tags'
-    // ];
-
-    // repository.find({ attributes: attributes, where: query }, null, (err, results) => {
-    //     if (err)
-    //         return next(err);
-
-    //     results.forEach((i) => {
-    //         if (i.Tags)
-    //             i.Tags = i.Tags.trim().split(',');
-    //     });
-
-    //     res.json(results);
-    // });
-
-    /**
-     * TO DO:
-     * Validar o parametro 'q' da query string
-     * Tamanho > 3
-     * Not null
-     */
-
     let texto = req.query.q || '';
     let dataInicio = req.query.dataInicio || req.query.DataInicio;
     let dataTermino = req.query.dataTermino || req.query.DataTermino;
     let idUsuario = req.requestUser.Id;
+
+    if (!texto) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: 'Informe o parâmetro de busca'
+        });
+    }
+    if (texto.length < 3){
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: 'O tamanho mínimo do parâmetro de busca é de 2 caracteres'
+        });
+    }
 
     noticiaService.pesquisarNoticia(texto, dataInicio, dataTermino, idUsuario,
         (err, noticias) => {
@@ -334,6 +315,8 @@ exports.pesquisarNoticias = function (req, res, next) {
             noticias.forEach((i) => {
                 if (i.Tags)
                     i.Tags = i.Tags.trim().split(',');
+                else 
+                    i.Tags = [];
             });
 
             res.json(noticias);

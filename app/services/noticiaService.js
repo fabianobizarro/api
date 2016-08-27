@@ -1,5 +1,4 @@
 'use strict';
-//var BaseRepository = require('../repositories/BaseRepository');
 var NoticiaRepository = require('../repositories/NoticiaRepository'),
     CurtidaRepository = require('../repositories/CurtidaRepository'),
 
@@ -13,6 +12,39 @@ var formatTags = function (noticia) {
     else
         noticia.Tags = [];
 };
+
+exports.obterNoticiasPorGrupo = function (idGrupo, idUsuarioToken, skip, page, callback) {
+
+    let sql = `SELECT
+                
+                N.Id,
+                N.Titulo,
+                N.Alias,
+                N.Resumo,
+                N.Conteudo,
+                N.Data,
+                N.Tags,
+                N.UrlImagem,
+                (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
+                (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
+                (SELECT 1 FROM Curtida WHERE UsuarioId = ${idUsuarioToken} AND NoticiaId = N.Id LIMIT 1) as Curtiu
+
+                FROM
+                    Noticia N
+
+                WHERE N.GrupoId = ${idGrupo}
+                ORDER BY N.DATA DESC
+                LIMIT ${skip}, ${page};`;
+
+
+    NoticiaRepository.query(sql, null, (err, results) => {
+        if (err) callback(err);
+
+        results.forEach(formatTags);
+
+        callback(null, results);
+    });
+}
 
 exports.obterNoticiasPorDataeGrupo = function (data, idGrupo, idUsuarioToken, callback) {
 
