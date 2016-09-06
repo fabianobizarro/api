@@ -67,7 +67,7 @@ exports.obterNoticiasPorDataeGrupo = function (data, idGrupo, idUsuarioToken, ca
                 FROM
                     Noticia N
 
-                WHERE date(N.Data) = '${data}'
+                WHERE date(N.Data) = DATE('${data}')
                     AND N.GrupoId = ${idGrupo}
                 ORDER BY N.DATA DESC;`;
 
@@ -144,7 +144,7 @@ exports.obterComentarios = function (idNoticia, callback) {
     NoticiaRepository.query(sql, null, callback);
 }
 
-exports.pesquisarNoticia = function (texto, dataInicio, dataTermino, idUsuario, callback) {
+exports.pesquisarNoticia = function (texto, dataInicio, dataTermino, idUsuario, idUnileste, callback) {
 
     let sql = `
         SELECT
@@ -164,7 +164,7 @@ exports.pesquisarNoticia = function (texto, dataInicio, dataTermino, idUsuario, 
         FROM
             Noticia N
             INNER JOIN GRUPO G ON G.ID = N.GRUPOID
-            INNER JOIN INTEGRANTEGRUPO IG ON IG.GRUPOID = G.ID AND IG.USUARIOID = ${idUsuario}
+            INNER JOIN INTEGRANTEGRUPO IG ON IG.GRUPOID = G.ID AND IG.USUARIOID = ${idUsuario} OR IG.GRUPOID = ${idUnileste}
 
         WHERE 
             N.Titulo LIKE '%${texto}%' OR N.RESUMO LIKE '%${texto}%' OR N.TAGS LIKE '%${texto}%'`;

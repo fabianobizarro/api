@@ -11,6 +11,8 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
     comentarioRepo = new ComentarioRepository(),
     curtidaRepo = new CurtidaRepository(),
 
+    env = require('../../config/env/env'),
+
     ObjectId = require('mongoose').Types.ObjectId,
     dateService = require('../services/dateService'),
     models = require('../models');
@@ -304,11 +306,11 @@ exports.pesquisarNoticias = function (req, res, next) {
     if (texto.length < 3){
         return res.status(400).json({
             sucesso: false,
-            mensagem: 'O tamanho mínimo do parâmetro de busca é de 2 caracteres'
+            mensagem: 'O tamanho mínimo do parâmetro de busca é de 3 caracteres'
         });
     }
 
-    noticiaService.pesquisarNoticia(texto, dataInicio, dataTermino, idUsuario,
+    noticiaService.pesquisarNoticia(texto, dataInicio, dataTermino, idUsuario, env.unilesteId,
         (err, noticias) => {
             if (err) return next(err);
 

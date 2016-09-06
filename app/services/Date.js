@@ -7,7 +7,7 @@ Date.prototype.date = function () {
 };
 
 Date.prototype.yyyyMMdd = function () {
-    var day = this.getDate();
+    var day = this.getDate() + 1;
     var month = this.getMonth() + 1;
     var year = this.getFullYear();
 
