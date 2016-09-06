@@ -11,7 +11,7 @@ class BaseRepository {
         this.Model = models[collectionName];
     }
 
-    getAll(fields, callback) {
+    getAll(options, callback) {
         return this.Model.findAll(fields)
             .then((results) => callback(null, results), (err) => callback(err))
             .catch(err => callback(err));

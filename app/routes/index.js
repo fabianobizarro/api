@@ -10,6 +10,7 @@ exports.registerRoutes = function (app) {
     let noticiaRoutes = require('./noticiaRoutes')();
     let unilesteRoutes = require('./unilesteRoutes')();
     let reportsRoutes = require('./reportRoutes')();
+    let blacklistRoutes = require('./blacklistRoutes')();
 
 
     app.get('/', (req, res) => {
@@ -34,7 +35,8 @@ exports.registerRoutes = function (app) {
         grupoRoutes,
         noticiaRoutes,
         unilesteRoutes,
-        reportsRoutes
+        reportsRoutes,
+        blacklistRoutes
     ]);
 
     // Error handler
