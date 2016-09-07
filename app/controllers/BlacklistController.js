@@ -51,7 +51,7 @@ exports.listarPalavras = function (req, res, next) {
 
 exports.removerPalavra = function (req, res, next) {
 
-    let palavra = req.body.palavra;
+    let palavra = req.params.palavra;
 
     if (!palavra) {
         return res.status(400)

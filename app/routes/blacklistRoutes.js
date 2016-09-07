@@ -8,7 +8,9 @@ module.exports = function () {
 
     rotas.route('/blacklist')
         .get([usuarioController.requestUserIsAdmin, controller.listarPalavras])
-        .post(usuarioController.requestUserIsAdmin, [controller.adicionarPalavra])
+        .post(usuarioController.requestUserIsAdmin, [controller.adicionarPalavra]);
+
+    rotas.route('/blacklist/:palavra')
         .delete([usuarioController.requestUserIsAdmin, controller.removerPalavra]);
 
     return rotas;
