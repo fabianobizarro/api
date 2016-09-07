@@ -5,6 +5,7 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
     CurtidaRepository = require('../repositories/CurtidaRepository'),
 
     noticiaService = require('../services/noticiaService'),
+    blacklistService = require('../services/blacklistService'),
 
     repository = new NoticiaRepository(),
     grupoRepo = new GrupoRepository(),
@@ -141,7 +142,7 @@ exports.alterarNoticia = function (req, res, next) {
 
 exports.adicionarComentario = function (req, res, next) {
 
-    var descComentario = req.body.Comentario;
+    var descComentario = req.body.comentario;
     if (!descComentario) {
         res.status(400)
             .json({
@@ -150,22 +151,37 @@ exports.adicionarComentario = function (req, res, next) {
             });
     }
 
-    var comentario = {
-        UsuarioId: req.requestUser.Id,
-        NoticiaId: req.noticia.Id,
-        Conteudo: descComentario,
-        Data: Date.now()
-    };
+    blacklistService.comentarioValido(descComentario, (err, valido) => {
+        if (err) return next(new Error('Ocorreu um erro e não foi possível validar o comentário'));
 
-    comentarioRepo.add(comentario, (err) => {
-        if (err) return next(err);
+        if (valido) {
+            var comentario = {
+                UsuarioId: req.requestUser.Id,
+                NoticiaId: req.noticia.Id,
+                Conteudo: descComentario,
+                Data: Date.now()
+            };
 
-        return res.json({
-            sucesso: true,
-            mensagem: 'Comentário adicionado com sucesso',
-            comentario: comentario
-        });
-    });
+            comentarioRepo.add(comentario, (err) => {
+                if (err) return next(err);
+
+                return res.json({
+                    sucesso: true,
+                    mensagem: 'Comentário adicionado com sucesso',
+                    comentario: comentario
+                });
+            });
+        }
+        else {
+            return res.status(406).json({
+                sucesso: false,
+                mensagem: 'O comentário possui uma ou mais palavras que são proibidas. Não será possível adicionar este comentário',
+                comentario: descComentario
+            });
+        }
+    })
+
+
 };
 
 exports.exibirComentarios = function (req, res, next) {
@@ -303,7 +319,7 @@ exports.pesquisarNoticias = function (req, res, next) {
             mensagem: 'Informe o parâmetro de busca'
         });
     }
-    if (texto.length < 3){
+    if (texto.length < 3) {
         return res.status(400).json({
             sucesso: false,
             mensagem: 'O tamanho mínimo do parâmetro de busca é de 3 caracteres'
@@ -317,55 +333,55 @@ exports.pesquisarNoticias = function (req, res, next) {
             noticias.forEach((i) => {
                 if (i.Tags)
                     i.Tags = i.Tags.trim().split(',');
-                else 
+                else
                     i.Tags = [];
             });
 
             res.json(noticias);
 
-            });
+        });
 
-        };
+};
 
-    var queryPesquisa = function (req) {
+var queryPesquisa = function (req) {
 
-        var query = {};
+    var query = {};
 
-        let pesquisa = req.query.q || '';
+    let pesquisa = req.query.q || '';
 
-        query['$or'] = [
-            {
-                Titulo: { $like: `%${pesquisa}%` }
-            },
-            {
-                Resumo: { $like: `%${pesquisa}%` }
-            },
-            {
-                Tags: { $like: `%${pesquisa}%` }
-            }
-        ]
-
-        if (req.query.dataInicio || req.query.dataTermino) {
-
-            // formata as datas de 00/00/00 para um objeto => { dia: 00, mes: 00, ano: 0000 }
-            var dataInicioFormatada = dateService.dataFormatada(req.query.dataInicio || Date());
-            var dataTerminoFormatada = dateService.dataFormatada(req.query.dataTermino || Date());
-
-            if (req.query.dataInicio && req.query.dataTermino) {
-                query['Data'] =
-                    {
-                        '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia),
-                        '$lte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia)
-                    };
-            } else
-                if (req.body.dataInicio) {
-                    query['Data'] = { '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia) };
-                }
-                else if (req.body.dataTermino) {
-                    query['Data'] = { '$gte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia) };
-                }
+    query['$or'] = [
+        {
+            Titulo: { $like: `%${pesquisa}%` }
+        },
+        {
+            Resumo: { $like: `%${pesquisa}%` }
+        },
+        {
+            Tags: { $like: `%${pesquisa}%` }
         }
+    ]
 
-        return query;
+    if (req.query.dataInicio || req.query.dataTermino) {
 
-    };
+        // formata as datas de 00/00/00 para um objeto => { dia: 00, mes: 00, ano: 0000 }
+        var dataInicioFormatada = dateService.dataFormatada(req.query.dataInicio || Date());
+        var dataTerminoFormatada = dateService.dataFormatada(req.query.dataTermino || Date());
+
+        if (req.query.dataInicio && req.query.dataTermino) {
+            query['Data'] =
+                {
+                    '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia),
+                    '$lte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia)
+                };
+        } else
+            if (req.body.dataInicio) {
+                query['Data'] = { '$gte': new Date(dataInicioFormatada.ano, (dataInicioFormatada.mes - 1), dataInicioFormatada.dia) };
+            }
+            else if (req.body.dataTermino) {
+                query['Data'] = { '$gte': new Date(dataTerminoFormatada.ano, (dataTerminoFormatada.mes - 1), dataTerminoFormatada.dia) };
+            }
+    }
+
+    return query;
+
+};
