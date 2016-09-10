@@ -402,29 +402,6 @@ exports.pesquisarGrupos = function (req, res, next) {
             });
         }
 
-    // let options = {
-    //     where: {
-    //         $or: [
-    //             { Nome: { $like: `%${pesquisa}%` } },
-    //             { Descricao: { $like: `%${pesquisa}%` } },
-    //         ],
-    //         Id: { $ne: env.unilesteId }
-    //     },
-    //     attributes: ['Id', 'Nome', 'Descricao', 'Publico'],
-    //     include: [
-    //         {
-    //             model: models.IntegranteGrupo,
-    //             as: 'Integrantes',
-    //             where: { Id: sequelize.col('GrupoId')}
-    //         }
-    //     ]
-    // };
-    // repository.find(options, null, (err, results) => {
-    //     if (err) return next(err);
-
-    //     return res.json(results);
-    // })
-
     grupoService.pesquisarGrupos(pesquisa, usuarioId, (err, results) => {
         if (err) return next(err);
 
@@ -432,6 +409,25 @@ exports.pesquisarGrupos = function (req, res, next) {
     })
 }
 
+
+exports.removerUsuarioDoGrupo = function(req, res, next){
+
+    let grupoId = req.grupo.Id;
+    let usuarioId = parseInt(req.params.idUsuario);
+
+    grupoService.removerUsuario(grupoId, usuarioId, (err, removido)=>{
+
+        if (err)
+            return next(err);
+
+        return res.json({
+            sucesso: true,
+            mensagem: 'Usuário removido do grupo.'
+        });
+    });
+
+
+};
 
 // Middleware de validação
 

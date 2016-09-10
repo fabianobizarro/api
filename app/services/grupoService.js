@@ -1,8 +1,10 @@
 'use strict';
 
 var GrupoRepository = require('../repositories/GrupoRepository'),
+    IntegranteGrupoRepository = require('../repositories/IntegranteGrupoRepository'),
 
     grupoRepo = new GrupoRepository(),
+    integranteGrupoRepo = new IntegranteGrupoRepository(),
     env = require('../../config/env/env');
 
 
@@ -22,7 +24,7 @@ exports.obterGrupos = function (usuarioId, callback) {
 
 exports.obterIntegrantes = function (grupoId, callback) {
 
-    let sql = `SELECT U.Login, IG.Admin
+    let sql = `SELECT U.Id, U.Login, IG.Admin
                 FROM integrantegrupo IG INNER JOIN usuario U
                 ON IG.UsuarioId = U.Id
                 WHERE IG.GrupoId = ${grupoId}`;
@@ -104,5 +106,76 @@ exports.pesquisarGrupos = function (textoPesquisa, idUsuario, callback) {
         AND G.Id <> ${env.unilesteId}`;
 
     GrupoRepository.query(sql, null, callback);
+
+}
+
+exports.removerUsuario = function (grupoId, usuarioId, callback) {
+
+    // let grupoId = req.grupo.Id;
+    // let usuarioId = req.requestUser.Id;
+
+    /**
+     * Verifica se o usuário existe no grupo
+     * Existe no grupo && somente ele é admin => Informa que deve haver pelo menos um administrador no grupo
+     * Existe no grupo && existe mais de um admin => Remove o usuário do grupo
+     * Existe no grupo && não é admin => remove o usuário do grupo 
+     */
+
+    integranteGrupoRepo.findOne({ where: { GrupoId: grupoId, UsuarioId: usuarioId } }, (err, integrante) => {
+        if (err) callback(err);
+
+        if (!integrante)
+            callback(new Error('Integrante não encontrado'));
+        else {
+            if (integrante.Admin) {
+
+                this.obterIntegrantes(grupoId, (err, integrantes) => {
+                    if (err) return next(err);
+
+                    let adminCount = integrantes.where((i) => { return i.Admin == true; }).length;
+
+                    if (adminCount == 1) { // Não pode remover o único usuário admin do grupo
+                        // return res.json({
+                        //     sucesso: false,
+                        //     mensagem: 'Não é possível sair do grupo, só existe 1 usuário administrador no grupo.'
+                        // });
+                        callback(new Error('Não é possível remover este usuário do grupo, só existe 1 usuário administrador no grupo.'), false);
+                    }
+                    else { // há mais de 1 usuário admin no grupo
+
+                        integranteGrupoRepo.delete({ where: { GrupoId: grupoId, UsuarioId: usuarioId } }, (err) => {
+                            if (err) callback(err, false);
+
+                            // return res.json({
+                            //     sucesso: true,
+                            //     mensagem: 'Usuário removido do grupo'
+                            // });
+                            callback(null, true);
+
+                        });
+
+                    }
+
+                });
+
+            }
+            else {
+                integranteGrupoRepo.delete({ where: { GrupoId: grupoId, UsuarioId: usuarioId } }, (err) => {
+                    if (err) callback(err, false);
+
+                    // return res.json({
+                    //     sucesso: true,
+                    //     mensagem: 'Usuário removido do grupo'
+                    // });
+                    callback(null, true);
+
+                });
+            }
+        }
+
+
+
+
+    })
 
 }
