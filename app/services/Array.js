@@ -8,3 +8,25 @@ Array.prototype.where = function (condition) {
     }
     return r;
 }
+
+
+Array.prototype.first = function (condition) {
+
+    if (condition) {
+        let filteredArray = this.where(condition);
+        return filteredArray[0];
+    }
+    else {
+        return this[0];
+    }
+
+}
+
+Array.prototype.count = function (condition) {
+    if (condition) {
+        let filteredArray = this.where(condition);
+        return filteredArray.length;
+    } else {
+        return this.length;
+    }
+}
