@@ -379,8 +379,75 @@ exports.recusarSolicitacao = function (req, res, next) {
 
 exports.admin = function (req, res, next) {
 
-    res.status(501).end();
+    let grupoId = req.grupo.Id;
+    let usuarioId = req.params.idUsuario;
 
+    /**
+     * Usuário não é admin => Define como adminsitrador
+     * Usuário é admin => Remove administrador delete
+     *      Validar se é o unico admin do grupo
+     */
+
+    grupoService.obterIntegrantes(grupoId, (err, integrantes) => {
+
+        if (err) return next(err);
+
+        let integrante = integrantes.where((i) => { return i.Id == usuarioId }).first();
+
+        if (!integrante) { // Integrante do grupo não encontrado
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Integrante do grupo não encontrado'
+            });
+        }
+        else {
+            if (integrante.Admin == true) { // integrante já é admin
+
+                let adminCount = integrantes.count((i) => { return i.Admin });
+
+                if (adminCount == 1) {
+                    return res.status(401).json({
+                        sucesso: false,
+                        mensagem: 'Não é possível sair do grupo, só existe 1 usuário administrador no grupo.'
+                    });
+                }
+                else {
+                    let options = {
+                        where: { GrupoId: grupoId, UsuarioID: usuarioId }
+                    }
+                    integranteGrupoRepo.update({ Admin: false }, options,
+                        (err) => {
+                            if (err) return next(err);
+
+                            return res.json({
+                                sucesso: true,
+                                mensagem: 'O usuário agora não é mais Administrador do grupo',
+                                admin: false
+                            });
+                        });
+                }
+
+            }
+            else {
+
+                integrante.Admin = true;
+                let options = {
+                    where: { GrupoId: grupoId, UsuarioID: usuarioId }
+                }
+                integranteGrupoRepo.update({ Admin: true }, options,
+                    (err) => {
+                        if (err) return next(err);
+
+                        return res.json({
+                            sucesso: true,
+                            mensagem: 'O usuário agora é Administrador do grupo',
+                            admin: true
+                        });
+                    });
+            }
+        }
+
+    });
 
 };
 
@@ -410,12 +477,12 @@ exports.pesquisarGrupos = function (req, res, next) {
 }
 
 
-exports.removerUsuarioDoGrupo = function(req, res, next){
+exports.removerUsuarioDoGrupo = function (req, res, next) {
 
     let grupoId = req.grupo.Id;
     let usuarioId = parseInt(req.params.idUsuario);
 
-    grupoService.removerUsuario(grupoId, usuarioId, (err, removido)=>{
+    grupoService.removerUsuario(grupoId, usuarioId, (err, removido) => {
 
         if (err)
             return next(err);
