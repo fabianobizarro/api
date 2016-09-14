@@ -13,7 +13,8 @@ var GrupoRepository = require('../repositories/GrupoRepository'),
 exports.obterGrupos = function (usuarioId, callback) {
 
     let sql = `
-    SELECT G.Id, G.Nome, G.Descricao, G.Publico
+    SELECT G.Id, G.Nome, G.Descricao, G.Publico,
+    (SELECT ADMIN FROM integrantegrupo WHERE GrupoId = G.ID AND UsuarioId = ${usuarioId} LIMIT 1) AS usuarioAdmin
     FROM GRUPO G
     INNER JOIN INTEGRANTEGRUPO IG ON G.ID = IG.GRUPOID
     WHERE IG.USUARIOID = ${usuarioId} AND GRUPOID <> ${env.unilesteId}`;
