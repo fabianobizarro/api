@@ -122,6 +122,7 @@ exports.alterarNoticia = function (req, res, next) {
     noticia.Conteudo = newNoticia.Conteudo || noticia.Conteudo;
     noticia.Alias = newNoticia.Alias || noticia.Alias;
     noticia.Tags = newNoticia.Tags || noticia.Tags;
+    noticia.UrlImagem = newNoticia.UrlImagem || noticia.UrlImagem;
 
     if (typeof noticia.Tags == 'object')
         noticia.Tags = noticia.Tags.toString();
