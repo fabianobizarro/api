@@ -10,7 +10,7 @@ var config    = envConfig.sequelize[env];
 var db        = {};
 
 if (process.env.DB_CONN_URI) {
-  var sequelize = new Sequelize(process.env.DB_CONN_URI, envConfig);
+  var sequelize = new Sequelize(process.env.DB_CONN_URI, {dialect: "mysql", timezone: "-03:00", logging: false });
 } else {
   var sequelize = new Sequelize(config.database, config.username, config.password, config);
 }

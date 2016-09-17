@@ -56,7 +56,7 @@ exports.cadastrarNoticiaUnileste = function (req, res, next) {
     Resumo: req.body.Resumo,
     Conteudo: req.body.Conteudo,
     GrupoId: config.unilesteId,
-    Data: new Date(Date.now()),
+    Data: Date(),
     UsuarioId: req.requestUser.Id,
     UrlImagem: req.body.UrlImagem,
     Tags: req.body.Tags
