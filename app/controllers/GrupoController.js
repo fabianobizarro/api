@@ -496,6 +496,34 @@ exports.removerUsuarioDoGrupo = function (req, res, next) {
 
 };
 
+
+exports.trocarVisibilidadeGrupo = function (req, res, next) {
+
+    let grupo = req.grupo;
+    let msg = '';
+
+    grupo.Publico = !grupo.Publico;
+
+    repository.update(grupo, null, (err) => {
+        if (err) return next(err);
+
+        if (grupo.Publico)
+            msg = "Este grupo agora é público";
+        else 
+            msg = 'Este grupo agora é privado';
+
+        return res.json({
+            sucesso: true,
+            mensagem: msg,
+            publico: grupo.Publico
+
+        });
+
+    });
+
+};
+
+
 // Middleware de validação
 
 exports.usuarioIntegranteGrupo = function (req, res, next) {

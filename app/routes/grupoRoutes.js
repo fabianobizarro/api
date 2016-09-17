@@ -17,6 +17,9 @@ module.exports = function () {
         .put(controller.alterarGrupo)
         .delete(controller.excluirGrupo);
 
+    rotas.route('/grupo/:idGrupo/publico')
+        .post([controller.usuarioAdminGrupo, controller.trocarVisibilidadeGrupo]);
+
     rotas.route('/grupo/:idGrupo/noticia')
         .get([controller.usuarioIntegranteGrupo, controller.listarNoticias])
         .post([controller.usuarioAdminGrupo, controller.adicionarNoticia]);
