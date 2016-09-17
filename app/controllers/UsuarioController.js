@@ -107,14 +107,26 @@ exports.infoUsuario = function (req, res, next) {
 exports.pesquisaUsuario = function (req, res, next) {
 
     var pesquisa = req.params.pesquisa;
-    var query = {
-        '$or': [
-            { nome: { '$regex': new RegExp(pesquisa), '$options': 'i' } },
-            { login: { '$regex': new RegExp(pesquisa), '$options': 'i' } },
-        ]
-    };
 
-    repository.find(query, (err, usuarios) => {
+    if (pesquisa && pesquisa.lenght <= 2) {
+        return res.status(400)
+            .json({
+                sucesso: true,
+                mensagem: 'Informe no míniomo 3 caracteres para a busca'
+            });
+    }
+
+    var options = {
+        where: {
+            '$or': [
+                { Nome: { "$like": `%${pesquisa}%` } },
+                { Login: { "$like": `%${pesquisa}%` } },
+            ]
+        },
+        attributes: ['Id', 'Login', 'Nome', 'UrlFoto']
+    }
+
+    repository.find(options, null, (err, usuarios) => {
 
         if (err) {
             res.statusCode = 500;
