@@ -33,7 +33,7 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.STRING(150),
                 allowNull: true,
             },
-            Tags:{
+            Tags: {
                 type: DataTypes.TEXT,
                 allowNull: true
             },
@@ -45,6 +45,16 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
+            createdBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            },
+            updatedBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            }
 
         },
         {
@@ -63,11 +73,6 @@ module.exports = function (sequelize, DataTypes) {
                         foreignKey: 'GrupoId',
                         contraints: true,
                         as: 'Grupo',
-                    });
-
-                    Noticia.hasMany(models.Arquivos, {
-                        foreignKey: 'NoticiaId',
-                        constraint: true
                     });
 
                     Noticia.hasMany(models.Comentario, {

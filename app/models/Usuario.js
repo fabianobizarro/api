@@ -62,6 +62,16 @@ module.exports = function (sequelize, DataTypes) {
             Ativo: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: true
+            },
+            createdBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            },
+            updatedBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
             }
 
         },
@@ -73,8 +83,6 @@ module.exports = function (sequelize, DataTypes) {
                         throw new Error(`A senha deve ter possuir ${minLength} caracteres ou mais`);
                 }
             },
-            // createdAt: 'CreatedOn',
-            // updatedAt: 'UpdatedOn',
             freezeTableName: true,
             tableName: 'Usuario',
             classMethods: {

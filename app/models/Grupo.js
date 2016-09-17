@@ -20,6 +20,16 @@ module.exports = function (sequelize, DataTypes) {
             Publico: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false
+            },
+            createdBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            },
+            updatedBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
             }
 
         },

@@ -22,6 +22,16 @@ module.exports = function (sequelize, DataTypes) {
             },
             NoticiaId: {
                 type: DataTypes.INTEGER,
+            },
+            createdBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            },
+            updatedBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
             }
 
         },

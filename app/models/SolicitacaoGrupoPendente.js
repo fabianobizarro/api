@@ -10,6 +10,16 @@ module.exports = function (sequelize, DataTypes) {
             UsuarioId: {
                 type: DataTypes.STRING(50),
             },
+            createdBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            },
+            updatedBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            }
         },
         {
             frezzeTableName: true,

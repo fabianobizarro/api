@@ -12,6 +12,16 @@ module.exports = function (sequelize, DataTypes) {
             },
             Admin: {
                 type: DataTypes.BOOLEAN
+            },
+            createdBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            },
+            updatedBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
             }
         },
         {

@@ -20,6 +20,16 @@ module.exports = function (sequelize, DataTypes) {
             NoticiaId: {
                 type: DataTypes.INTEGER,
                 unique: 'CurtidaUniqueKey'
+            },
+            createdBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            },
+            updatedBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
             }
 
         },
@@ -35,7 +45,7 @@ module.exports = function (sequelize, DataTypes) {
                         as: 'Noticia',
                     });
 
-                    
+
 
                     Curtida.belongsTo(models.Usuario, {
                         foreignKey: 'UsuarioId',

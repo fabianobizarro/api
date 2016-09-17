@@ -8,6 +8,16 @@ module.exports = function (sequelize, DataTypes) {
                 primaryKey: true,
                 allowNull: false,
                 unique: { msg: 'Esta palavra já está cadastrada' },
+            },
+            createdBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
+            },
+            updatedBy: {
+                type: DataTypes.STRING(70),
+                unique: false,
+                allowNull: true
             }
 
         },
