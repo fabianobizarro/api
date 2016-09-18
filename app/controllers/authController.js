@@ -99,8 +99,11 @@ exports.signUp = function (req, res, next) {
         Senha: req.body.senha,
         Email: req.body.email,
         Nome: req.body.nome,
-        Telefone: req.body.telefone
+        Telefone: req.body.telefone,
     }
+
+    novoUsuario.createdBy = novoUsuario.Login;
+
 
     repo.add(novoUsuario, (err, usuario) => {
 

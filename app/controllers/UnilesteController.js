@@ -62,6 +62,8 @@ exports.cadastrarNoticiaUnileste = function (req, res, next) {
     Tags: req.body.Tags
   };
 
+  noticia.createdBy = req.requestUser.Login;
+
   if (req.body.Tags)
     noticia.Tags = noticia.Tags == null ? "" : req.body.Tags.toString();
 

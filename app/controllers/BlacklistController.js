@@ -21,7 +21,11 @@ exports.adicionarPalavra = function (req, res, next) {
     }
     else {
 
-        repo.add({ Palavra: palavra }, (err) => {
+        let blacklist = { 
+            Palavra: palavra,
+            createdBy: req.requestUser.Login
+         };
+        repo.add(blacklist, (err) => {
             if (err) return next(err);
 
             return res.json({

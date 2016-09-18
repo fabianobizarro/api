@@ -163,13 +163,14 @@ exports.alternarAdminUsuario = function (req, res, next) {
 
     usuario.Admin = !usuario.Admin;
 
+
     var query = {
         where: { Id: usuario.Id },
         validate: false,
         hooks: false
     };
 
-    repository.update({ Admin: usuario.Admin }, query, (err) => {
+    repository.update({ Admin: usuario.Admin, updatedBy: req.requestUser.Login }, query, (err) => {
 
         if (err) {
             return next(err);
@@ -188,6 +189,7 @@ exports.alterarSenha = function (req, res, next) {
 
     var user = req.usuario;
     user.Senha = req.body.senha;
+    user.updatedBy = req.requestUser.Login;
 
     var options = {
         fields: ['Senha']

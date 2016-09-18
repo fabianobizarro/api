@@ -34,44 +34,45 @@ exports.listarNoticias = function (req, res, next) {
         });
 }
 
-exports.adicionarNoticia = function (req, res, next) {
+// exports.adicionarNoticia = function (req, res, next) {
 
-    var noticia = req.body;
+//     var noticia = req.body;
 
-    noticia.grupoId = req.grupo._id;
+//     noticia.GrupoId = req.grupo._id;
+//     noticia.createdBy = req.requestUser.Login;
 
-    //Adiciona a notícia na coleção
-    repository.add(noticia, (err, noti) => {
+//     //Adiciona a notícia na coleção
+//     repository.add(noticia, (err, noti) => {
 
-        if (err)
-            return next(err);
+//         if (err)
+//             return next(err);
 
-        var grupo = req.grupo;
+//         var grupo = req.grupo;
 
-        // Atualiza o registro do grupo
-        //Adiciona o ID da notícia cadastrada na coleção de notícias do grupo
-        grupoRepo.findOneAndUpdate(grupo._id,
-            { '$addToSet': { noticias: noti._id } },
-            (err) => {
-
-
-                if (err)
-                    return next(err);
-
-                res.json({
-                    sucesso: true,
-                    mensagem: 'Notícia cadastrada com sucesso.'
-                });
+//         // Atualiza o registro do grupo
+//         //Adiciona o ID da notícia cadastrada na coleção de notícias do grupo
+//         grupoRepo.findOneAndUpdate(grupo._id,
+//             { '$addToSet': { noticias: noti._id } },
+//             (err) => {
 
 
-            });
+//                 if (err)
+//                     return next(err);
 
-        grupoRepo.update(grupo, (err) => {
+//                 res.json({
+//                     sucesso: true,
+//                     mensagem: 'Notícia cadastrada com sucesso.'
+//                 });
 
 
-        });
-    });
-}
+//             });
+
+//         grupoRepo.update(grupo, (err) => {
+
+
+//         });
+//     });
+// }
 
 exports.exibirNoticia = function (req, res, next) {
     return res.json(req.noticia);
@@ -123,6 +124,7 @@ exports.alterarNoticia = function (req, res, next) {
     noticia.Alias = newNoticia.Alias || noticia.Alias;
     noticia.Tags = newNoticia.Tags || noticia.Tags;
     noticia.UrlImagem = newNoticia.UrlImagem || noticia.UrlImagem;
+    noticia.updatedBy = req.requestUser.Login;
 
     if (typeof noticia.Tags == 'object')
         noticia.Tags = noticia.Tags.toString();
@@ -162,6 +164,8 @@ exports.adicionarComentario = function (req, res, next) {
                 Conteudo: descComentario,
                 Data: Date.now()
             };
+
+            comentario.createdBy = req.requestUser.Login;
 
             comentarioRepo.add(comentario, (err) => {
                 if (err) return next(err);
@@ -238,6 +242,7 @@ exports.curtirNoticia = function (req, res, next) {
             NoticiaId: idNoticia,
             UsuarioId: idUsuario
         };
+        curtida.createdBy = req.requestUser.Login;
         curtir = true;
         curtidaRepo.add(curtida, (err) => {
             if (err)

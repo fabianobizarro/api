@@ -36,6 +36,8 @@ exports.adicionarGrupo = function (req, res, next) {
         Publico: req.body.Publico || true
     };
 
+    grupo.createdBy = req.requestUser.Login;
+
     repository.add(grupo, (err, _grupo) => {
 
         if (err) return next(err);
@@ -45,6 +47,7 @@ exports.adicionarGrupo = function (req, res, next) {
             UsuarioId: req.requestUser.Id,
             Admin: true
         };
+        integrante.createdBy = req.requestUser.Login;
 
         integranteGrupoRepo.add(integrante, (e) => {
 
@@ -157,6 +160,8 @@ exports.adicionarNoticia = function (req, res, next) {
         Tags: req.body.Tags
     };
 
+    noticia.createdBy = req.requestUser.Login;
+
     if (req.body.Tags)
         noticia.Tags = noticia.Tags == null ? "" : req.body.Tags.toString();
 
@@ -207,11 +212,14 @@ exports.join = function (req, res, next) {
                 // Adiciona o usuário ao grupo
                 if (req.grupo.Publico) {
 
-                    integranteGrupoRepo.add({
+                    let integrante = {
                         GrupoId: req.grupo.Id,
                         UsuarioId: req.requestUser.Id,
                         Admin: false
-                    }, (err) => {
+                    };
+                    integrante.createdBy = req.requestUser.Login;
+
+                    integranteGrupoRepo.add(integrante, (err) => {
                         if (err) return next(err);
 
                         return res.json({
@@ -226,10 +234,12 @@ exports.join = function (req, res, next) {
                 }
                 else { //Adiciona o usuário às solicitações pendentes
 
-                    solicitacaoRepo.add({
+                    let solicitacao = {
                         GrupoId: grupoId,
-                        UsuarioId: usuarioId
-                    }, (err) => {
+                        UsuarioId: usuarioId,
+                        createdBy: req.requestUser.Login
+                    };
+                    solicitacaoRepo.add(solicitacao, (err) => {
                         if (err) return next(err);
 
                         return res.json({
@@ -334,7 +344,8 @@ exports.aceitarSolicitacao = function (req, res, next) {
             let integrante = {
                 GrupoId: grupoId,
                 UsuarioId: usuarioId,
-                Admin: false
+                Admin: false,
+                createdBy: req.requestUser.Login
             };
             integranteGrupoRepo.add(integrante, (err) => {
                 if (err) return next(err);
@@ -415,7 +426,8 @@ exports.admin = function (req, res, next) {
                     let options = {
                         where: { GrupoId: grupoId, UsuarioID: usuarioId }
                     }
-                    integranteGrupoRepo.update({ Admin: false }, options,
+
+                    integranteGrupoRepo.update({ Admin: false, updatedBy: req.requestUser.Login }, options,
                         (err) => {
                             if (err) return next(err);
 
@@ -434,7 +446,7 @@ exports.admin = function (req, res, next) {
                 let options = {
                     where: { GrupoId: grupoId, UsuarioID: usuarioId }
                 }
-                integranteGrupoRepo.update({ Admin: true }, options,
+                integranteGrupoRepo.update({ Admin: true, updatedBy: req.requestUser.Login }, options,
                     (err) => {
                         if (err) return next(err);
 
@@ -503,13 +515,14 @@ exports.trocarVisibilidadeGrupo = function (req, res, next) {
     let msg = '';
 
     grupo.Publico = !grupo.Publico;
+    grupo.updatedBy = req.requestUser.Login;
 
     repository.update(grupo, null, (err) => {
         if (err) return next(err);
 
         if (grupo.Publico)
             msg = "Este grupo agora é público";
-        else 
+        else
             msg = 'Este grupo agora é privado';
 
         return res.json({

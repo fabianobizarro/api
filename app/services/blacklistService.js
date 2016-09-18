@@ -11,7 +11,7 @@ exports.comentarioValido = function (comentario, callback) {
 
         callback(null, valid);
 
-    })
+    });
 
 };
 
@@ -23,11 +23,17 @@ var createBlacklistRegex = function (callback) {
 
         let arrayPalavras = results.map(w => { return w.Palavra }).join('|');
 
-        let regexStr = `(${arrayPalavras})`;
+        if (arrayPalavras.length == 0)
+            callback(null, /[]/);
+        else {
+            let regexStr = `(${arrayPalavras})`;
 
-        let regex = new RegExp(regexStr);
+            let regex = new RegExp(regexStr);
 
-        callback(null, regex);
+            callback(null, regex);
+
+        }
+
 
     });
 };
