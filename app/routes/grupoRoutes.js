@@ -14,8 +14,8 @@ module.exports = function () {
 
     rotas.route('/grupo/:idGrupo')
         .get([controller.usuarioIntegranteGrupo, controller.exibirGrupo])
-        .put(controller.alterarGrupo)
-        .delete(controller.excluirGrupo);
+        .put([controller.usuarioAdminGrupo, controller.alterarGrupo])
+        .delete([controller.usuarioAdminGrupo, controller.excluirGrupo]);
 
     rotas.route('/grupo/:idGrupo/publico')
         .post([controller.usuarioAdminGrupo, controller.trocarVisibilidadeGrupo]);

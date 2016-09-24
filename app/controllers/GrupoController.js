@@ -33,7 +33,7 @@ exports.adicionarGrupo = function (req, res, next) {
     let grupo = {
         Nome: req.body.Nome,
         Descricao: req.body.Descricao,
-        Publico: req.body.Publico || true
+        Publico: req.body.Publico == null ? true : req.body.Publico
     };
 
     grupo.createdBy = req.requestUser.Login;
@@ -81,6 +81,8 @@ exports.alterarGrupo = function (req, res, next) {
     grupo.Descricao = novoGrupo.Descricao || grupo.Descricao;
     //grupo.grupoPublico = novoGrupo.Publico || grupo.grupoPublico;
 
+    grupo.updatedBy = req.requestUser.Login;
+
     repository.update(grupo, null, (err) => {
         if (err)
             return next(err);
@@ -96,24 +98,16 @@ exports.excluirGrupo = function (req, res, next) {
 
     var grupo = req.grupo;
 
+    repository.delete({ where: { Id: grupo.Id } }, (err) => {
+        if (err)
+            return next(err);
 
-    if (grupo.administradores.indexOf(req.requestUser._id) == -1) {
-        // Usuário não está no grupo de administradores
-        return next(new Error('O usuário não possui permissão para exluir este grupo pois o mesmo não é adminsitrador'));
-    }
-    else {
-        repository.delete(grupo, (err) => {
-            if (err)
-                return next(err);
+        res.json({
+            sucesso: true,
+            mensagem: 'O grupo foi excluído com sucesso.'
+        });
 
-            res.json({
-                sucesso: true,
-                mensagem: 'O grupo foi excluído com sucesso.'
-            });
-
-        })
-    }
-
+    });
 }
 
 exports.obterGrupoPorId = function (req, res, next, id) {
