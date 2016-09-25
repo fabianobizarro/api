@@ -187,25 +187,51 @@ exports.alternarAdminUsuario = function (req, res, next) {
 
 exports.alterarSenha = function (req, res, next) {
 
-    var user = req.usuario;
-    user.Senha = req.body.senha;
-    user.updatedBy = req.requestUser.Login;
+    var usuario = req.usuario;
 
-    var options = {
-        fields: ['Senha']
-    };
+    let senhaAtual = req.body.senhaAtual;
+    let novaSenha = req.body.novaSenha;
 
-    repository.update(user, options, (err) => {
+    if (!senhaAtual) {
+        return res.status(400)
+            .json({
+                sucesso: false,
+                mensagem: 'Informe sua senha atual'
+            });
+    }
 
-        if (err)
-            return next(err);
+    if (!novaSenha) {
+        return res.status(401)
+            .json({
+                sucesso: false,
+                mensagem: 'Informe sua nova senha'
+            });
+    }
 
-        res.json({
-            sucesso: true,
-            mensagem: 'A senha foi alterada com sucesso.'
+    if (usuario.hashPassword(senhaAtual) == usuario.Senha){
+        
+        usuario.Senha = novaSenha;
+        repository.update(usuario, null, (err) => {
+
+            if (err)
+                return next(err);
+
+            res.json({
+                sucesso: true,
+                mensagem: 'A senha foi alterada com sucesso.'
+            });
+
         });
 
-    });
+    }
+    else {
+        return res.status(400)
+            .json({
+                sucesso: false,
+                mensagem: 'A senha atual informada é inválida'
+            });
+    }
+
 };
 
 /* --- Middlewares para validação --- */
