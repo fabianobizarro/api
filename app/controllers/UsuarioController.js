@@ -45,17 +45,19 @@ exports.alterarUsuario = function (req, res, next) {
 
     var usuario = req.usuario;
 
-    usuario.Nome = req.body.nome || usuario.Nome;
-    usuario.Telefone = req.body.telefone || usuario.Telefone;
-    usuario.UrlFoto = req.body.urlFoto || usuario.UrlFoto;
+    usuario.Nome = req.body.Nome || usuario.Nome;
+    usuario.Telefone = req.body.Telefone || usuario.Telefone;
+    usuario.UrlFoto = req.body.UrlFoto || usuario.UrlFoto;
 
-    repository.update(usuario, {}, (err) => {
+    usuario.updatedBy = usuario.Login;
+
+    repository.update(usuario, null, (err) => {
 
         if (err) {
             return next(err);
         }
 
-        res.json({
+            res.json({
             sucesso: true,
             mensagem: 'Dados do usuário atualizados com sucesso.'
         });
@@ -98,7 +100,9 @@ exports.infoUsuario = function (req, res, next) {
             Id: user.Id,
             Nome: user.Nome,
             Email: user.Email,
-            Login: user.Login
+            Login: user.Login,
+            UrlFoto: user.UrlFoto,
+            Telefone: user.Telefone
         });
     }
 
@@ -211,6 +215,9 @@ exports.alterarSenha = function (req, res, next) {
     if (usuario.hashPassword(senhaAtual) == usuario.Senha){
         
         usuario.Senha = novaSenha;
+
+        usuario.updatedBy = usuario.Login;
+        
         repository.update(usuario, null, (err) => {
 
             if (err)
