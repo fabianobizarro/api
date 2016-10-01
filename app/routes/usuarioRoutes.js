@@ -26,6 +26,9 @@ module.exports = function () {
     rotas.route('/usuario/:idUsuario/senha')
         .put([controller.requestUserIsTheOwn, controller.alterarSenha]);
 
+    rotas.route('/usuario/:idUsuario/historico')
+        .get(controller.historicoUsuario);
+
     rotas.param('idUsuario', controller.obterUsuarioPorId);
 
     return rotas;

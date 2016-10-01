@@ -1,6 +1,8 @@
 'use strict';
 var UsuarioRepository = require('../repositories/UsuarioRepository'),
-    repository = new UsuarioRepository();
+    repository = new UsuarioRepository(),
+
+    usuarioService = require('../services/usuarioService');
 
 
 exports.adicionarUsuario = function (req, res, next) {
@@ -57,7 +59,7 @@ exports.alterarUsuario = function (req, res, next) {
             return next(err);
         }
 
-            res.json({
+        res.json({
             sucesso: true,
             mensagem: 'Dados do usuário atualizados com sucesso.'
         });
@@ -212,12 +214,12 @@ exports.alterarSenha = function (req, res, next) {
             });
     }
 
-    if (usuario.hashPassword(senhaAtual) == usuario.Senha){
-        
+    if (usuario.hashPassword(senhaAtual) == usuario.Senha) {
+
         usuario.Senha = novaSenha;
 
         usuario.updatedBy = usuario.Login;
-        
+
         repository.update(usuario, null, (err) => {
 
             if (err)
@@ -238,6 +240,20 @@ exports.alterarSenha = function (req, res, next) {
                 mensagem: 'A senha atual informada é inválida'
             });
     }
+
+};
+
+exports.historicoUsuario = function (req, res, next) {
+
+    let usuarioId = req.usuario.Id;
+
+    usuarioService.historicoUsuario(usuarioId, (err, historico) => {
+        if (err)
+            return next(err);
+
+        return res.json(historico);
+    });
+
 
 };
 
