@@ -180,3 +180,19 @@ exports.removerUsuario = function (grupoId, usuarioId, callback) {
     })
 
 }
+
+exports.obterUsuariosAdministradores = function (grupoId, callback) {
+
+    let sql = `select 
+                    u.Id,
+                    u.Login
+                from 
+                    integrantegrupo ig
+                    inner join usuario u on ig.UsuarioId = u.id
+                where 
+                    ig.GrupoId = ${grupoId}
+                    and ig.Admin = true`;
+
+    GrupoRepository.query(sql, null, callback);
+
+};
