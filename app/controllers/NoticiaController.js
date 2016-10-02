@@ -6,6 +6,7 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
 
     noticiaService = require('../services/noticiaService'),
     blacklistService = require('../services/blacklistService'),
+    grupoService = require('../services/grupoService'),
 
     repository = new NoticiaRepository(),
     grupoRepo = new GrupoRepository(),
@@ -18,6 +19,7 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
     dateService = require('../services/dateService'),
     models = require('../models');
 
+require('../services/Array');
 
 
 exports.listarNoticias = function (req, res, next) {
@@ -391,3 +393,61 @@ var queryPesquisa = function (req) {
     return query;
 
 };
+
+
+// middlewares de validação
+
+exports.podeRemoverComentario = function (req, res, next) {
+    /**
+     * Que pode remover o comentáio
+     * - Próprio autor
+     * - Adminstrador do grupo
+     * - Adminstrador da aplicação (Unileste)
+     */
+
+    let comentarioId = parseInt(req.params.idComentario);
+    let noticiaId = req.noticia.Id;
+    let usuarioId = req.requestUser.Id;
+    let usuario = req.requestUser.Login;
+    let grupoId = req.noticia.GrupoId;
+
+
+    // validar se o requestUser é o auator do comentário
+    noticiaService.obterComentarios(noticiaId, (err, comments) => {
+        if (err) return next(err);
+
+        let c = comments.where(p => { return p.Id == comentarioId; }).first();
+
+        if (c.Usuario != usuario) { // Usuário da requisição não é o mesmo autor do comentário
+
+            // valiar se o requestUser é administrador do grupo da notícia
+            grupoService.obterUsuariosAdministradores(grupoId, (err, admins) => {
+                if (err) return next(err);
+
+                let isAdmin = admins.count(p => { return p.Id == usuarioId }) > 0;
+
+                if (isAdmin) {
+                    next();
+                }
+                else {
+                    // validar se o usuário é administrador do unileste
+                    if (grupoId == env.unilesteId && usuario.Admin){
+                        next();
+                    }
+                    else 
+                        return res.status(403)
+                            .json({
+                                sucesso: false,
+                                mensagem: 'Não foi possível remover este comentário.',
+                                erro: 'Você não tem permissão para realizar esta operação.'
+                            });
+                }
+
+            });
+        }
+        else {
+            next();
+        }
+
+    });
+}

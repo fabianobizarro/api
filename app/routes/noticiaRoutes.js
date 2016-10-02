@@ -22,7 +22,7 @@ module.exports = function () {
         .post(controller.adicionarComentario);
 
     router.route('/noticia/:idNoticia/comentarios/:idComentario')
-        .delete(controller.removerComentario);
+        .delete([controller.podeRemoverComentario, controller.removerComentario]);
 
     router.route('/noticia/:idNoticia/curtir')
         .post(controller.curtirNoticia);
