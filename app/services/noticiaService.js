@@ -93,7 +93,8 @@ exports.obterNoticiaPorId = function (idNoticia, callback) {
                 N.Conteudo,
                 N.Data,
                 N.Tags,
-                N.UrlImagem
+                N.UrlImagem,
+                N.GrupoId
 
                 FROM
                 Noticia N
