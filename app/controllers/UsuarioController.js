@@ -2,7 +2,10 @@
 var UsuarioRepository = require('../repositories/UsuarioRepository'),
     repository = new UsuarioRepository(),
 
-    usuarioService = require('../services/usuarioService');
+    usuarioService = require('../services/usuarioService'),
+
+    env = require('../../config/env/env');
+
 
 
 exports.adicionarUsuario = function (req, res, next) {
@@ -254,6 +257,19 @@ exports.historicoUsuario = function (req, res, next) {
         return res.json(historico);
     });
 
+
+};
+
+exports.feedUsuario = function (req, res, next) {
+
+    let usuarioId = req.usuario.Id;
+    let unilesteId = env.unilesteId;
+
+    usuarioService.feedUsuario(usuarioId, unilesteId, (err, feed) => {
+        if (err) return next(err);
+
+        return res.json(feed);
+    })
 
 };
 

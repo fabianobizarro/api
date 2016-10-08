@@ -79,3 +79,72 @@ exports.historicoUsuario = function(usuarioId, callback){
 
     UsuarioRepository.query(sql, null, callback);
 }
+
+exports.feedUsuario = function(usuarioId, unilesteId, callback){
+
+    let sql = `
+                -- Notícias criadas
+                select 
+                    n.data,
+                    n.createdBy as usuario,
+                    concat('criou uma notícia no grupo ', g.Nome) as descricao,
+                    'noticia' as tipo
+                from
+                    noticia n
+                    inner join grupo g on g.Id = n.GrupoId 
+                    left join integrantegrupo ig on ig.GrupoId = g.Id
+                where
+                    ig.UsuarioId = ${usuarioId} and ig.GrupoId <> ${unilesteId}
+                    
+                    
+                UNION ALL
+                -- notícias alteradas
+                select
+                    n.data,
+                    n.createdBy as usuario,
+                    concat('alterou uma notícia no grupo ', g.Nome) as descricao,
+                    'noticia' as tipo
+                from
+                    noticia n
+                    inner join grupo g on g.Id = n.GrupoId 
+                    left join integrantegrupo ig on ig.GrupoId = g.Id
+                where
+                    ig.UsuarioId = ${usuarioId} and ig.GrupoId <> ${unilesteId}
+                    and n.updatedAt > n.createdAt
+
+                UNION ALL
+                -- comentários
+                select 
+                    c.Data as data,
+                    c.createdBy as usuario,
+                    concat('enviou um comentário na notícia: ', n.Titulo) as descricao,
+                    'comentario' as tipo
+                from
+                    comentario c
+                    inner join noticia n on c.NoticiaId = n.Id and n.GrupoId <> ${unilesteId}
+                    inner join grupo g on n.GrupoId = g.Id 
+                    inner join integrantegrupo ig on ig.GrupoId = g.Id 
+                where 
+                    ig.UsuarioId = ${usuarioId}
+
+                UNION ALL
+
+                select 
+                    c.Data as data,
+                    c.createdBy as usuario,
+                    concat('curtiu a notícia: ', n.Titulo) as descricao,
+                    'curtida' as tipo
+                from
+                    curtida c
+                    inner join noticia n on c.NoticiaId = n.Id and n.GrupoId <> ${unilesteId}
+                    inner join grupo g on n.GrupoId = g.Id 
+                    inner join integrantegrupo ig on ig.GrupoId = g.Id 
+                where 
+                    ig.UsuarioId = ${usuarioId}
+                    
+                    
+                order by data desc`;
+
+    UsuarioRepository.query(sql, null, callback);
+
+}

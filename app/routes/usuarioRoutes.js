@@ -29,6 +29,9 @@ module.exports = function () {
     rotas.route('/usuario/:idUsuario/historico')
         .get(controller.historicoUsuario);
 
+    rotas.route('/usuario/:idUsuario/feed')
+        .get([controller.requestUserIsTheOwn, controller.feedUsuario])
+
     rotas.param('idUsuario', controller.obterUsuarioPorId);
 
     return rotas;
