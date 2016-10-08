@@ -168,7 +168,20 @@ exports.pesquisarNoticia = function (texto, dataInicio, dataTermino, idUsuario, 
             INNER JOIN INTEGRANTEGRUPO IG ON IG.GRUPOID = G.ID AND IG.USUARIOID = ${idUsuario} OR IG.GRUPOID = ${idUnileste}
 
         WHERE 
-            N.Titulo LIKE '%${texto}%' OR N.RESUMO LIKE '%${texto}%' OR N.TAGS LIKE '%${texto}%'`;
+            (N.Titulo LIKE '%${texto}%' OR N.RESUMO LIKE '%${texto}%' OR N.TAGS LIKE '%${texto}%') `;
+
+
+    if ((dataInicio != null && dataInicio != '') && (dataTermino != null && dataTermino != '')) {
+        sql += ` AND date(N.Data) between date('${dataInicio}') and date('${dataTermino}') `;
+    }
+    else {
+        if (dataInicio != null && dataInicio != '')
+            sql += ` AND date(N.Data) > date('${dataInicio}') `;
+        else
+            if (dataTermino != null && dataTermino != '')
+                sql += ` AND date(N.Data) < date('${dataTermino}') `;
+    }
+
 
     NoticiaRepository.query(sql, null, callback);
 
