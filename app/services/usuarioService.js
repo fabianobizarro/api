@@ -10,13 +10,13 @@ exports.historicoUsuario = function(usuarioId, callback){
     if (id == null)
         callback(new Error('Valor do Id do usuário é inválido'));
 
-    console.log('id do usuario ' + id);
 
     let sql = `/* CURTIDAS */
                 SELECT
-                    C.createdAt as Data,
-                    U.Login as Usuario,
-                    concat('curtiu a notícia: ', N.Titulo) as Atividade
+                    C.createdAt as data,
+                    U.Login as usuario,
+                    concat('curtiu a notícia: ', N.Titulo) as atividade,
+                    'curtida' as tipo
                 FROM
                     CURTIDA C
                     INNER JOIN NOTICIA N ON N.ID = C.NOTICIAID
@@ -28,9 +28,10 @@ exports.historicoUsuario = function(usuarioId, callback){
 
                 /* Comentários */
                 SELECT
-                    C.createdAt as Data,
-                    U.Login as Usuario,
-                    concat('fez um comentário na notícia: ', N.Titulo) as Atividade
+                    C.createdAt as data,
+                    U.Login as usuario,
+                    concat('fez um comentário na notícia: ', N.Titulo) as atividade,
+                    'comentario' as tipo
                 FROM
                     comentario C
                     INNER JOIN noticia N ON N.Id = C.NoticiaId
@@ -42,9 +43,10 @@ exports.historicoUsuario = function(usuarioId, callback){
 
                 /* Notícias criadas */
                 SELECT
-                    N.createdAt AS Data,
-                    U.Login, 
-                    concat('criou a notícia: ', N.Titulo) as Atividade
+                    N.createdAt AS data,
+                    U.Login as usuario, 
+                    concat('criou a notícia: ', N.Titulo) as atividade,
+                    'noticia' as tipo
                 FROM
                     noticia N
                     INNER JOIN usuario U ON N.UsuarioId = U.Id
@@ -55,9 +57,10 @@ exports.historicoUsuario = function(usuarioId, callback){
 
                 /* Grupos criados */
                 SELECT
-                    G.createdAt AS Data,
-                    U.Login, 
-                    concat('criou o grupo: ', G.Nome) as Atividade
+                    G.createdAt AS data,
+                    U.Login as usuario, 
+                    concat('criou o grupo: ', G.Nome) as atividade,
+                    'grupo' as tipo
                 FROM
                     grupo G, usuario U 
                 WHERE
@@ -68,9 +71,10 @@ exports.historicoUsuario = function(usuarioId, callback){
 
                 /* Usuario criado */
                 SELECT
-                    createdAt as Data,
-                    Login,
-                    concat('entrou na aplicação!') as Atividade
+                    createdAt as data,
+                    Login as usuario,
+                    concat('entrou na aplicação!') as atividade,
+                    'usuario' as tipo
                 FROM usuario 
                 WHERE ID = ${id}
 
