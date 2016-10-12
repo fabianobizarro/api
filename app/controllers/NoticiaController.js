@@ -121,11 +121,11 @@ exports.alterarNoticia = function (req, res, next) {
     var newNoticia = req.body;
 
     noticia.Titulo = newNoticia.Titulo || noticia.Titulo;
-    noticia.Resumo = newNoticia.Resumo || noticia.Resumo;
+    noticia.Resumo = newNoticia.Resumo == null || newNoticia.Resumo == undefined ? noticia.Resumo : newNoticia.Resumo;
     noticia.Conteudo = newNoticia.Conteudo || noticia.Conteudo;
     noticia.Alias = newNoticia.Alias || noticia.Alias;
     noticia.Tags = newNoticia.Tags || noticia.Tags;
-    noticia.UrlImagem = newNoticia.UrlImagem || noticia.UrlImagem;
+    noticia.UrlImagem = newNoticia.UrlImagem == null || newNoticia.UrlImagem == undefined ? noticia.UrlImagem : newNoticia.UrlImagem;
     noticia.updatedBy = req.requestUser.Login;
 
     if (typeof noticia.Tags == 'object')
