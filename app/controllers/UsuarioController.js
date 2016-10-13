@@ -99,16 +99,23 @@ exports.infoUsuario = function (req, res, next) {
         });
     }
     else {
-        let user = req.requestUser;
+        let usuarioId = req.requestUser.Id;
 
-        res.json({
-            Id: user.Id,
-            Nome: user.Nome,
-            Email: user.Email,
-            Login: user.Login,
-            UrlFoto: user.UrlFoto,
-            Telefone: user.Telefone
+        repository.findById(usuarioId, (err, user) => {
+            if (err) return next(err);
+
+            res.json({
+                Id: user.Id,
+                Nome: user.Nome,
+                Email: user.Email,
+                Login: user.Login,
+                UrlFoto: user.UrlFoto,
+                Telefone: user.Telefone
+            });
+
         });
+
+
     }
 
 };
@@ -132,7 +139,7 @@ exports.pesquisaUsuario = function (req, res, next) {
                 { Login: { "$like": `%${pesquisa}%` } },
             ]
         },
-        attributes: ['Id', 'Login', 'Nome', 'UrlFoto']
+        attributes: ['Id', 'Login', 'Nome', 'UrlFoto', 'Admin']
     }
 
     repository.find(options, null, (err, usuarios) => {
@@ -171,6 +178,7 @@ exports.alternarAdminUsuario = function (req, res, next) {
     let usuario = req.usuario;
 
     usuario.Admin = !usuario.Admin;
+    usuario.updatedBy = req.requestUser.Login;
 
 
     var query = {
