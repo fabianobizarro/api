@@ -134,7 +134,8 @@ exports.obterComentarios = function (idNoticia, callback) {
                 C.Id, 
                 C.Conteudo, 
                 C.Data, 
-                U.Login as Usuario
+                U.Login as Usuario,
+                U.UrlFoto as UrlFoto
 
                 FROM Comentario C 
                 INNER JOIN Usuario U 
