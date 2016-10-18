@@ -1,6 +1,10 @@
 'use strict'
+var crypto = require('crypto');
 var UsuarioRepository = require('../repositories/UsuarioRepository'),
-    authService = require("../services/authService");
+    authService = require("../services/authService"),
+    emailService = require('../services/emailService');
+
+require('../services/dateService'); //Date methods
 
 exports.signIn = function (req, res, next) {
 
@@ -95,11 +99,11 @@ exports.signUp = function (req, res, next) {
     let repo = new UsuarioRepository();
 
     let novoUsuario = {
-        Login: req.body.login,
-        Senha: req.body.senha,
-        Email: req.body.email,
-        Nome: req.body.nome,
-        Telefone: req.body.telefone,
+        Login: req.body.login || req.body.Login,
+        Senha: req.body.senha || req.body.Senha,
+        Email: req.body.email || req.body.Email,
+        Nome: req.body.nome || req.body.Nome,
+        Telefone: req.body.telefone || req.body.Telefone,
     }
 
     novoUsuario.createdBy = novoUsuario.Login;
@@ -176,4 +180,61 @@ var getUserData = function (user) {
         Email: user.Email,
         Admin: user.Admin
     };
+};
+
+exports.enviarLinkAlteracaoSenha = function (req, res, next) {
+
+    let repo = new UsuarioRepository();
+    let email = req.body.Email;
+
+    if (!email) {
+        return res.status(400)
+            .json({
+                sucesso: false,
+                mensagem: 'Endereço de Email não informado'
+            });
+    }
+
+    repo.findOne({ where: { Email: email } }, (err, usuario) => {
+
+        if (err) return next(err);
+
+        if (!usuario) {
+            return res.status(404)
+                .json({
+                    sucesso: false,
+                    mensagem: 'Endereço de Email não encontrado'
+                });
+        }
+
+        crypto.randomBytes(43, (err, buffer) => {
+            let token = buffer.toString('hex');
+            let dataExp = new Date().addDays(2).toLocaleString();
+
+            usuario.TokenSenha = token;
+            usuario.TokenSenhaExp = dataExp;
+            usuario.updatedBy = usuario.Login;
+
+            repo.update(usuario, null, (err, ok) => {
+
+                if (err) return next(err);
+
+                /**
+                 * TODO: Enviar email com o token para o usuário
+                 * link: admin.sharenews.com/senha?t={token}
+                 */
+                //emailService.sendMail({});
+
+                res.json({
+                    sucesso: true,
+                    mensagem: 'Email enviado para alteração de senha',
+                    email: usuario.Email,
+                    token: token,
+                    dataExp: dataExp
+                });
+
+            });
+
+        });
+    });
 };

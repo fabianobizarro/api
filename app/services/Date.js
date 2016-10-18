@@ -13,3 +13,9 @@ Date.prototype.yyyyMMdd = function () {
 
     return [year, month, day].join('-');
 }
+
+Date.prototype.addDays = function(days){
+    var d = new Date(this.valueOf());
+    d.setDate(d.getDate() + days);
+    return d;
+}
