@@ -28,6 +28,7 @@
     "mongoose": "^4.3.7",
     "morgan": "^1.7.0",
     "mysql": "^2.11.1",
+    "nodemailer": "^2.6.4",
     "sequelize": "^3.23.3",
     "sequelize-transforms": "^1.0.0",
     "swagger-ui": "^2.1.4",
