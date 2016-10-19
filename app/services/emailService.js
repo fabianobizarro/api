@@ -2,7 +2,15 @@ var nodemailer = require('nodemailer');
 
 exports.sendMail = function (mailOptions, callback) {
 
-    var transporter = nodemailer.createTransport('smtps://username%40domain:passwd@smtp.domain');
+    var transporter = nodemailer.createTransport({
+        host: 'server5.srvlinux.info',
+        port: 465,
+        secure: true, // use SSL
+        auth: {
+            user: 'username',
+            pass: 'pass'
+        }
+    });
 
     transporter.sendMail(mailOptions, (err, status) => {
 
