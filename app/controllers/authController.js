@@ -209,7 +209,7 @@ exports.enviarLinkAlteracaoSenha = function (req, res, next) {
 
         crypto.randomBytes(43, (err, buffer) => {
             let token = buffer.toString('hex');
-            let dataExp = new Date().addDays(2).toLocaleString();
+            let dataExp = new Date().addDays(1).toLocaleString();
 
             usuario.TokenSenha = token;
             usuario.TokenSenhaExp = dataExp;
@@ -219,18 +219,16 @@ exports.enviarLinkAlteracaoSenha = function (req, res, next) {
 
                 if (err) return next(err);
 
-                /**
-                 * TODO: Enviar email com o token para o usuário
-                 * link: admin.sharenews.com/senha?t={token}
-                 */
-                //emailService.sendMail({});
+                emailService.sendMail({
+                    from: '"ShareNews" <contato@sharenews.co>',
+                    to: usuario.Email,
+                    subject: 'Recuperação de senha',
+                    html: `Você solicitou a troca de senha.<br>Para trocar sua senha, basta acessar http://localhost:8080/senha?t=${token}`
+                });
 
                 res.json({
                     sucesso: true,
                     mensagem: 'Email enviado para alteração de senha',
-                    email: usuario.Email,
-                    token: token,
-                    dataExp: dataExp
                 });
 
             });
@@ -238,3 +236,63 @@ exports.enviarLinkAlteracaoSenha = function (req, res, next) {
         });
     });
 };
+
+
+exports.alterarSenha = function (req, res, next) {
+
+    var repo = new UsuarioRepository();
+
+    let token = req.body.Token;
+    let senha = req.body.Senha;
+
+    if (!token) {
+        res.status(400).json({
+            sucesso: false,
+            mensagem: 'Token não informado'
+        });
+    }
+
+    if (!senha) {
+        res.status(400).json({
+            sucesso: false,
+            mensagem: 'Senha não informads'
+        });
+    }
+
+    let where = {
+        TokenSenha: token,
+        TokenSenhaExp: { $gte: new Date }
+    }
+
+
+    repo.findOne({ where: where }, (err, usuario) => {
+
+        if (err) return next(err);
+
+        if (!usuario) {
+            res.status(404)
+                .json({
+                    sucesso: false,
+                    mensagem: 'Token inválido'
+                });
+        }
+        else {
+
+            usuario.Senha = senha;
+            usuario.TokenSenha = null;
+            usuario.TokenSenhaExp = null;
+
+            repo.update(usuario, null, (err) => {
+                if (err) return next(err);
+
+                res.json({
+                    sucesso: true,
+                    mensagem: 'Senha alterada com sucesso'
+                });
+
+            });
+
+        }
+
+    });
+}

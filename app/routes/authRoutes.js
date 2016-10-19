@@ -11,6 +11,7 @@ module.exports = function(){
     rotas.post('/signIn/admin', [controller.validarUsuarioSenha, controller.signInAdmin]);
     rotas.post('/signUp', controller.signUp);
     rotas.post('/resetPasswdLink', controller.enviarLinkAlteracaoSenha);
+    rotas.post('/resetPasswd', controller.alterarSenha);
  
     return rotas;   
 }
