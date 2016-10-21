@@ -63,6 +63,16 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.BOOLEAN,
                 defaultValue: true
             },
+            TokenSenha:{
+                type: DataTypes.STRING(150),
+                allowNull: true,
+                defaultValue: null
+            },
+            TokenSenhaExp: {
+                type: DataTypes.DATE,
+                allowNull: true,
+                defaultValue: null
+            },
             createdBy: {
                 type: DataTypes.STRING(70),
                 unique: false,

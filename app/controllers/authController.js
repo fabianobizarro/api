@@ -1,6 +1,10 @@
 'use strict'
+var crypto = require('crypto');
 var UsuarioRepository = require('../repositories/UsuarioRepository'),
-    authService = require("../services/authService");
+    authService = require("../services/authService"),
+    emailService = require('../services/emailService');
+
+require('../services/dateService'); //Date methods
 
 exports.signIn = function (req, res, next) {
 
@@ -95,11 +99,11 @@ exports.signUp = function (req, res, next) {
     let repo = new UsuarioRepository();
 
     let novoUsuario = {
-        Login: req.body.login,
-        Senha: req.body.senha,
-        Email: req.body.email,
-        Nome: req.body.nome,
-        Telefone: req.body.telefone,
+        Login: req.body.login || req.body.Login,
+        Senha: req.body.senha || req.body.Senha,
+        Email: req.body.email || req.body.Email,
+        Nome: req.body.nome || req.body.Nome,
+        Telefone: req.body.telefone || req.body.Telefone,
     }
 
     novoUsuario.createdBy = novoUsuario.Login;
@@ -177,3 +181,118 @@ var getUserData = function (user) {
         Admin: user.Admin
     };
 };
+
+exports.enviarLinkAlteracaoSenha = function (req, res, next) {
+
+    let repo = new UsuarioRepository();
+    let email = req.body.Email;
+
+    if (!email) {
+        return res.status(400)
+            .json({
+                sucesso: false,
+                mensagem: 'Endereço de Email não informado'
+            });
+    }
+
+    repo.findOne({ where: { Email: email } }, (err, usuario) => {
+
+        if (err) return next(err);
+
+        if (!usuario) {
+            return res.status(404)
+                .json({
+                    sucesso: false,
+                    mensagem: 'Endereço de Email não encontrado'
+                });
+        }
+
+        crypto.randomBytes(43, (err, buffer) => {
+            let token = buffer.toString('hex');
+            let dataExp = new Date().addDays(1).toLocaleString();
+
+            usuario.TokenSenha = token;
+            usuario.TokenSenhaExp = dataExp;
+            usuario.updatedBy = usuario.Login;
+
+            repo.update(usuario, null, (err, ok) => {
+
+                if (err) return next(err);
+
+                emailService.sendMail({
+                    from: '"ShareNews" <contato@sharenews.co>',
+                    to: usuario.Email,
+                    subject: 'Recuperação de senha',
+                    html: `Você solicitou a troca de senha.<br>Para trocar sua senha, basta acessar http://localhost:8080/senha?t=${token}`
+                });
+
+                res.json({
+                    sucesso: true,
+                    mensagem: 'Email enviado para alteração de senha',
+                });
+
+            });
+
+        });
+    });
+};
+
+
+exports.alterarSenha = function (req, res, next) {
+
+    var repo = new UsuarioRepository();
+
+    let token = req.body.Token;
+    let senha = req.body.Senha;
+
+    if (!token) {
+        res.status(400).json({
+            sucesso: false,
+            mensagem: 'Token não informado'
+        });
+    }
+
+    if (!senha) {
+        res.status(400).json({
+            sucesso: false,
+            mensagem: 'Senha não informads'
+        });
+    }
+
+    let where = {
+        TokenSenha: token,
+        TokenSenhaExp: { $gte: new Date }
+    }
+
+
+    repo.findOne({ where: where }, (err, usuario) => {
+
+        if (err) return next(err);
+
+        if (!usuario) {
+            res.status(404)
+                .json({
+                    sucesso: false,
+                    mensagem: 'Token inválido'
+                });
+        }
+        else {
+
+            usuario.Senha = senha;
+            usuario.TokenSenha = null;
+            usuario.TokenSenhaExp = null;
+
+            repo.update(usuario, null, (err) => {
+                if (err) return next(err);
+
+                res.json({
+                    sucesso: true,
+                    mensagem: 'Senha alterada com sucesso'
+                });
+
+            });
+
+        }
+
+    });
+}
