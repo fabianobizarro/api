@@ -255,7 +255,7 @@ exports.alterarSenha = function (req, res, next) {
     if (!senha) {
         res.status(400).json({
             sucesso: false,
-            mensagem: 'Senha não informads'
+            mensagem: 'Senha não informada'
         });
     }
 
