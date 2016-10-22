@@ -59,7 +59,7 @@ exports.obterNoticias = function (grupoId, usuarioId, callback) {
 exports.obterSolicitacoesPendentes = function (grupoId, callback) {
 
     let sql = `
-    SELECT u.Id, u.Login
+    SELECT u.Id, u.Login, u.UrlFoto
     FROM Solicitacaogrupopendente SP
         INNER JOIN Usuario U
         ON SP.UsuarioId = U.Id
