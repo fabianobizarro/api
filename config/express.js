@@ -4,7 +4,9 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     swaggerUi = require('swaggerize-ui'),
     cors = require('cors'),
-    morgan = require('morgan');
+    morgan = require('morgan'),
+    fs = require("fs"),
+    path = require("path");
 
 
 
@@ -20,10 +22,12 @@ module.exports = function () {
         origin: true,
         credentials: true
     }));
-    app.use(morgan('dev'));
-    
+
+    var accessLogStream = fs.createWriteStream(path.join(__dirname, '../log/request.log'), { flags: 'a' });
+    app.use(morgan('combined', { stream: accessLogStream }));
+
     // Swagger routes
-    app.use('/api-docs', (req, res)=>{
+    app.use('/api-docs', (req, res) => {
         res.json(require('../docs/swagger.json'));
     });
 
