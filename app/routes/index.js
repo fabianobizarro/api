@@ -12,6 +12,8 @@ exports.registerRoutes = function (app) {
     let reportsRoutes = require('./reportRoutes')();
     let blacklistRoutes = require('./blacklistRoutes')();
 
+    let log = require("../services/logService");
+
 
     app.get('/', (req, res) => {
         res.json({
@@ -41,6 +43,9 @@ exports.registerRoutes = function (app) {
 
     // Error handler
     app.use((err, req, res, next) => {
+
+        log.error('Erro', errorService.getErrorMessage(err));
+        
         var statusCode = 500;
         return res
             .status(statusCode)
