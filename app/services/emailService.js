@@ -1,14 +1,19 @@
 var nodemailer = require('nodemailer');
+var env = require('../../config/env/env');
 
 exports.sendMail = function (mailOptions, callback) {
 
+    //verifica dados do provedor de email
+    if (!env.emailHost)
+        throw new Error('Host do provedor de email não informado');
+
     var transporter = nodemailer.createTransport({
-        host: 'server5.srvlinux.info',
+        host: env.emailHost,
         port: 465,
         secure: true, // use SSL
         auth: {
-            user: 'username',
-            pass: 'pass'
+            user: env.emailUsername,
+            pass: env.emailPasswd
         }
     });
 

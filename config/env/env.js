@@ -1,39 +1,17 @@
 
 
-module.exports = {
-    
-    secret: 'secret',
-    unilesteId: '2',
+var env = {
 
-    logging: false,
+    secret: process.env.APP_SECRET || 'secret',
+    unilesteId: process.env.INST_ID || '2',
+    dbLogUri: process.env.DBLOG_URI || 'mongodb://192.168.99.100:27017/dblog',
+    dbConnectionUri: process.env.DB_CONN_URI || '',
+    resetPasswdUrl: process.env.RESET_PASSWD_URL || 'http://localhost:8080/senha?t=',
 
-    sequelize: {
-        "development": {
-            "username": "root",
-            "password": null,
-            "database": "database_dev",
-            "host": "127.0.0.1",
-            "dialect": "mysql",
-            "timezone": "-03:00"
-        },
-        "test": {
-            "username": "root",
-            "password": null,
-            "database": "database_test",
-            "host": "127.0.0.1",
-            "dialect": "mysql",
-            "timezone": "-03:00"
-        },
-        "production": {
-            "username": "root",
-            "password": null,
-            "database": "database_production",
-            "host": "127.0.0.1",
-            "dialect": "mysql",
-            "timezone": "-03:00"
-        }
-    }
-
-
+    emailHost: process.env.EMAIL_HOST,
+    emailUsername: process.env.EMAIL_USERNAME,
+    emailPasswd: process.env.EMAIL_PASSWD
 
 };
+
+module.exports = env; 

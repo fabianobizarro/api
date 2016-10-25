@@ -5,15 +5,10 @@ var path      = require('path');
 var Sequelize = require('sequelize');
 var basename  = path.basename(module.filename);
 var env       = process.env.NODE_ENV || 'development';
-var envConfig       = require(__dirname + '/../../config/env/env');
-var config    = envConfig.sequelize[env];
+var envConfig = require(__dirname + '/../../config/env/env');
 var db        = {};
 
-if (process.env.DB_CONN_URI) {
-  var sequelize = new Sequelize(process.env.DB_CONN_URI, {dialect: "mysql", timezone: "-03:00", logging: false });
-} else {
-  var sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+var sequelize = new Sequelize(process.env.DB_CONN_URI, {dialect: "mysql", timezone: "-03:00", logging: false });
 
 fs
   .readdirSync(__dirname)
