@@ -1,7 +1,8 @@
 'use strict';
 
 var env = require('../../config/env/env'),
-    BlacklistRepository = require('../repositories/BlacklistRepository');
+    BlacklistRepository = require('../repositories/BlacklistRepository'),
+    logService = require('../services/logService');
 
 require('../services/Array');
 
@@ -21,13 +22,18 @@ exports.adicionarPalavra = function (req, res, next) {
     }
     else {
 
-        let blacklist = { 
+        let blacklist = {
             Palavra: palavra,
             createdBy: req.requestUser.Login
-         };
-        repo.add(blacklist, (err) => {
-            if (err) return next(err);
+        };
 
+        repo.add(blacklist, (err) => {
+            if (err) {
+                logService.error(logService.TIPO_LOG.BlackListAdicionado, { erro: err, palavra: palavra, usuario: req.requestUser.Login });
+                return next(err);
+            }
+
+            logService.info(logService.TIPO_LOG.BlackListAdicionado, { palavra: palavra, usuario: req.requestUser.Login });
             return res.json({
                 sucesso: true,
                 mensagem: 'Palavra adicionada com sucesso'
@@ -68,8 +74,12 @@ exports.removerPalavra = function (req, res, next) {
 
         repo.delete({ where: { Palavra: palavra } }, (err, rows) => {
 
-            if (err) return next(err);
+            if (err) {
+                logService.error(logService.TIPO_LOG.BlackListRemovido, { erro: err, palavra: palavra, usuario: req.requestUser.Login });
+                return next(err);
+            }
 
+            logService.info(logService.TIPO_LOG.BlackListRemovido, { palavra: palavra, usuario: req.requestUser.Login });
             if (rows == 1) {
                 return res.json({
                     sucesso: true,
