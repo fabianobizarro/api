@@ -51,11 +51,11 @@ exports.signIn = function (req, res, next) {
 
 exports.signInAdmin = function (req, res, next) {
     let repo = new UsuarioRepository();
-    let usuario = req.body.login;
+    let login = req.body.login;
     let senha = req.body.senha;
 
 
-    repo.findOne({ login: usuario }, (err, usuario) => {
+    repo.findOne({ where: { Login: login } }, (err, usuario) => {
 
         if (err)
             return next(err);
@@ -86,7 +86,8 @@ exports.signInAdmin = function (req, res, next) {
                     res.status(401)
                         .json({
                             sucesso: false,
-                            mensagem: 'Acesso negado.'
+                            mensagem: 'Não foi possível completar a requisição',
+                            erro: 'Acesso negado.'
                         });
                 }
             }
