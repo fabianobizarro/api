@@ -100,11 +100,11 @@ exports.alterarGrupo = function (req, res, next) {
 
     repository.update(grupo, null, (err) => {
         if (err) {
-            log.error(log.TIPO_LOG.GrupoAlterado, { grupoId: _grupo.Id, usuario: req.requestUser.Login });
+            log.error(log.TIPO_LOG.GrupoAlterado, { grupoId: grupo.Id, usuario: req.requestUser.Login });
             return next(err);
         }
         else {
-            log.info(log.TIPO_LOG.GrupoAlterado, { grupoId: _grupo.Id, usuario: req.requestUser.Login });
+            log.info(log.TIPO_LOG.GrupoAlterado, { grupoId: grupo.Id, usuario: req.requestUser.Login });
             res.json({
                 sucesso: true,
                 mensagem: 'Os dados do grupo foram alterados com sucesso.'
