@@ -1,4 +1,4 @@
-FROM node:4.4.7
+FROM node:7.0.0
 
 LABEL version=0.1.0
 
@@ -8,7 +8,6 @@ WORKDIR /app
 
 RUN npm install
 
-# Listando as variáveis de ambiente disponíveis para uso
 ENV APP_SECRET ''
 ENV INST_ID ''
 ENV DBLOG_URI ''
@@ -18,6 +17,8 @@ ENV EMAIL_HOST ''
 ENV EMAIL_USERNAME ''
 ENV EMAIL_PASSWD ''
 ENV NODE_ENV ''
+
+VOLUME ["/app/log"]
 
 EXPOSE 3000
 
