@@ -129,10 +129,14 @@ exports.adicionarComentario = function (req, res, next) {
             comentario.createdBy = req.requestUser.Login;
 
             comentarioRepo.add(comentario, (err, comment) => {
-                if (err) return next(err);
+                if (err) {
+                    log.error(log.TIPO_LOG.ComentarioAdicionado, { erro: err, noticiaId: req.noticia.Id, usuario: req.requestUser.Login });
+                    return next(err);
+                }
 
                 comentario.Id = comment.Id;
 
+                log.info(log.TIPO_LOG.ComentarioAdicionado, { noticiaId: req.noticia.Id, usuario: req.requestUser.Login });
                 return res.json({
                     sucesso: true,
                     mensagem: 'Comentário adicionado com sucesso',

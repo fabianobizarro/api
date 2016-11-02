@@ -4,8 +4,8 @@ var UsuarioRepository = require('../repositories/UsuarioRepository'),
 
     usuarioService = require('../services/usuarioService'),
 
-    env = require('../../config/env/env');
-
+    env = require('../../config/env/env'),
+    logService = require("../services/logService");
 
 
 exports.adicionarUsuario = function (req, res, next) {
@@ -13,9 +13,12 @@ exports.adicionarUsuario = function (req, res, next) {
 
     repository.add(usuario, (err) => {
 
-        if (err)
+        if (err) {
+            logService.error(logService.TIPO_LOG.UsuarioCriado, { erro: err });
             return next(err);
+        }
 
+        logService.error(logService.TIPO_LOG.UsuarioCriado, { usuario });
         res.json({
             mensagem: 'O usuário foi cadastrado com sucesso!'
         })
@@ -59,9 +62,11 @@ exports.alterarUsuario = function (req, res, next) {
     repository.update(usuario, null, (err) => {
 
         if (err) {
+            logService.error(logService.TIPO_LOG.UsuarioAlterado, { erro: err, usuario: usuario.Login });
             return next(err);
         }
 
+        logService.info(logService.TIPO_LOG.UsuarioAlterado, { usuario: usuario.Login });
         res.json({
             sucesso: true,
             mensagem: 'Dados do usuário atualizados com sucesso.'
@@ -79,9 +84,12 @@ exports.excluirUsuario = function (req, res, next) {
     }
 
     repository.update({ Ativo: false }, options, (err) => {
-        if (err)
+        if (err){
+            logService.error(logService.TIPO_LOG.UsuarioExcluido, { erro: err, usuario: usuario.Login });
             return next(err);
-
+        }
+            
+        logService.info(logService.TIPO_LOG.UsuarioExcluido, { usuario: usuario.Login });
         res.json({
             sucesso: true,
             mensagem: 'Usuário excluído com sucesso'
@@ -190,9 +198,11 @@ exports.alternarAdminUsuario = function (req, res, next) {
     repository.update({ Admin: usuario.Admin, updatedBy: req.requestUser.Login }, query, (err) => {
 
         if (err) {
+            logService.error(logService.TIPO_LOG.UsuarioAlterado, { erro: err, usuario: usuario.Login });
             return next(err);
         }
 
+        logService.info(logService.TIPO_LOG.UsuarioAlterado, { usuario: usuario.Login });
         res.json({
             sucesso: true,
             mensagem: 'Operação realizada com sucesso',
@@ -233,9 +243,12 @@ exports.alterarSenha = function (req, res, next) {
 
         repository.update(usuario, null, (err) => {
 
-            if (err)
+            if (err){
+                logService.error(logService.TIPO_LOG.UsuarioAlterado, { erro: err, usuario: usuario.Login });
                 return next(err);
-
+            }
+ 
+            logService.info(logService.TIPO_LOG.UsuarioAlterado, { usuario: usuario.Login });
             res.json({
                 sucesso: true,
                 mensagem: 'A senha foi alterada com sucesso.'

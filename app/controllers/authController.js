@@ -2,7 +2,8 @@
 var crypto = require('crypto');
 var UsuarioRepository = require('../repositories/UsuarioRepository'),
     authService = require("../services/authService"),
-    emailService = require('../services/emailService');
+    emailService = require('../services/emailService'),
+    logService = require('../services/logService');
 
 require('../services/dateService'); //Date methods
 
@@ -34,6 +35,8 @@ exports.signIn = function (req, res, next) {
             }
             else {
                 // se tudo estiver ok, gera o token e retorna ao usuário
+
+                logService.info('usuario autenticado', { usuario: usuario.Login });
 
                 var _user = getUserData(usuario);
 
@@ -112,9 +115,13 @@ exports.signUp = function (req, res, next) {
 
     repo.add(novoUsuario, (err, usuario) => {
 
-        if (err)
+        if (err) {
+            logService.error(logService.TIPO_LOG.UsuarioCriado, { erro: err });
             return next(err);
+        }
 
+
+        logService.info(logService.TIPO_LOG.UsuarioCriado, { usuario: novoUsuario.Login });
         var _user = getUserData(usuario);
 
         let token = authService.signIn(_user);

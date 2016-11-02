@@ -100,7 +100,7 @@ exports.alterarGrupo = function (req, res, next) {
 
     repository.update(grupo, null, (err) => {
         if (err) {
-            log.error(log.TIPO_LOG.GrupoAlterado, { grupoId: grupo.Id, usuario: req.requestUser.Login });
+            log.error(log.TIPO_LOG.GrupoAlterado, { erro: err, grupoId: grupo.Id, usuario: req.requestUser.Login });
             return next(err);
         }
         else {
@@ -119,7 +119,7 @@ exports.excluirGrupo = function (req, res, next) {
 
     repository.delete({ where: { Id: grupo.Id } }, (err) => {
         if (err) {
-            log.error(log.TIPO_LOG.GrupoExluido, { grupoId: _grupo.Id, usuario: req.requestUser.Login });
+            log.error(log.TIPO_LOG.GrupoExluido, { erro: err, grupoId: _grupo.Id, usuario: req.requestUser.Login });
             return next(err);
         }
 
@@ -185,7 +185,7 @@ exports.adicionarNoticia = function (req, res, next) {
     noticiaRepo.add(noticia, (err, _noticia) => {
 
         if (err) {
-            log.error(log.TIPO_LOG.NoticiaCriada, { noticiaId: _noticia.Id, usuario: req.requestUser.Login });
+            log.error(log.TIPO_LOG.NoticiaCriada, { erro: err, noticiaId: _noticia.Id, usuario: req.requestUser.Login });
             return next(err);
         }
 
@@ -225,7 +225,12 @@ exports.join = function (req, res, next) {
     grupoService.usuarioNoGrupo(req.grupo.Id, req.requestUser.Id,
         (err, eIntegrante) => {
 
-            if (err) return next(err);
+            if (err) {
+                log.error(log.TIPO_LOG.IntegranteGrupoAdicionado, { erro: err, grupoId: req.grupo.Id, usuario: req.requestUser.Login });
+                return next(err);
+            }
+
+
 
             if (eIntegrante == false) {
 
@@ -304,7 +309,11 @@ exports.exit = function (req, res, next) {
      */
 
     integranteGrupoRepo.findOne({ where: { GrupoId: grupoId, UsuarioId: usuarioId } }, (err, integrante) => {
-        if (err) return next(err);
+        if (err) {
+            log.error(log.TIPO_LOG.IntegranteGrupoRemovido, { erro: err, grupoId: grupoId, usuario: req.requestUser.Login });
+            return next(err);
+        }
+
 
 
         if (integrante.Admin) {
@@ -378,10 +387,12 @@ exports.aceitarSolicitacao = function (req, res, next) {
 
     solicitacaoRepo.delete({ where: { GrupoId: grupoId, UsuarioId: usuarioId } }, (err, linhasAfetadas) => {
 
-        if (err){
+        if (err) {
             log.error(log.TIPO_LOG.SolicitacaoGrupoRemovida, { erro: err, grupoId: grupoId, usuario: req.requestUser.Login });
             return next(err);
         }
+
+        log.info(log.TIPO_LOG.SolicitacaoGrupoRemovida, { erro: err, grupoId: grupoId, usuario: req.requestUser.Login });
 
         if (linhasAfetadas == 1) {
             let integrante = {
@@ -391,7 +402,12 @@ exports.aceitarSolicitacao = function (req, res, next) {
                 createdBy: req.requestUser.Login
             };
             integranteGrupoRepo.add(integrante, (err) => {
-                if (err) return next(err);
+                if (err) {
+                    log.error(log.TIPO_LOG.IntegranteGrupoAdicionado, { erro: err, grupoId: grupoId, usuario: req.requestUser.Login });
+                    return next(err);
+                }
+
+                log.info(log.TIPO_LOG.IntegranteGrupoAdicionado, { grupoId: grupoId, usuario: req.requestUser.Login });
 
                 return res.json({
                     sucesso: true,
@@ -413,20 +429,26 @@ exports.aceitarSolicitacao = function (req, res, next) {
 exports.recusarSolicitacao = function (req, res, next) {
 
     let usuarioId = req.params.idUsuario;
+    let grupoId = req.params.idGrupo;
 
-    solicitacaoRepo.delete({ where: { UsuarioId: usuarioId } }, (err, linhasExcluidas) => {
-        if (err) return next(err);
+    solicitacaoRepo.delete({ where: { UsuarioId: usuarioId, GrupoId: grupoId } }, (err, linhasExcluidas) => {
+        if (err) {
+            log.error(log.TIPO_LOG.SolicitacaoGrupoRemovida, { erro: err, grupoId: grupoId, usuario: req.requestUser.Login });
+            return next(err);
+        }
 
         if (linhasExcluidas == 0)
             return res.json({
                 sucesso: false,
                 mensagem: 'Não existe solicitação pendente para o usuário informado'
             });
-        else
+        else {
+            log.info(log.TIPO_LOG.SolicitacaoGrupoRemovida, { grupoId: grupoId, usuario: req.requestUser.Login });
             return res.json({
                 sucesso: true,
                 mensagem: 'Solicitação removida com sucesso'
             });
+        }
     });
 
 }
@@ -472,8 +494,12 @@ exports.admin = function (req, res, next) {
 
                     integranteGrupoRepo.update({ Admin: false, updatedBy: req.requestUser.Login }, options,
                         (err) => {
-                            if (err) return next(err);
+                            if (err) {
+                                log.error(log.TIPO_LOG.IntegranteGrupoAlterado, { erro: err, grupoId: grupoId, usuario: req.requestUser.Login });
+                                return next(err);
+                            }
 
+                            log.info(log.TIPO_LOG.IntegranteGrupoAlterado, { grupoId: grupoId, usuario: req.requestUser.Login });
                             return res.json({
                                 sucesso: true,
                                 mensagem: 'O usuário agora não é mais Administrador do grupo',
@@ -491,8 +517,12 @@ exports.admin = function (req, res, next) {
                 }
                 integranteGrupoRepo.update({ Admin: true, updatedBy: req.requestUser.Login }, options,
                     (err) => {
-                        if (err) return next(err);
+                        if (err) {
+                            log.error(log.TIPO_LOG.IntegranteGrupoAlterado, { erro: err, grupoId: grupoId, usuario: req.requestUser.Login });
+                            return next(err);
+                        }
 
+                        log.info(log.TIPO_LOG.IntegranteGrupoAlterado, { grupoId: grupoId, usuario: req.requestUser.Login });
                         return res.json({
                             sucesso: true,
                             mensagem: 'O usuário agora é Administrador do grupo',
@@ -539,9 +569,12 @@ exports.removerUsuarioDoGrupo = function (req, res, next) {
 
     grupoService.removerUsuario(grupoId, usuarioId, (err, removido) => {
 
-        if (err)
+        if (err) {
+            log.error(log.TIPO_LOG.IntegranteGrupoRemovido, { erro: err, grupoId: grupoId, usuario: req.requestUser.Login });
             return next(err);
+        }
 
+        log.info(log.TIPO_LOG.IntegranteGrupoRemovido, { grupoId: grupoId, usuario: req.requestUser.Login });
         return res.json({
             sucesso: true,
             mensagem: 'Usuário removido do grupo.'
@@ -561,8 +594,13 @@ exports.trocarVisibilidadeGrupo = function (req, res, next) {
     grupo.updatedBy = req.requestUser.Login;
 
     repository.update(grupo, null, (err) => {
-        if (err) return next(err);
+        if (err) {
+            log.error(log.TIPO_LOG.GrupoAlterado, { erro: err, grupoId: grupo.Id, usuario: req.requestUser.Login });
+            return next(err);
+        }
 
+
+        log.info(log.TIPO_LOG.GrupoAlterado, { grupoId: grupo.Id, usuario: req.requestUser.Login });
         if (grupo.Publico)
             msg = "Este grupo agora é público";
         else

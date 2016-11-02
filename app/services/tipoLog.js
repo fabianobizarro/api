@@ -24,5 +24,10 @@ module.exports = {
     SolicitacaoGrupoRemovida: 'solicitacaogrupo removida',
     
     IntegranteGrupoAdicionado: 'integrantegrupo adicionado',
-    IntegranteGrupoRemovido: 'integrantegrupo removido'
+    IntegranteGrupoRemovido: 'integrantegrupo removido',
+    IntegranteGrupoAlterado: 'integrantegrupo alterado',
+
+    UsuarioCriado: 'usuario criado',
+    UsuarioAlterado: 'usuario alterado',
+    UsuarioExcluido: 'usuario excluido'
 };

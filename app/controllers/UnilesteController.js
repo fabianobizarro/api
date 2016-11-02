@@ -5,7 +5,9 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
   config = require('../../config/env/env'),
   sequelize = require('sequelize'),
 
-  noticiaService = require('../services/noticiaService');
+  noticiaService = require('../services/noticiaService'),
+  logService = require('../services/logService');
+
 
 require('../services/Date');
 
@@ -43,10 +45,6 @@ exports.listarTodasNoticiasUnileste = function (req, res, next) {
       return res.json(noticias);
     });
 
-
-
-  //res.json(['Notícias antigas', `página: ${pagina}`]);
-
 };
 
 exports.cadastrarNoticiaUnileste = function (req, res, next) {
@@ -70,10 +68,12 @@ exports.cadastrarNoticiaUnileste = function (req, res, next) {
   repository.add(noticia, (err, result) => {
 
     if (err) {
+      logService.error(logService.TIPO_LOG.NoticiaCriada, { erro: err, usuario: req.requestUser.Login, GrupoId: noticia.GrupoId });
       res.statusCode = 500;
       return next(err);
     }
     else {
+      logService.info(logService.TIPO_LOG.NoticiaCriada, {usuario: req.requestUser.Login, GrupoId: noticia.GrupoId });
       res.json({
         sucesso: true,
         mensagem: 'Notícia cadastrada com sucesso'
