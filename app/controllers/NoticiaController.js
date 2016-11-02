@@ -17,7 +17,10 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
 
     ObjectId = require('mongoose').Types.ObjectId,
     dateService = require('../services/dateService'),
-    models = require('../models');
+    models = require('../models'),
+
+
+    log = require('../services/logService');
 
 require('../services/Array');
 
@@ -36,47 +39,8 @@ exports.listarNoticias = function (req, res, next) {
         });
 }
 
-// exports.adicionarNoticia = function (req, res, next) {
-
-//     var noticia = req.body;
-
-//     noticia.GrupoId = req.grupo._id;
-//     noticia.createdBy = req.requestUser.Login;
-
-//     //Adiciona a notícia na coleção
-//     repository.add(noticia, (err, noti) => {
-
-//         if (err)
-//             return next(err);
-
-//         var grupo = req.grupo;
-
-//         // Atualiza o registro do grupo
-//         //Adiciona o ID da notícia cadastrada na coleção de notícias do grupo
-//         grupoRepo.findOneAndUpdate(grupo._id,
-//             { '$addToSet': { noticias: noti._id } },
-//             (err) => {
-
-
-//                 if (err)
-//                     return next(err);
-
-//                 res.json({
-//                     sucesso: true,
-//                     mensagem: 'Notícia cadastrada com sucesso.'
-//                 });
-
-
-//             });
-
-//         grupoRepo.update(grupo, (err) => {
-
-
-//         });
-//     });
-// }
-
 exports.exibirNoticia = function (req, res, next) {
+    log.info(log.TIPO_LOG.NoticiaVisualizada, { noticiaId: req.noticia.Id, usuario: req.requestUser.Login });
     return res.json(req.noticia);
 };
 
@@ -94,24 +58,16 @@ exports.obterNoticiaPorId = function (req, res, next, idNoticia) {
 exports.excluirNoticia = function (req, res, next) {
 
     repository.delete({ where: { Id: req.noticia.Id } }, (err) => {
-        if (err)
+        if (err) {
+            log.error(log.TIPO_LOG.NoticiaExcluida, { erro: err, noticiaId: req.noticia.Id, usuario: req.requestUser.Login });
             return next(err);
+        }
 
-
+        log.info(log.TIPO_LOG.NoticiaExcluida, { noticiaId: req.noticia.Id, usuario: req.requestUser.Login });
         res.json({
             sucesso: true,
             mensagem: 'A notícia foi excluída com sucesso.'
         });
-
-        // grupoRepo.findOneAndUpdate(req.grupo._id, {
-        //     '$pull': { 'noticias': req.noticia._id }
-        // }, (err) => {
-
-        //     res.json({
-        //         sucesso: true,
-        //         mensagem: 'A notícia foi excluída com sucesso.'
-        //     });
-        // })
     });
 };
 
@@ -134,9 +90,12 @@ exports.alterarNoticia = function (req, res, next) {
     repository.update(noticia, { where: { Id: req.noticia.Id } }, (err) => {
 
         if (err) {
+            log.error(log.TIPO_LOG.NoticiaAlterada, { erro: err, noticiaId: req.noticia.Id, usuario: req.requestUser.Login });
             res.statusCode = 500;
             return next(err);
         }
+
+        log.info(log.TIPO_LOG.NoticiaAlterada, { noticiaId: req.noticia.Id, usuario: req.requestUser.Login });
 
         res.json({
             sucesso: true,
@@ -170,10 +129,14 @@ exports.adicionarComentario = function (req, res, next) {
             comentario.createdBy = req.requestUser.Login;
 
             comentarioRepo.add(comentario, (err, comment) => {
-                if (err) return next(err);
+                if (err) {
+                    log.error(log.TIPO_LOG.ComentarioAdicionado, { erro: err, noticiaId: req.noticia.Id, usuario: req.requestUser.Login });
+                    return next(err);
+                }
 
                 comentario.Id = comment.Id;
 
+                log.info(log.TIPO_LOG.ComentarioAdicionado, { noticiaId: req.noticia.Id, usuario: req.requestUser.Login });
                 return res.json({
                     sucesso: true,
                     mensagem: 'Comentário adicionado com sucesso',
@@ -433,10 +396,10 @@ exports.podeRemoverComentario = function (req, res, next) {
                 }
                 else {
                     // validar se o usuário é administrador do unileste
-                    if (grupoId == env.unilesteId && usuario.Admin){
+                    if (grupoId == env.unilesteId && usuario.Admin) {
                         next();
                     }
-                    else 
+                    else
                         return res.status(403)
                             .json({
                                 sucesso: false,
