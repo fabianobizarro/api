@@ -6,52 +6,29 @@ exports.index = function (req, res, next) {
     res.end('Index');
 };
 
-exports.qt_noticiasPorCategoria = function (req, res, next) {
+exports.tags = function (req, res, next) {
 
-    return res.json([]);
+    let dtInicio = req.params.dtInicio;
+    let dtFim = req.params.dtFim;
 
-    // var dataInicio = dateService.dataFormatada(req.params.dti);
-    // var dataTermino = dateService.dataFormatada(req.params.dtt);
+    if (!dtInicio || !dtFim) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: 'As datas de início e término do preíodo são obrigatórias'
+        })
+    };
 
-    // console.log(dataInicio)
-    // console.log(dataTermino)
+    reportService.tags(dtInicio, dtFim, (err, resultados) => {
 
-    // if (dataInicio && dataTermino) {
+        if (err) {
+            return next(err);
+        }
+        else {
+            return res.json(resultados);
+        }
 
-    //     dataInicio = new Date(dataInicio.ano, dataInicio.mes - 1, dataInicio.dia);
-    //     dataTermino = new Date(dataTermino.ano, dataTermino.mes - 1, dataTermino.dia);
+    });
 
-
-    //     categoriaRepo.getAll((err, categorias) => {
-
-    //         if (err) return next(err);
-
-    //         categorias = categorias.map(item => {
-    //             return {
-    //                 _id: item._id, nome: item.nome
-    //             }
-    //         });
-    //         console.log(dataInicio)
-    //         console.log(dataTermino)
-    //         reportService.quanditateNoticiaPorCategoria(dataInicio, dataTermino, (err, result) => {
-    //             if (err)
-    //                 return next(err);
-
-    //             console.log(categorias)
-    //             console.log(result)
-
-    //             result.forEach(item => {
-    //                 item.nome = categorias.where(i => { return i._id == item._id })[0].nome;
-    //             });
-
-    //             console.log(result);
-    //             res.json(result);
-    //         });
-
-    //     });
-
-    // }
-    // else
-    //     return next(new Error('A requisição possui parâmetros inválidos'));
 
 };
+
