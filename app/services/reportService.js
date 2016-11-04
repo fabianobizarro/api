@@ -8,8 +8,21 @@ exports.tags = function (dataInicio, dataTermino, callback) {
     obterTodasTags(dataInicio, dataTermino, (err, tags) => {
         if (err) callback(err);
 
+        tags = tags || [];
+
         obterNoticias(dataInicio, dataTermino, (err, noticias) => {
             if (err) callback(err);
+
+
+            if (noticias.length == 0) {
+                return callback(null, {
+                    totalTags: 0,
+                    totalTagsDiferentes: 0,
+                    percentagemTotal: 0,
+                    resultados: [],
+                    mensagem: 'Não foram encontrados registros para o relatório'
+                });
+            }
 
             let totalTags = tags.length;
             let resultados = [];
@@ -34,7 +47,7 @@ exports.tags = function (dataInicio, dataTermino, callback) {
             }, this);
 
 
-            resultados = orderByCount(resultados);
+            resultados = orderByTotal(resultados);
 
             let report = {
                 totalTags: totalTags,
@@ -60,6 +73,7 @@ let obterTodasTags = function (dtInicio, dtFim, callback) {
         if (err) callback(err);
 
         let tags = result[0].Tags;
+        tags = tags || "";
         tags = tags.split(',');
 
         callback(null, tags);
@@ -87,12 +101,12 @@ let obterNoticias = function (dtInicio, dtFim, callback) {
     });
 }
 
-let orderByCount = function (resultados) {
+let orderByTotal = function (resultados) {
     return resultados.sort((a, b) => {
-        if (a.count > b.count)
+        if (a.total > b.total)
             return -1;
 
-        if (a.count < b.count)
+        if (a.total < b.total)
             return 1;
 
         return 0;
