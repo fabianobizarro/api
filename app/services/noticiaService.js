@@ -106,12 +106,14 @@ exports.obterNoticiaPorId = function (idNoticia, callback) {
         if (err) callback(err);
         noticia = noticia[0];
 
-        if (!noticia)
+        if (!noticia) {
             callback(new Error('Notícia não encontrada'));
+        }
+        else {
+            noticia.Tags = noticia.Tags == null || noticia.Tags == '' ? [] : noticia.Tags.split(',');
 
-        noticia.Tags = noticia.Tags == null || noticia.Tags == '' ? [] : noticia.Tags.split(',');
-
-        callback(null, noticia);
+            callback(null, noticia);
+        }
 
     });
 
