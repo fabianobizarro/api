@@ -271,7 +271,10 @@ exports.historicoUsuario = function (req, res, next) {
 
     let usuarioId = req.usuario.Id;
 
-    usuarioService.historicoUsuario(usuarioId, (err, historico) => {
+    let dataInicio = req.query.dataInicio;
+    let dataFim = req.query.dataFim;
+
+    usuarioService.historicoUsuario(usuarioId, dataInicio, dataFim, (err, historico) => {
         if (err)
             return next(err);
 

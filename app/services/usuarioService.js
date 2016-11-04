@@ -3,7 +3,7 @@ var UsuarioRepository = require('../repositories/UsuarioRepository');
 
 
 
-exports.historicoUsuario = function(usuarioId, callback){
+exports.historicoUsuario = function (usuarioId, dataInicio, dataFim, callback) {
 
     let id = parseInt(usuarioId);
 
@@ -11,7 +11,9 @@ exports.historicoUsuario = function(usuarioId, callback){
         callback(new Error('Valor do Id do usuário é inválido'));
 
 
-    let sql = `/* CURTIDAS */
+    let sql = `
+            SELECT * FROM (
+                /* CURTIDAS */
                 SELECT
                     C.createdAt as data,
                     U.Login as usuario,
@@ -78,13 +80,17 @@ exports.historicoUsuario = function(usuarioId, callback){
                 FROM usuario 
                 WHERE ID = ${id}
 
-                ORDER BY Data DESC`;
+                ORDER BY Data DESC
+            ) AS Historico `;
 
+    if (dataInicio && dataFim) {
+        sql += ` WHERE data between date('${dataInicio}') and date('${dataFim}')`;
+    }
 
     UsuarioRepository.query(sql, null, callback);
 }
 
-exports.feedUsuario = function(usuarioId, unilesteId, callback){
+exports.feedUsuario = function (usuarioId, unilesteId, callback) {
 
     let sql = `
                 -- Notícias criadas
