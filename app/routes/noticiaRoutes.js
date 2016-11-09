@@ -3,6 +3,8 @@
 module.exports = function () {
 
     let controller = require('../controllers/NoticiaController');
+    let usuarioController = require('../controllers/UsuarioController');
+    let reportController = require('../controllers/ReportController');
 
     var router = require("express").Router();
 
@@ -29,6 +31,9 @@ module.exports = function () {
 
     router.route('/noticia/:idNoticia/curtidas')
         .get(controller.obterCurtidas);
+
+    router.route('/noticia/:idNoticia/analitico')
+        .get([usuarioController.requestUserIsAdmin, reportController.dadosAnaliticos]);
 
     router.param('idNoticia', controller.obterNoticiaPorId);
 
