@@ -26,7 +26,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         {
             frezzeTableName: true,
-            tableName: 'IntegranteGrupo',
+            tableName: 'integrantegrupo',
             classMethods: {
                 associate: function (models) {
 

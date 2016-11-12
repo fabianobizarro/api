@@ -38,7 +38,7 @@ module.exports = function (sequelize, DataTypes) {
         {
 
             frezzeTableName: true,
-            tableName: 'Comentario',
+            tableName: 'comentario',
             classMethods: {
                 associate: function (models) {
                     Comentario.belongsTo(models.Noticia, {

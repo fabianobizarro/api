@@ -34,7 +34,7 @@ module.exports = function (sequelize, DataTypes) {
 
         },
         {
-            tableName: 'Curtida',
+            tableName: 'curtida',
             frezzeTableName: true,
 
             classMethods: {

@@ -23,7 +23,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         {
             frezzeTableName: true,
-            tableName: 'SolicitacaoGrupoPendente',
+            tableName: 'solicitacaogrupopendente',
             classMethods: {
                 associate: function (models) {
                 }

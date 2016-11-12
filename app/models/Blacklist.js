@@ -22,7 +22,7 @@ module.exports = function (sequelize, DataTypes) {
 
         },
         {
-            tableName: 'Blacklist',
+            tableName: 'blacklist',
             frezzeTableName: true,
 
             classMethods: {

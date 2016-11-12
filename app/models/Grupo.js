@@ -36,7 +36,7 @@ module.exports = function (sequelize, DataTypes) {
         {
 
             frezzeTableName: true,
-            tableName: 'Grupo',
+            tableName: 'grupo',
             classMethods: {
                 associate: function (models) {
 
