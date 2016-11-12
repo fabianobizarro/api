@@ -15,7 +15,7 @@ exports.obterGrupos = function (usuarioId, callback) {
     let sql = `
     SELECT G.Id, G.Nome, G.Descricao, G.Publico,
     (SELECT ADMIN FROM integrantegrupo WHERE GrupoId = G.ID AND UsuarioId = ${usuarioId} LIMIT 1) AS usuarioAdmin
-    FROM GRUPO G
+    FROM grupo G
     INNER JOIN INTEGRANTEGRUPO IG ON G.ID = IG.GRUPOID
     WHERE IG.USUARIOID = ${usuarioId} AND GRUPOID <> ${env.unilesteId}`;
 
@@ -48,7 +48,7 @@ exports.obterNoticias = function (grupoId, usuarioId, callback) {
         (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
         (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
         (SELECT 1 FROM Curtida WHERE UsuarioId = ${usuarioId} AND NoticiaId = N.Id LIMIT 1) as Curtiu
-    FROM Noticia N
+    FROM noticia N
     WHERE N.GrupoId = ${grupoId}
     ORDER BY N.Data DESC`;
 
@@ -60,8 +60,8 @@ exports.obterSolicitacoesPendentes = function (grupoId, callback) {
 
     let sql = `
     SELECT u.Id, u.Login, u.UrlFoto
-    FROM Solicitacaogrupopendente SP
-        INNER JOIN Usuario U
+    FROM solicitacaogrupopendente SP
+        INNER JOIN usuario U
         ON SP.UsuarioId = U.Id
     WHERE SP.GrupoId = ${grupoId}`;
 
@@ -73,8 +73,8 @@ exports.usuarioNoGrupo = function (grupoId, usuarioId, callback) {
 
     let sql = `
     SELECT 1 AS Integrante
-    FROM INTEGRANTEGRUPO
-    WHERE GRUPOID = ${grupoId} AND USUARIOID = ${usuarioId}`;
+    FROM integrantegrupo
+    WHERE GrupoId = ${grupoId} AND UsuarioId = ${usuarioId}`;
 
     GrupoRepository.query(sql, null, (err, result, res) => {
         if (err) callback(err);
@@ -100,7 +100,7 @@ exports.pesquisarGrupos = function (textoPesquisa, idUsuario, callback) {
         G.Descricao,
         G.Publico,
         (SELECT 1 FROM integrantegrupo WHERE GrupoId = G.Id AND UsuarioId = ${idUsuario} LIMIT 1) AS Integrante
-    FROM GRUPO G
+    FROM grupo G
     WHERE
         G.Nome LIKE '%${textoPesquisa}%'
         OR G.Descricao LIKE '%${textoPesquisa}%'

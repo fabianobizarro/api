@@ -9,7 +9,7 @@ class BlacklistRepository extends BaseRepository {
 
     findAll(option, callback) {
 
-        let sql = 'SELECT Palavra FROM sn.Blacklist ORDER BY Palavra';
+        let sql = 'select Palavra FROM sn.blacklist ORDER BY Palavra';
 
         BlacklistRepository.query(sql, null, callback);
     }

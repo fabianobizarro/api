@@ -20,9 +20,9 @@ exports.historicoUsuario = function (usuarioId, dataInicio, dataFim, callback) {
                     concat('curtiu a notícia: ', N.Titulo) as atividade,
                     'curtida' as tipo
                 FROM
-                    CURTIDA C
-                    INNER JOIN NOTICIA N ON N.ID = C.NOTICIAID
-                    INNER JOIN USUARIO U ON U.ID = C.USUARIOID
+                    curtida C
+                    INNER JOIN noticia N ON N.ID = C.NOTICIAID
+                    INNER JOIN usuario U ON U.ID = C.USUARIOID
                 WHERE
                     C.UsuarioId = ${id}
                     

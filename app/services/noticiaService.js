@@ -25,12 +25,12 @@ exports.obterNoticiasPorGrupo = function (idGrupo, idUsuarioToken, skip, page, c
                 N.Data,
                 N.Tags,
                 N.UrlImagem,
-                (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
-                (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
-                (SELECT 1 FROM Curtida WHERE UsuarioId = ${idUsuarioToken} AND NoticiaId = N.Id LIMIT 1) as Curtiu
+                (SELECT COUNT(*) FROM curtida WHERE NoticiaId = N.Id) as Curtidas,
+                (SELECT COUNT(*) FROM comentario WHERE NoticiaId = N.Id) as Comentarios,
+                (SELECT 1 FROM curtida WHERE UsuarioId = ${idUsuarioToken} AND NoticiaId = N.Id LIMIT 1) as Curtiu
 
                 FROM
-                    Noticia N
+                    noticia N
 
                 WHERE N.GrupoId = ${idGrupo}
                 ORDER BY N.DATA DESC
@@ -60,12 +60,12 @@ exports.obterNoticiasPorDataeGrupo = function (data, idGrupo, idUsuarioToken, ca
                 N.Data,
                 N.Tags,
                 N.UrlImagem,
-                (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
-                (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
-                (SELECT 1 FROM Curtida WHERE UsuarioId = ${idUsuarioToken} AND NoticiaId = N.Id LIMIT 1) as Curtiu
+                (SELECT COUNT(*) FROM curtida WHERE NoticiaId = N.Id) as Curtidas,
+                (SELECT COUNT(*) FROM comentario WHERE NoticiaId = N.Id) as Comentarios,
+                (SELECT 1 FROM curtida WHERE UsuarioId = ${idUsuarioToken} AND NoticiaId = N.Id LIMIT 1) as Curtiu
 
                 FROM
-                    Noticia N
+                    noticia N
 
                 WHERE date(N.Data) = DATE('${data}')
                     AND N.GrupoId = ${idGrupo}
@@ -84,8 +84,8 @@ exports.obterNoticiasPorDataeGrupo = function (data, idGrupo, idUsuarioToken, ca
 
 exports.obterNoticiaPorId = function (idNoticia, callback) {
     let sql = `SELECT
-                (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
-                (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
+                (SELECT COUNT(*) FROM curtida WHERE NoticiaId = N.Id) as Curtidas,
+                (SELECT COUNT(*) FROM comentario WHERE NoticiaId = N.Id) as Comentarios,
                 N.Id,
                 N.Titulo,
                 N.Alias,
@@ -97,7 +97,7 @@ exports.obterNoticiaPorId = function (idNoticia, callback) {
                 N.GrupoId
 
                 FROM
-                Noticia N
+                noticia N
 
                 WHERE N.Id = ${idNoticia}
                 ORDER BY N.DATA DESC;`;
@@ -123,9 +123,9 @@ exports.obterCurtidas = function (idNoticia, callback) {
 
 
     let sql = `SELECT
-                U.Login AS Usuario
-                FROM Curtida C
-                INNER JOIN Usuario U ON U.Id = C.UsuarioId
+                U.Login AS usuario
+                FROM curtida C
+                INNER JOIN usuario U ON U.Id = C.UsuarioId
                 WHERE C.NoticiaId = ${idNoticia}`;
 
     NoticiaRepository.query(sql, null, callback);
@@ -139,8 +139,8 @@ exports.obterComentarios = function (idNoticia, callback) {
                 U.Login as Usuario,
                 U.UrlFoto as UrlFoto
 
-                FROM Comentario C 
-                INNER JOIN Usuario U 
+                FROM comentario C 
+                INNER JOIN usuario U 
                 ON U.Id = C.UsuarioId
                 
                 WHERE NoticiaId = ${idNoticia}`;
@@ -161,14 +161,14 @@ exports.pesquisarNoticia = function (texto, dataInicio, dataTermino, idUsuario, 
         N.Tags,
         N.UrlImagem,
         G.NOME AS Grupo,
-        (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
-        (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
-        (SELECT 1 FROM Curtida WHERE UsuarioId = ${idUsuario} AND NoticiaId = N.Id LIMIT 1) as Curtiu
+        (SELECT COUNT(*) FROM curtida WHERE NoticiaId = N.Id) as Curtidas,
+        (SELECT COUNT(*) FROM comentario WHERE NoticiaId = N.Id) as Comentarios,
+        (SELECT 1 FROM curtida WHERE UsuarioId = ${idUsuario} AND NoticiaId = N.Id LIMIT 1) as Curtiu
 
         FROM
-            Noticia N
-            INNER JOIN GRUPO G ON G.ID = N.GRUPOID
-            INNER JOIN INTEGRANTEGRUPO IG ON IG.GRUPOID = G.ID AND IG.USUARIOID = ${idUsuario} OR IG.GRUPOID = ${idUnileste}
+            noticia N
+            INNER JOIN grupo G ON G.ID = N.GRUPOID
+            INNER JOIN integrantegrupo IG ON IG.GRUPOID = G.ID AND IG.USUARIOID = ${idUsuario} OR IG.GRUPOID = ${idUnileste}
 
         WHERE 
             (N.Titulo LIKE '%${texto}%' OR N.RESUMO LIKE '%${texto}%' OR N.TAGS LIKE '%${texto}%') `;
