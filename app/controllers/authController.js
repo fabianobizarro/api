@@ -3,7 +3,8 @@ var crypto = require('crypto');
 var UsuarioRepository = require('../repositories/UsuarioRepository'),
     authService = require("../services/authService"),
     emailService = require('../services/emailService'),
-    logService = require('../services/logService');
+    logService = require('../services/logService'),
+    env = require('../../config/env/env');
 
 require('../services/dateService'); //Date methods
 
@@ -231,7 +232,7 @@ exports.enviarLinkAlteracaoSenha = function (req, res, next) {
                     from: '"ShareNews" <contato@sharenews.co>',
                     to: usuario.Email,
                     subject: 'Recuperação de senha',
-                    html: `Você solicitou a troca de senha.<br>Para trocar sua senha, basta acessar http://localhost:8080/senha?t=${token}`
+                    html: `Você solicitou a troca de senha.<br>Para trocar sua senha, basta acessar ${env.resetPasswdUrl}${token}`
                 });
 
                 res.json({
