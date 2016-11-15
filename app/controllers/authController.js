@@ -218,7 +218,7 @@ exports.enviarLinkAlteracaoSenha = function (req, res, next) {
 
         crypto.randomBytes(43, (err, buffer) => {
             let token = buffer.toString('hex');
-            let dataExp = new Date().addDays(1).toLocaleString();
+            let dataExp = new Date().addDays(7).toLocaleString();
 
             usuario.TokenSenha = token;
             usuario.TokenSenhaExp = dataExp;
