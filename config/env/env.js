@@ -3,7 +3,7 @@
 var env = {
 
     secret: process.env.APP_SECRET || 'secret',
-    unilesteId: process.env.INST_ID || '2',
+    unilesteId: process.env.INST_ID || '1',
     dbLogUri: process.env.DBLOG_URI || 'mongodb://192.168.99.100:27017/dblog',
     dbConnectionUri: process.env.DB_CONN_URI || '',
     resetPasswdUrl: process.env.RESET_PASSWD_URL || 'http://localhost:8080/senha?t=',
