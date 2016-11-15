@@ -1,6 +1,7 @@
-FROM node:7.0.0
+FROM node:7
 
 LABEL version=0.1.0
+MAINTAINER Fabiano Bizarro <fabianoasbizarro@gmail.com>
 
 RUN mkdir /app
 COPY . /app
