@@ -16,7 +16,7 @@ exports.obterGrupos = function (usuarioId, callback) {
     SELECT G.Id, G.Nome, G.Descricao, G.Publico,
     (SELECT ADMIN FROM integrantegrupo WHERE GrupoId = G.ID AND UsuarioId = ${usuarioId} LIMIT 1) AS usuarioAdmin
     FROM grupo G
-    INNER JOIN INTEGRANTEGRUPO IG ON G.ID = IG.GRUPOID
+    INNER JOIN integrantegrupo IG ON G.ID = IG.GRUPOID
     WHERE IG.USUARIOID = ${usuarioId} AND GRUPOID <> ${env.unilesteId}`;
 
     GrupoRepository.query(sql, null, callback);
