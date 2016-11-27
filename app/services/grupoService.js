@@ -45,9 +45,9 @@ exports.obterNoticias = function (grupoId, usuarioId, callback) {
         N.Data,
         N.Tags,
         N.UrlImagem,
-        (SELECT COUNT(*) FROM Curtida WHERE NoticiaId = N.Id) as Curtidas,
-        (SELECT COUNT(*) FROM Comentario WHERE NoticiaId = N.Id) as Comentarios,
-        (SELECT 1 FROM Curtida WHERE UsuarioId = ${usuarioId} AND NoticiaId = N.Id LIMIT 1) as Curtiu
+        (SELECT COUNT(*) FROM curtida WHERE NoticiaId = N.Id) as Curtidas,
+        (SELECT COUNT(*) FROM comentario WHERE NoticiaId = N.Id) as Comentarios,
+        (SELECT 1 FROM curtida WHERE UsuarioId = ${usuarioId} AND NoticiaId = N.Id LIMIT 1) as Curtiu
     FROM noticia N
     WHERE N.GrupoId = ${grupoId}
     ORDER BY N.Data DESC`;
