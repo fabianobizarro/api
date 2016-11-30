@@ -60,10 +60,10 @@ exports.obterSolicitacoesPendentes = function (grupoId, callback) {
 
     let sql = `
     SELECT u.Id, u.Login, u.UrlFoto
-    FROM solicitacaogrupopendente SP
-        INNER JOIN usuario U
-        ON SP.UsuarioId = U.Id
-    WHERE SP.GrupoId = ${grupoId}`;
+    FROM solicitacaogrupopendente sp
+        INNER JOIN usuario u
+        ON sp.UsuarioId = u.Id
+    WHERE sp.GrupoId = ${grupoId}`;
 
     GrupoRepository.query(sql, null, callback);
 

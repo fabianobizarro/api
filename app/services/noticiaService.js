@@ -151,7 +151,7 @@ exports.obterComentarios = function (idNoticia, callback) {
 exports.pesquisarNoticia = function (texto, dataInicio, dataTermino, idUsuario, idUnileste, callback) {
 
     let sql = `
-        SELECT
+        SELECT DISTINCT 
         N.Id,
         N.Titulo,
         N.Alias,
