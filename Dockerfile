@@ -9,6 +9,7 @@ WORKDIR /app
 
 RUN npm install
 
+ENV TZ=Brazil/East
 ENV APP_SECRET ''
 ENV INST_ID ''
 ENV DBLOG_URI ''
@@ -18,6 +19,8 @@ ENV EMAIL_HOST ''
 ENV EMAIL_USERNAME ''
 ENV EMAIL_PASSWD ''
 ENV NODE_ENV ''
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 VOLUME ["/app/log"]
 
