@@ -8,7 +8,7 @@ var env       = process.env.NODE_ENV || 'development';
 var envConfig = require(__dirname + '/../../config/env/env');
 var db        = {};
 
-var sequelize = new Sequelize(process.env.DB_CONN_URI, {dialect: "mysql", timezone: "-03:00", logging: false });
+var sequelize = new Sequelize(envConfig.dbConnectionUri, {dialect: "mysql", timezone: "-03:00", logging: false });
 
 fs
   .readdirSync(__dirname)

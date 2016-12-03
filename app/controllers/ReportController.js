@@ -87,7 +87,7 @@ exports.dadosAnaliticos = function (req, res, next) {
                 periodo: dataInicio && dataInicio ? dataInicio + ' à ' + dataFim : "Todos",
                 dados: report
             }
-
+            
             res.json(dados);
 
         });

@@ -106,7 +106,7 @@ exports.alterarNoticia = function (req, res, next) {
 
 exports.adicionarComentario = function (req, res, next) {
 
-    var descComentario = req.body.comentario;
+    var descComentario = req.body.comentario || req.body.Comentario;
     if (!descComentario) {
         res.status(400)
             .json({
@@ -246,7 +246,7 @@ exports.curtirNoticia = function (req, res, next) {
         if (err)
             return next(err);
 
-        let usuarioCurtiu = results.where(n => n.Usuario == req.requestUser.Login).length;
+        let usuarioCurtiu = results.where(n => n.usuario == req.requestUser.Login).length;
         if (usuarioCurtiu == 0)
             addCurtida();
         else

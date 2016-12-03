@@ -151,27 +151,71 @@ exports.obterComentarios = function (idNoticia, callback) {
 exports.pesquisarNoticia = function (texto, dataInicio, dataTermino, idUsuario, idUnileste, callback) {
 
     let sql = `
-        SELECT DISTINCT 
-        N.Id,
-        N.Titulo,
-        N.Alias,
-        N.Resumo,
-        N.Conteudo,
-        N.Data,
-        N.Tags,
-        N.UrlImagem,
-        G.NOME AS Grupo,
-        (SELECT COUNT(*) FROM curtida WHERE NoticiaId = N.Id) as Curtidas,
-        (SELECT COUNT(*) FROM comentario WHERE NoticiaId = N.Id) as Comentarios,
-        (SELECT 1 FROM curtida WHERE UsuarioId = ${idUsuario} AND NoticiaId = N.Id LIMIT 1) as Curtiu
+        #GRUPOS PRIVADOS
+            SELECT DISTINCT
+                    N.Id,
+                    N.Titulo,
+                    N.Alias,
+                    N.Resumo,
+                    N.Conteudo,
+                    N.Data,
+                    N.Tags,
+                    N.UrlImagem,
+                    G.NOME AS Grupo,
+                    (SELECT COUNT(*) FROM curtida WHERE NoticiaId = N.Id) as Curtidas,
+                    (SELECT COUNT(*) FROM comentario WHERE NoticiaId = N.Id) as Comentarios,
+                    (SELECT 1 FROM curtida WHERE UsuarioId = ${idUsuario} AND NoticiaId = N.Id LIMIT 1) as Curtiu
 
-        FROM
-            noticia N
-            INNER JOIN grupo G ON G.ID = N.GRUPOID
-            INNER JOIN integrantegrupo IG ON IG.GRUPOID = G.ID AND IG.USUARIOID = ${idUsuario} OR IG.GRUPOID = ${idUnileste}
+                    FROM
+                        noticia N
+                        INNER JOIN grupo G ON G.ID = N.GRUPOID
+                        INNER JOIN integrantegrupo IG ON IG.GRUPOID = G.ID AND IG.USUARIOID = ${idUsuario} 
+                    WHERE 
+                        (N.Titulo LIKE '%${texto}%' OR N.RESUMO LIKE '%${texto}%' OR N.TAGS LIKE '%${texto}%')
+            UNION 
+            # GRUPO DO UNILESTE
+            SELECT DISTINCT
+                    N.Id,
+                    N.Titulo,
+                    N.Alias,
+                    N.Resumo,
+                    N.Conteudo,
+                    N.Data,
+                    N.Tags,
+                    N.UrlImagem,
+                    G.NOME AS Grupo,
+                    (SELECT COUNT(*) FROM curtida WHERE NoticiaId = N.Id) as Curtidas,
+                    (SELECT COUNT(*) FROM comentario WHERE NoticiaId = N.Id) as Comentarios,
+                    (SELECT 1 FROM curtida WHERE UsuarioId = ${idUsuario} AND NoticiaId = N.Id LIMIT 1) as Curtiu
 
-        WHERE 
-            (N.Titulo LIKE '%${texto}%' OR N.RESUMO LIKE '%${texto}%' OR N.TAGS LIKE '%${texto}%') `;
+                    FROM
+                        noticia N
+                        INNER JOIN grupo G ON G.ID = N.GRUPOID
+                    WHERE 
+                        (N.Titulo LIKE '%${texto}%' OR N.RESUMO LIKE '%${texto}%' OR N.TAGS LIKE '%${texto}%')
+                        AND G.Id = ${idUnileste}
+            UNION
+            # GRUPOS PUBLICOS
+            SELECT DISTINCT
+                    N.Id,
+                    N.Titulo,
+                    N.Alias,
+                    N.Resumo,
+                    N.Conteudo,
+                    N.Data,
+                    N.Tags,
+                    N.UrlImagem,
+                    G.NOME AS Grupo,
+                    (SELECT COUNT(*) FROM curtida WHERE NoticiaId = N.Id) as Curtidas,
+                    (SELECT COUNT(*) FROM comentario WHERE NoticiaId = N.Id) as Comentarios,
+                    (SELECT 1 FROM curtida WHERE UsuarioId = ${idUsuario} AND NoticiaId = N.Id LIMIT 1) as Curtiu
+
+                    FROM
+                        noticia N
+                        INNER JOIN grupo G ON G.ID = N.GRUPOID
+                    WHERE 
+                        (N.Titulo LIKE '%${texto}%' OR N.RESUMO LIKE '%${texto}%' OR N.TAGS LIKE '%${texto}%')
+                        AND G.Publico = 1`;
 
 
     if ((dataInicio != null && dataInicio != '') && (dataTermino != null && dataTermino != '')) {
