@@ -5,7 +5,7 @@ var GrupoRepository = require('../repositories/GrupoRepository'),
 
     grupoRepo = new GrupoRepository(),
     integranteGrupoRepo = new IntegranteGrupoRepository(),
-    env = require('../../config/env/env');
+    env = require('../../config/env');
 
 
 

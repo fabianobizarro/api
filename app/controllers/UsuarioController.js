@@ -4,7 +4,7 @@ var UsuarioRepository = require('../repositories/UsuarioRepository'),
 
     usuarioService = require('../services/usuarioService'),
 
-    env = require('../../config/env/env'),
+    env = require('../../config/env'),
     logService = require("../services/logService");
 
 

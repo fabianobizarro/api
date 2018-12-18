@@ -1,6 +1,6 @@
 'use strict';
 
-var env = require('../../config/env/env'),
+var env = require('../../config/env'),
     BlacklistRepository = require('../repositories/BlacklistRepository'),
     logService = require('../services/logService');
 

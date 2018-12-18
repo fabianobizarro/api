@@ -13,7 +13,7 @@ var NoticiaRepository = require('../repositories/NoticiaRepository'),
     comentarioRepo = new ComentarioRepository(),
     curtidaRepo = new CurtidaRepository(),
 
-    env = require('../../config/env/env'),
+    env = require('../../config/env'),
 
     ObjectId = require('mongoose').Types.ObjectId,
     dateService = require('../services/dateService'),

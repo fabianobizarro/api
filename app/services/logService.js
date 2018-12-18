@@ -2,7 +2,7 @@
 
 let winston = require('winston');
 require('winston-mongodb').MongoDB;
-var env = require('../../config/env/env');
+var env = require('../../config/env');
 
 
 

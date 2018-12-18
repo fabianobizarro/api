@@ -4,7 +4,7 @@ var UsuarioRepository = require('../repositories/UsuarioRepository'),
     authService = require("../services/authService"),
     emailService = require('../services/emailService'),
     logService = require('../services/logService'),
-    env = require('../../config/env/env');
+    env = require('../../config/env');
 
 require('../services/dateService'); //Date methods
 

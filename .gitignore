@@ -33,3 +33,7 @@ typings
 # config/env
 
 .vscode
+
+.env
+
+.ini

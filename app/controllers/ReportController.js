@@ -2,7 +2,7 @@ var dateService = require('../services/dateService');
 var reportService = require('../services/reportService');
 require('../services/Array');
 var MongoClient = require('mongodb').MongoClient;
-var env = require('../../config/env/env');
+var env = require('../../config/env');
 
 
 

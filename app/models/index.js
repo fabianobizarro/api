@@ -7,6 +7,7 @@ var basename  = path.basename(module.filename);
 var env       = process.env.NODE_ENV || 'development';
 var envConfig = require(__dirname + '/../../config/env/env');
 var db        = {};
+console.log(envConfig);
 
 var sequelize = new Sequelize(envConfig.dbConnectionUri, {dialect: "mysql", timezone: "-03:00", logging: false });
 

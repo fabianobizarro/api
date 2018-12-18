@@ -16,7 +16,7 @@ var GrupoRepository = require('../repositories/GrupoRepository'),
 
 var log = require('../services/logService');
 
-var env = require('../../config/env/env');
+var env = require('../../config/env');
 
 require('../services/Array');
 

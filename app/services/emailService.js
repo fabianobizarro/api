@@ -1,5 +1,5 @@
 var nodemailer = require('nodemailer');
-var env = require('../../config/env/env');
+var env = require('../../config/env');
 
 exports.sendMail = function (mailOptions, callback) {
 
