@@ -1,0 +1,41 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title> Usuário </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+  <div class="card-background-image">
+    <div class="container">
+      <img src="{{usuario.UrlFoto || 'images/user-default.svg'}}" class="profile-pic">
+      <h2>@{{usuario.Login}} </h2>
+      <h2> {{usuario.Nome}} </h2>
+    </div>
+  </div>
+
+  <ion-grid>
+    <ion-row *ngFor="let atividade of historicoAtividades" center>
+      <ion-col width-20>
+        <ion-icon *ngIf="atividade.tipo == 'curtida'" name="heart" danger class="hist-icon"></ion-icon>
+        <ion-icon *ngIf="atividade.tipo == 'noticia'" name="paper" primary class="hist-icon"></ion-icon>
+        <ion-icon *ngIf="atividade.tipo == 'comentario'" name="chatboxes" secondary class="hist-icon"></ion-icon>
+        <ion-icon *ngIf="atividade.tipo == 'grupo'" name="people" primary class="hist-icon"></ion-icon>
+        <ion-icon *ngIf="atividade.tipo == 'usuario'" name="person" primary class="hist-icon"></ion-icon>
+      </ion-col>
+      <ion-col width-80>
+        <ion-card>
+          <ion-card-content>
+            <strong> {{atividade.data | date:'dd/MM/yyyy HH:mm:ss'}} </strong>
+            <br> Você {{atividade.atividade}}
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+</ion-content>

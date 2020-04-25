@@ -1,0 +1,44 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-buttons start>
+      <button royal (click)="toggleSearchBar()">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title [hidden]="showSearchBar">Meus Grupos</ion-title>
+    <ion-buttons end>
+      <button royal (click)="criarGrupo()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-searchbar [hidden]="!showSearchBar" (ionInput)="filterGroups($event)"></ion-searchbar>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+
+    <ion-item *ngFor="let grupo of grupos">
+      <h2> {{grupo.Nome}} </h2>
+      <p> {{grupo.Descricao}} </p>
+      <ion-icon name="lock" item-right primary [hidden]="grupo.Publico" ></ion-icon>
+      <button clear item-right (click)="exibirGrupo(grupo)">
+        <ion-icon name="arrow-forward"></ion-icon>
+      </button>
+    </ion-item>
+
+  </ion-list>
+
+  <button showWhen="android" fab fab-bottom fab-right fab-fixed class="fab-footer" (click)="criarGrupo()">
+    <ion-icon name="add" is-active="false"></ion-icon>
+  </button>
+  <div class="bar-footer"></div>
+
+</ion-content>

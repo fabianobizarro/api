@@ -1,0 +1,45 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Comentários</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding (swipe)="swipeBack($event)">
+
+  <ion-list class="wrapping-list" text-wrap>
+
+    <ion-item *ngFor="let comentario of comentarios">
+      <ion-avatar item-left>
+        <img [src]="comentario.UrlFoto || 'images/user-default.svg'">
+      </ion-avatar>
+      <p>
+        <strong primary> {{comentario.Usuario}}: </strong>
+      </p>
+      <p>
+         {{comentario.Conteudo}}
+      </p>
+      <p>
+        {{comentario.Data | date:'dd/MM/yyyy' }}
+      </p>
+      <ion-icon *ngIf="podeRemoverComentario(comentario)" name="close" danger item-right (click)="removerComentario(comentario)" ></ion-icon>
+
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>
+      <ion-textarea clearInput placeholder="Comentário..." [(ngModel)]="comentario"></ion-textarea>
+    </ion-item>
+    <ion-buttons end>
+      <ion-spinner [hidden]="!enviandoComentario"></ion-spinner>
+      <button royal (click)="enviarComentario(comentario)" [hidden]="enviandoComentario"> Enviar <ion-icon name="send"></ion-icon> </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

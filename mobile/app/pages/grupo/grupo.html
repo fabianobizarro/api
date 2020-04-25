@@ -1,0 +1,64 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title> {{grupo.Nome}} </ion-title>
+    <ion-buttons end>
+      <button royal (click)="exibirOpcoes()">
+      <ion-icon name="more"></ion-icon>
+    </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding (swipe)="swipeBack($event)" class="grupo">
+
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card *ngFor="let noticia of noticias">
+
+    <ion-row [hidden]="!grupo.usuarioAdmin">
+      <ion-col>
+        <button primary clear small (click)="alterarNoticia(noticia)">
+        Alterar
+      </button>
+      </ion-col>
+    </ion-row>
+
+    <img [src]="noticia.UrlImagem || ''" [hidden]="!noticia.UrlImagem" (click)="visualizarNoticia(noticia)">
+
+    <ion-card-content>
+      <p (click)="visualizarNoticia(noticia)"> <strong>{{noticia.Titulo}}</strong> </p>
+    </ion-card-content>
+
+    <ion-row>
+      <ion-col>
+        <button primary clear small (click)="curtirNoticia(noticia)">
+        <ion-icon name="heart" [ngClass]="{danger: noticia.Curtiu}"></ion-icon>
+        <div> {{noticia.Curtidas}}  </div>
+      </button>
+      </ion-col>
+      <ion-col>
+        <button primary clear small (click)="exibirComentarios(noticia.Id)">
+        <ion-icon name="text"></ion-icon>
+        <div> {{noticia.Comentarios}} </div>
+      </button>
+      </ion-col>
+      <ion-col center text-center width-50>
+        <ion-note>
+          {{noticia.Data | date: 'dd/MM/yyyy HH:mm'}}
+        </ion-note>
+      </ion-col>
+    </ion-row>
+
+  </ion-card>
+
+  <button showWhen="android" fab fab-bottom fab-right fab-fixed class="fab-footer" (click)="cadastrarNoticia()" >
+    <ion-icon name="add" is-active="false"></ion-icon>
+  </button>
+  <div class="bar-footer"></div>
+
+</ion-content>

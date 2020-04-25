@@ -1,0 +1,57 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Criar Grupo</ion-title>
+    <ion-buttons end>
+      <button royal (click)="onSubmit()" type="submit">
+        Criar
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding class="novo-grupo">
+
+  <form [ngFormModel]="form">
+
+    <ion-list>
+
+      <ion-item [class.error]="!nome.valid && nome.touched">
+        <ion-label>Nome</ion-label>
+        <ion-input [ngFormControl]="nome" type="text" value=""></ion-input>
+      </ion-item>
+
+      <ion-item [class.error]="!descricao.valid && descricao.touched">
+        <ion-label>Descrição</ion-label>
+        <ion-input type="text" [ngFormControl]="descricao" value=""></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Grupo Público</ion-label>
+        <ion-toggle checked="true" [ngFormControl]="publico"></ion-toggle>
+      </ion-item>
+
+      <ion-item *ngIf="showErrorMessages()">
+        Atenção:
+        <p *ngIf="nome.hasError('required') && (nome.touched || submitted)" class="error-label">
+          * O nome do grupo é obrigatório
+        </p>
+        <p *ngIf="nome.hasError('maxlength') && (nome.touched || submitted)" class="error-label">
+          * O nome deve conter no máximo 50 carac.
+        </p>
+        <p *ngIf="descricao.hasError('required') && (descricao.touched || submitted)" class="error-label">
+          * A descrição do grupo é obrigatória
+        </p>
+        <p *ngIf="descricao.hasError('maxlength') && (descricao.touched || submitted)" class="error-label">
+          * A descrição deve conter no máximo 70 carac.
+        </p>
+      </ion-item>
+
+    </ion-list>
+
+  </form>
+
+
+</ion-content>

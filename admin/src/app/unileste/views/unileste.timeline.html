@@ -1,0 +1,32 @@
+<section ng-controller="timelineController" ng-init="carregarNoticias()">
+
+	<div id="vertical-timeline" class="vertical-container light-timeline center-orientation">
+
+		<div class="vertical-timeline-block" ng-repeat="noticia in noticias">
+
+			<div class="vertical-timeline-icon blue-bg">
+				<i class="fa fa-file-text"></i>
+			</div>
+
+			<div class="vertical-timeline-content">
+                <img ng-src="{{noticia.UrlImagem}}" ng-show="noticia.UrlImagem" width="100%" style="max-width:450px">
+				<a href="#/unileste/noticia/{{noticia.Id}}"><h2> {{noticia.Titulo}} </h2></a>
+				<p> {{noticia.Resumo}} </p>
+				<a href="#/unileste/noticia/{{noticia.Id}}" class="btn btn-sm btn-primary" target="_blank"> Ler mais</a>
+				<span class="vertical-date">
+                    {{noticia.Data | date: 'dd/MM/yyyy HH:mm:ss'}}
+                </span>
+			</div>
+
+		</div>
+
+	</div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <button class="btn btn-success" ng-click="carregarNoticias()">Carregar mais notícias</button>
+        </div>
+    </div>
+    
+
+</section>

@@ -1,0 +1,98 @@
+<div class="wrapper wrapper-content animated fadeIn article" data-ng-controller="pesquisaController as c">
+
+    <page-title title="'Pesquisa de notícias'"></page-title>
+
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+
+            <form class="form-horizontal" name="form" novalidate="novalidate">
+
+
+
+                <div class="form-group">
+                    <div class="col-md-5">
+                        <label for="campoPesquisa">Pesquisa</label>
+                        <input type="text" class="form-control" ng-model="campoPesquisa" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="">Período</label>
+                        <div class="input-daterange input-group" id="datepicker">
+                            <input type="text" class="input-sm form-control" name="start" ng-model="DataInicio" required="required" ui-mask="99/99/9999" model-view-value="true"/>
+                            <span class="input-group-addon">à</span>
+                            <input type="text" class="input-sm form-control" name="end" ng-model="DataTermino" required="required" ui-mask="99/99/9999" model-view-value="true"/>
+                        </div>
+                        <small>(Deixe os campos vazios caso queira pesquisar todas as notícias)</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <button class="btn btn-success" ng-click="c.pesquisarNoticias(campoPesquisa, DataInicio, DataTermino)">
+                            <i class="fa fa-search"></i>
+                            Pesquisar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <loading-icon show="c.loading" message="'Pesquisando as notícias ...'" class="animated fadeIn"></loading-icon>
+    <div class="ibox float-e-margins animated fadeInUp" ng-show="c.resultadosPesquisa">
+        <div class="ibox-content">
+
+            <section ng-show="c.resultadosPesquisa.length > 0">
+                <h2>Resultado da pesquisa</h2>
+                <hr>
+                <div class="row form-horizontal">
+                    <label class="col-md-1 control-label">Filtro:</label>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" ng-model="filtro" name="filtro" placeholder="Filtro">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped">
+                            <thead>
+                                <th>Data</th>
+                                <th>Título</th>
+                                <th class="text-center">Comentários</th>
+                                <th class="text-center">Curtidas</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="noticia in c.resultadosPesquisa | filter: filtro">
+                                    <td> {{noticia.Data | date: 'dd/MM/yyyy'}} </td>
+                                    <td> {{noticia.Titulo}} </td>
+                                    <td class="text-center"> {{noticia.Comentarios}} </td>
+                                    <td class="text-center"> {{noticia.Curtidas}} </td>
+                                    <td class="text">
+                                        <a ng-href="#/unileste/noticia/{{noticia.Id}}">Visualizar</a> | 
+                                        <a ng-href="#/unileste/noticia/{{noticia.Id}}/analitico" title="Estatísticas"> <i class="fa fa-line-chart"></i> </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <div ng-show="c.resultadosPesquisa.length == 0">
+                <h2>A pesquisa não retornou resultados</h2>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    $('.input-daterange').datepicker({
+        language: "pt-BR",
+        orientation: "bottom auto",
+        todayHighlight: true,
+        forceParse: false
+    });
+</script>

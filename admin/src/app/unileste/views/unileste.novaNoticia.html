@@ -1,0 +1,117 @@
+<div id="cadastroNoticiaUnileste" class="wrapper wrapper-content animated fadeIn" data-ng-controller="unilesteController as uni">
+
+	<page-title title="'Cadastro de notícia'"></page-title>
+
+	<div class="row">
+		<div class="col-lg-12">
+
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+
+					<form name="form" class="form-horizontal" data-ng-submit="uni.cadastrarNoticia(form.$valid, uni.novaNoticia)" novalidate="novalidate">
+
+						<div class="form-group" ng-class="{'has-success': form.titulo.$valid || form.titulo.$touched , 'has-error': !form.titulo.$valid && form.titulo.$touched}">
+							<div class="col-md-12">
+								<label for="titulo">Título</label>
+								<input type="text" name="titulo" class="form-control" data-ng-model="uni.novaNoticia.Titulo" required ng-maxlength="250">
+								<div ng-show="form.$submitted || form.titulo.$touched">
+									<p ng-show="form.titulo.$error.required" class="text-danger">Este campo é obrigatório</p>
+									<p ng-show="form.titulo.$error.maxlength" class="text-danger">Este campo tem o tamanho máximo de 250 caracteres</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group" ng-class="{'has-success': form.UrlImagem.$valid || form.UrlImagem.$touched , 'has-error': !form.UrlImagem.$valid && form.UrlImagem.$touched}">
+							<div class="col-md-6">
+								<label for="Alias">Imagem (Url)</label>
+								<input type="url" name="UrlImagem" class="form-control" data-ng-model="uni.novaNoticia.UrlImagem">
+								<div ng-show="form.$submitted || form.UrlImagem.$touched">
+									<p ng-show="!form.UrlImagem.$valid" class="text-danger">Url inválida</p>
+								</div>
+							</div>
+							<div class="col-md-6">
+                                <br>
+								<div class="input-group">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success" ng-click="uni.visualizarImagem()">
+                                            <i class="fa fa-eye" aria-hidden="true"></i> Visualizar
+                                        </button>
+                                    </span>
+                                    <input id="fileInput" type="file" class="form-control" ng-model="uni.fileInput" filereader="uni.file" filename="uni.fileName">
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success" ng-click="uni.salvarImagem()">
+                                            <i class="fa fa-upload" aria-hidden="true"></i> Carregar foto
+                                        </button>
+                                    </span>
+                                </div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-12">
+								<label for="resumo">Resumo</label>
+								<input type="text" name="resumo" class="form-control" data-ng-model="uni.novaNoticia.Resumo" ng-maxlength="250">
+								<div ng-show="form.$submitted || form.titulo.$touched">
+									<p ng-show="form.titulo.$error.required" class="text-danger">Este campo é obrigatório</p>
+									<p ng-show="form.titulo.$error.maxlength" class="text-danger">Este campo tem o tamanho máximo de 250 caracteres</p>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="form-group">
+							<div class="col-md-6">
+								<label for="tags">Tags</label>
+								<tags-input ng-model="uni.novaNoticia.Tags" placeholder="Adicione uma tag" add-on-space="true">
+								</tags-input>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-lg-12 m-b-md">
+								<div class="tabs-container" ng-init="tab = 1">
+									<ul class="nav nav-tabs">
+										<li ng-class="{'active': tab == 1 }"><a data-toggle="tab" ng-click="tab = 1" aria-expanded="true"> Conteúdo da notícia</a></li>
+										<li ng-class="{'active': tab == 2 }"><a data-toggle="tab" ng-click="tab = 2" aria-expanded="false">Visualizar notícia</a></li>
+									</ul>
+									<div class="tab-content">
+										<div id="tab-1" class="tab-pane active" ng-class="{'active': tab == 1 }">
+											<div class="panel-body" ng-class="{'has-success': form.conteudo.$valid || form.conteudo.$touched , 'has-error': !form.conteudo.$valid && form.conteudo.$touched}">
+												<label for="conteudo">Conteúdo da Notícia</label>
+												<textarea name="conteudo" cols="30" rows="10" class="form-control" data-ng-model="uni.novaNoticia.Conteudo" required ng-maxlength="5000"></textarea>
+												<div ng-show="form.$submitted || form.conteudo.$touched">
+													<p ng-show="form.conteudo.$error.required" class="text-danger">Este campo é obrigatório</p>
+													<p ng-show="form.conteudo.$error.maxlength" class="text-danger">Este campo tem o tamanho máximo de 5000 caracteres</p>
+												</div>
+											</div>
+										</div>
+										<div id="tab-2" class="tab-pane" ng-class="{'active': tab == 2}">
+											<div class="panel-body">
+												<h1>{{uni.novaNoticia.Titulo}}</h1>
+												<h4>{{uni.novaNoticia.Resumo}}</h4>
+												<img ng-src="{{uni.novaNoticia.UrlImagem || ''}}" alt="imagem" ng-show="uni.novaNoticia.UrlImagem" style="max-width:300px" />
+												<hr>
+												<markdown-preview content="uni.novaNoticia.Conteudo"></markdown-preview>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="hr-line-dashed"></div>
+						<div class="form-group">
+							<div class="col-sm-4 col-sm-offset-2">
+								<button class="btn btn-success" type="submit">Cadastrar</button>
+								<a class="btn btn-white" data-ng-href="#/unileste">Cancelar</a>
+							</div>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

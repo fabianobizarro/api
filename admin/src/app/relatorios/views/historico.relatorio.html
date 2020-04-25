@@ -1,0 +1,138 @@
+<section ng-controller="relatorioController as rc">
+
+	<div class="row">
+		<div class="col-md-12">
+			<h2> Usuário: {{usuarioSelecionado.Login || 'Selecione o usuário'}} </h2>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<button class="btn btn-white" ng-click="rc.exibirModalPesquisaUsuario()">
+            <i class="fa fa-search"/>
+            Pesquisar usuário
+        </button>
+		</div>
+	</div>
+
+	<hr>
+
+	<form ng-submit="c.historicoUsuario(usuarioSelecionado.Id, dataInicio, dataTermino)" name="form" novalidate>
+
+		<div class="row">
+			<div class="col-md-5">
+				<label for="dataInicio">Período</label>
+				<div class="input-daterange input-group" id="datepicker">
+					<input type="text" class="input-sm form-control" name="start" ng-model="dataInicio" required="required" ui-mask="99/99/9999"
+						model-view-value="true" />
+					<span class="input-group-addon">à</span>
+					<input type="text" class="input-sm form-control" name="end" ng-model="dataTermino" required="required" ui-mask="99/99/9999"
+						model-view-value="true" />
+				</div>
+				<div ng-show="!form.$submited && (form.start.$touched || form.end.$touched)">
+					<p ng-show="form.start.$error.required" class="text-danger">A data inicial é obrigatória</p>
+					<p ng-show="form.end.$error.required" class="text-danger">A data final é obrigatória</p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<br>
+				<button class="btn btn-success" type="submit">
+                    <i class="fa fa-bar-chart"></i> Gerar relatório
+                </button>
+				<button class="btn btn-white" type="button" ng-click="c.limparPesquisaHistorico()">
+                    Limpar
+                </button>
+			</div>
+		</div>
+
+	</form>
+
+	<section data-ng-controller="configAdminCtrl as c" id="mpesquisaUsuario" class="modal inmodal fade in">
+
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">Pesquisa de usuário</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="ibox-content m-b-sm border-bottom" id="divPesquisaUsuario">
+						<h3>Pesquisa por usuário</h3>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="input-group">
+									<input type="text" id="pesquisa" name="pesquisa" value="" placeholder="Nome do usuário ou nome completo" class="form-control"
+										data-ng-model="pesquisa">
+									<span class="input-group-btn"> 
+										<button type="button" class="btn btn-success" data-ng-click="c.pesquisarUsuarios(pesquisa)">
+											<i class="fa fa-search"></i>
+											Pesquisar
+										</button> 
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="ibox-content m-b-sm border-bottom animated fadeIn" data-ng-show="c.resultadoPesquisa">
+						<div class="row">
+							<div class="col-md-12">
+								<loading-icon show="c.loadingSearch" message="'Pesquisando usuários...'"></loading-icon>
+
+								<table class="table">
+									<thead>
+										<th>Usuário</th>
+										<th>Nome</th>
+										<th></th>
+									</thead>
+									<tbody>
+										<tr data-ng-repeat="usuario in c.resultadoPesquisa">
+											<td> {{usuario.Login}} </td>
+											<td> {{usuario.Nome}} </td>
+											<td class="text-center">
+												<button type="button" ng-click="rc.selecionarUsuario(usuario); rc.ocultarModal()">Visualizar Histórico</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+
+
+	</section>
+
+    
+	<div class="row" ng-show="historico">
+		<hr>
+		<div class="col-md-12">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Data</th>
+						<th>Usuário</th>
+						<th>Ação</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="acao in historico">
+						<td> {{acao.data | date: 'dd/MM/yyyy HH:mm:ss' }} </td>
+						<td> {{acao.usuario}} </td>
+						<td> {{acao.atividade}} </td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</section>

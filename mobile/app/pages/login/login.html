@@ -1,0 +1,45 @@
+<ion-header>
+
+
+</ion-header>
+
+<ion-content class="login">
+
+
+  <div class="space"></div>
+    <img src="images/logo_150.png" class="logo" alt="">
+  <div class="space"></div>
+  
+  <ion-grid>
+
+    <ion-list>
+      <ion-item>
+        <ion-input type="text" [(ngModel)]="username" clearInput placeholder="Usuário"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input type="password" [(ngModel)]="password" placeholder="Senha"></ion-input>
+      </ion-item>
+    </ion-list>
+
+    <ion-row>
+      <ion-col width-100>
+        <button full primary  (click)="login(username, password)">Login</button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col width-100>
+        <button full light (click)="gotoSignup()">Criar Usuário</button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col width-100 center>
+        <button full outline primary (click)="gotoPasswd()">Esqueci minha senha</button>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

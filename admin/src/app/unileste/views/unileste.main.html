@@ -1,0 +1,50 @@
+<div id="noticia-main" data-ng-controller="unilesteController as uni" data-ng-init="uni.carregarNoticiasDoDia()" class="wrapper wrapper-content animated fadeIn">
+
+	<page-title title="'Unileste - Notícias do dia'"></page-title>
+
+
+
+	<div class="row">
+		<div class="col-md-12">
+			<a class="btn btn-success" href="#/unileste/cadastrarNoticia">
+				<i class="fa fa-plus"></i> Cadastrar notícia
+			</a>
+		</div>
+	</div>
+	<hr>
+
+	<loading-icon show="uni.loading" message="'Carregando notícias ...'"></loading-icon>
+
+	<div class="row" ng-show="uni.noticias.length == 0">
+		<div class="col-md-12">
+			<h1>Não existem notícias cadastradas para o dia de hoje.</h1>
+		</div>
+	</div>
+	<div data-ng-show="uni.noticias" class="animated fadeIn">
+
+		<div class="vertical-container light-timeline" id="vertical-timeline">
+			<div class="vertical-timeline-block" ng-repeat="noticia in uni.noticias">
+
+				<div class="vertical-timeline-icon blue-bg">
+					<i class="fa fa-file-text"></i>
+				</div>
+
+				<div class="vertical-timeline-content">
+                    <img src="{{noticia.UrlImagem || ''}}" alt="" ng-show="{{noticia.UrlImagem}}" style="float:left; margin-right:20px;max-width:400px;">
+					<h2> <a href="#/unileste/noticia/{{noticia.Id}}">{{noticia.Titulo}}</a> </h2>
+					<p> {{noticia.Resumo}} </p>
+					
+					<span class="vertical-date">
+                        <i class="fa fa-thumbs-up fa-lg"></i> {{noticia.Curtidas}}
+                        <i class="fa fa-comments fa-lg"></i> {{noticia.Comentarios}}
+                        <br>
+                        <small> {{noticia.Data | date:'dd/MM/yyyy HH:mm:ss' }} </small>
+                    </span>
+                    <br>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</div>

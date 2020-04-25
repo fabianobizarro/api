@@ -1,0 +1,70 @@
+<div class="wrapper wrapper-content animated fadeIn" ng-controller="blacklistController" ng-init="init()">
+
+    <page-title title="'Blacklist'"></page-title>
+
+
+    <div class="ibox float-e-margins">
+        <div class="ibox-content">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <form role="form">
+
+                        <label for="palavra">Palavra</label>
+                        <div class="input-group">
+                            <input class="form-control" type="text" ng-model="palavra">
+                            <span class="input-group-btn"> 
+                                <button type="button" class="btn btn-primary" ng-click="adicionarPalavra(palavra)">
+                                    Adicionar
+                                </button>
+                            </span>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="space-20"></div>
+
+            <h3>Palavras adicionadas</h3>
+            <div class="row">
+                <div class="col-md-6">
+
+                    <input type="text" placeholder="Filtro" class="form-control" ng-model="filtroPalavras">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Palavra</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="palavra in blacklist | filter: filtroPalavras | orderBy:'palavra'">
+                                <td>
+                                    {{palavra}}
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" ng-click="removerPalavra(palavra)">Remover</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+</div>

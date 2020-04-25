@@ -1,0 +1,70 @@
+<ion-header>
+
+  <ion-navbar>
+
+    <ion-title>Criar Notícia</ion-title>
+
+    <ion-buttons end>
+      <button royal (click)="visualizarNoticia()">
+        <ion-icon name="eye"></ion-icon>
+    </button>
+    </ion-buttons>
+
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding class="nova-noticia">
+
+  <form (submit)="submit()">
+
+    <ion-list [ngFormModel]="form">
+
+      <ion-item>
+        <ion-label stacked>Título</ion-label>
+        <ion-input type="text" ngControl="Titulo"></ion-input>
+      </ion-item>
+      <p class="error-label" *ngIf="Titulo.hasError('required') && Titulo.touched">
+        O título é obrigatório
+      </p>
+
+      <ion-item>
+        <ion-label stacked>Resumo</ion-label>
+        <ion-input type="text" ngControl="Resumo"></ion-input>
+      </ion-item>
+
+
+      <ion-item>
+        <ion-label stacked>Tags</ion-label>
+        <ion-input type="text" (keypress)="keypress($event)" [(ngModel)]="inputTag"></ion-input>
+      </ion-item>
+
+      <ion-item [hidden]="Tags.length == 0" class="tags" text-wrap>
+        <ion-badge *ngFor="let tag of Tags" (click)="removerTag(tag)">
+          #{{tag}}
+          <ion-icon name="close"></ion-icon>
+        </ion-badge>
+      </ion-item>
+
+      <ion-item>
+        <ion-label stacked>Conteúdo</ion-label>
+        <ion-textarea rows="6" ngControl="Conteudo"></ion-textarea>
+      </ion-item>
+      <p class="error-label" *ngIf="Conteudo.hasError('required') && Conteudo.touched">
+        O conteúdo da notícia é obrigatório
+      </p>
+
+
+      <ion-item>
+        <ion-label stacked>Imagem (Url)</ion-label>
+        <ion-input type="text" ngControl="UrlImagem"></ion-input>
+      </ion-item>
+
+    </ion-list>
+
+    <button full primary type="submit" [disabled]="!form.valid">Cadastrar</button>
+
+  </form>
+
+</ion-content>

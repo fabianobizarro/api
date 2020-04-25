@@ -1,0 +1,24 @@
+{
+  "name": "fileserver",
+  "version": "1.0.0",
+  "description": "Sharenews File Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShareNews/fileserver.git"
+  },
+  "author": "Fabiano Bizarro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShareNews/fileserver/issues"
+  },
+  "homepage": "https://github.com/ShareNews/fileserver#readme",
+  "dependencies": {
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "multer": "^1.2.0"
+  }
+}

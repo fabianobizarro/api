@@ -1,0 +1,83 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title showWhen="android,windows">Pesquisa</ion-title>
+    <ion-searchbar (ionInput)="pesquisar($event)" [showCancelButton]="true" cancelButtonText="Cancelar" (ionCancel)="cancelarPesquisa($event)"
+      [(ngModel)]="textoPesquisa" placeholder="Pesquise por {{ labelPesquisa }}" showWhen="ios">
+    </ion-searchbar>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content class="pesquisa" padding>
+
+  <ion-searchbar (ionInput)="pesquisar($event)" [showCancelButton]="true" cancelButtonText="Cancelar" (ionCancel)="cancelarPesquisa($event)"
+    [(ngModel)]="textoPesquisa" placeholder="Pesquise por {{ labelPesquisa }}" showWhen="windows,android">
+  </ion-searchbar>
+
+  <ion-segment [(ngModel)]="tipoPesquisa">
+    <ion-segment-button value="noticia" (ionSelect)="segmentChanged($event)">
+      Notícias
+    </ion-segment-button>
+    <ion-segment-button value="grupo" (ionSelect)="segmentChanged($event)">
+      Grupos
+    </ion-segment-button>
+    <ion-segment-button value="usuario" (ionSelect)="segmentChanged($event)">
+      Usuários
+    </ion-segment-button>
+  </ion-segment>
+
+  <div>
+    <br/>
+    <div class="spinner" [hidden]="!pesquisando">
+      <ion-spinner name="bubbles"></ion-spinner>
+      <p>Pesquisando</p>
+    </div>
+
+    <ion-list *ngIf="exibirListaNoticias()" id="Noticias" text-wrap>
+      <ion-item *ngFor="let noticia of listaNoticias">
+        <ion-thumbnail item-left>
+          <img src="{{noticia.UrlImagem}}">
+        </ion-thumbnail>
+        <h2> {{noticia.Titulo}} </h2>
+        <p> {{noticia.Data | date: 'dd/MM/yyyy' }} - {{noticia.Grupo}} </p>
+
+        <button clear item-right (click)="exibirNoticia(noticia)">
+          <ion-icon name="arrow-forward"></ion-icon>
+        </button>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="exibirListaGrupos()" id="Grupos" text-wrap>
+
+      <ion-item *ngFor="let grupo of listaGrupos">
+        <h2> {{grupo.Nome}} </h2>
+        <p> {{ grupo.Descricao }} </p>
+        <button clear item-right (click)="exibirGrupo(grupo)">
+          <ion-icon name="arrow-forward"></ion-icon>
+        </button>
+      </ion-item>
+    </ion-list>
+
+    <ion-list *ngIf="exibirListaUsuarios()" id="Usuarios" text-wrap>
+      <ion-item *ngFor="let usuario of listaUsuarios">
+        <!--<ion-avatar item-left>
+          <img src="{{usuario.UrlFoto == null ? 'images/profile.jpeg' : usuario.UrlFoto}}">
+        </ion-avatar>
+        <h2>Cher</h2>
+        <p>Ugh. As if.</p>-->
+
+        <ion-thumbnail item-left>
+          <img src="{{usuario.UrlFoto == null ? 'images/profile.jpeg' : usuario.UrlFoto}}">
+        </ion-thumbnail>
+        <h2> {{usuario.Nome}} </h2>
+        <p> {{usuario.Login}} </p>
+        <button clear item-right (click)="exibirUsuario(usuario)">Ver</button>
+
+
+      </ion-item>
+    </ion-list>
+
+  </div>
+
+</ion-content>

@@ -1,0 +1,45 @@
+// http://ionicframework.com/docs/v2/theming/
+
+
+// App Shared Imports
+// --------------------------------------------------
+// These are the imports which make up the design of this app.
+// By default each design mode includes these shared imports.
+// App Shared Sass variables belong in app.variables.scss.
+
+
+@import "../pages/home/home";
+
+@import "../pages/login/login";
+
+@import "../pages/unileste/unileste";
+
+@import "../pages/noticia-comentarios/noticia-comentarios";
+
+@import "../pages/noticia/noticia";
+
+@import "../pages/sign-up/sign-up";
+
+@import "../pages/perfil/perfil";
+
+@import "../pages/novo-grupo/novo-grupo";
+
+@import "../pages/nova-noticia/nova-noticia";
+
+@import "../pages/nova-noticia/nova-noticia";
+
+@import "../pages/pesquisa/pesquisa";
+
+@import "../pages/grupo-info/grupo-info";
+
+@import "../pages/grupo/grupo";
+
+@import "../pages/modal-visualizar-noticia/modal-visualizar-noticia";
+
+@import "../pages/noticia-alterar/noticia-alterar";
+
+@import "../pages/usuario-page/usuario-page";
+
+@import "../pages/usuario-alterar-senha/usuario-alterar-senha";
+
+@import "../pages/usuario-alterar-dados/usuario-alterar-dados";

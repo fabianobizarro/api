@@ -1,0 +1,54 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Alterar Senha</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding class="usuario-alterar-senha">
+
+  <form [ngFormModel]="form" (submit)="submit()">
+
+    <ion-list>
+
+      <ion-item>
+        <ion-label>Senha atual</ion-label>
+        <ion-input type="password" [ngFormControl]="senhaAtual"></ion-input>
+      </ion-item>
+      <ion-item></ion-item>
+
+      <ion-item>
+        <ion-label>Nova senha</ion-label>
+        <ion-input type="password" (blur)="vaidateConfirmacaoSenha()" (keyup)="vaidateConfirmacaoSenha()" [ngFormControl]="novaSenha"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Confirmação</ion-label>
+        <ion-input type="password" (blur)="vaidateConfirmacaoSenha()" (keyup)="vaidateConfirmacaoSenha()" [ngFormControl]="confirmacaoSenha"></ion-input>
+      </ion-item>
+
+      <ion-item *ngIf="showErrorMessages()" text-wrap>
+        <p *ngIf="senhaAtual.hasError('required') && (senhaAtual.touched || submitted)" class="error-label">
+          * A senha atual é obrigatória
+        </p>
+        <p *ngIf="senhaAtual.hasError('pattern') && (senhaAtual.touched || submitted)" class="error-label">
+          * A senha atual deve conter pelo menos um caracter maiúsculo
+        </p>
+        <p *ngIf="novaSenha.hasError('required') && (novaSenha.touched || submitted)" class="error-label">
+          * A nova senha é obrigatória
+        </p>
+        <p *ngIf="novaSenha.hasError('pattern') && (novaSenha.touched || submitted)" class="error-label">
+          * A nova senha deve conter pelo menos um caracter maiúsculo
+        </p>
+        <p *ngIf="confirmacaoInvalida && (confirmacaoSenha.touched || submitted)" class="error-label">
+          * A confirmação da senha deve ser igual a senha digitada
+        </p>
+      </ion-item>
+
+    </ion-list>
+
+    <button type="submit" block [disabled]="!form.valid || confirmacaoInvalida">Alterar Senha</button>
+  </form>
+
+</ion-content>

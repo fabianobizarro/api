@@ -1,0 +1,25 @@
+.pesquisa {
+
+
+    .spinner {
+        margin: auto;
+        //position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+        //height: 85px;
+        text-align: center;
+    }
+
+    .tags {
+        padding: 0px;
+    }
+
+    .tags li {
+        display: inline;
+        list-style-type: none;
+        padding-right: 5px;
+        margin-left: 0;
+        color: #387ef5
+    }
+
+
+}

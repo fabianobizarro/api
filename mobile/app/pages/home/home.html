@@ -1,0 +1,56 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="home">
+  <h2>Olá @{{nomeUsuario}}! :) </h2>
+
+
+  <ion-grid>
+
+    <ion-row *ngFor="let notificacao of feed" center>
+      <ion-col width-20 *ngIf="notificacao.usuario != nomeUsuario">
+        <ion-icon *ngIf="notificacao.tipo == 'curtida'" name="heart" class="feed-icon" danger></ion-icon>
+        <ion-icon *ngIf="notificacao.tipo == 'noticia'" name="paper" class="feed-icon" primary></ion-icon>
+        <ion-icon *ngIf="notificacao.tipo == 'comentario'" name="chatboxes" class="feed-icon" secondary></ion-icon>
+      </ion-col>
+      <ion-col width-80 *ngIf="notificacao.usuario != nomeUsuario">
+        <ion-card>
+
+          <ion-card-header>
+            {{notificacao.data | date: 'dd/MM/yyyy HH:mm:ss'}}
+          </ion-card-header>
+
+          <ion-card-content>
+            <a (click)="exibirUsuario(notificacao.usuario)"> @{{notificacao.usuario}}</a> {{notificacao.descricao}}
+          </ion-card-content>
+
+        </ion-card>
+      </ion-col>
+
+      <ion-col width-80 *ngIf="notificacao.usuario == nomeUsuario">
+        <ion-card>
+
+          <ion-card-header>
+            {{notificacao.data | date: 'dd/MM/yyyy HH:mm:ss'}}
+          </ion-card-header>
+
+          <ion-card-content>
+            <a (click)="exibirUsuario(notificacao.usuario)"> @{{notificacao.usuario}}</a> {{notificacao.descricao}}
+          </ion-card-content>
+
+        </ion-card>
+      </ion-col>
+      <ion-col width-20 *ngIf="notificacao.usuario == nomeUsuario">
+        <ion-icon *ngIf="notificacao.tipo == 'curtida'" name="heart" class="feed-icon" danger></ion-icon>
+        <ion-icon *ngIf="notificacao.tipo == 'noticia'" name="paper" class="feed-icon" primary></ion-icon>
+        <ion-icon *ngIf="notificacao.tipo == 'comentario'" name="chatboxes" class="feed-icon" secondary></ion-icon>
+      </ion-col>
+
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

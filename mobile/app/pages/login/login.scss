@@ -1,0 +1,28 @@
+.login {
+    //background-color: rgba(56, 119, 205, 1);
+    background-color: #FFFFFF;
+}
+
+.login .button-clear{
+    color:#FFFFFF;
+}
+.login ion-item {
+    background-color: transparent;
+    color: #000;
+    font-weight: bold;
+}
+
+.space {
+    height: 50px;
+}
+
+input::-webkit-input-placeholder {
+  color: #000 !important; 
+}
+
+.login .logo {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    
+}

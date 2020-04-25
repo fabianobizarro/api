@@ -1,0 +1,47 @@
+{
+  "name": "sharenews-admin",
+  "description": "Portal Administrativo do ShareNews",
+  "main": "app.js",
+  "authors": [
+    "Fabiano Bizarro <fabiano.bizarro@outlook.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/ShareNews/sharenews-admin",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "1.5.0",
+    "animate.css": "^3.5.1",
+    "angular-ui-router": "^0.2.18",
+    "angular-loading-bar": "^0.8.0",
+    "angular-animate": "^1.5.0",
+    "angular-resource": "^1.5.2",
+    "material-design-iconic-font": "^2.2.0",
+    "oclazyload": "^1.0.9",
+    "angular-bootstrap": "^1.2.2",
+    "bootstrap": "^3.3.6",
+    "sweetalert": "^1.1.3",
+    "components-font-awesome": "^4.5.0",
+    "metisMenu": "^2.4.3",
+    "angular-route": "^1.5.3",
+    "PACE": "pace#^1.0.2",
+    "angular-cookies": "^1.5.3",
+    "ngSweetAlert": "angular-sweetalert#^1.1.0",
+    "ng-tags-input": "^3.0.0",
+    "SpinKit": "spinkit#^1.2.5",
+    "angular-sanitize": "^1.5.6",
+    "marked": "^0.3.5",
+    "angular-ui-mask": "^1.8.4",
+    "c3": "^0.4.11",
+    "bootstrap-datepicker": "^1.6.1"
+  },
+  "resolutions": {
+    "angular": "1.5.0"
+  }
+}

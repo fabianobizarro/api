@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html data-ng-app="sharenews-login">
+
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<title>Trocar senha | SharenNews</title>
+
+	<link href="vendors/bootstrap.min.css" rel="stylesheet">
+	<link href="vendors/font-awesome.min.css" rel="stylesheet">
+
+	<link href="vendors/animate.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+
+	<div class="middle-box text-center loginscreen animated fadeInDown" ng-controller="loginCtrl as login" ng-init="login.setToken('<%= t %>'); login.setUrl('<%= apiUrl %>')">
+		<div>
+			<div>
+				<img src="images/sharenews.png" height="200" width="200" />
+			</div>
+
+			<h3>ShareNews</h3>
+
+			<form class="m-t" name="form" ng-model="formSenha" role="form" ng-submit="login.trocarSenha(form)" novalidate>
+
+				<div ng-hide="senhaok">
+					<p>
+						Digite sua nova senha e clique em Trocar senha
+					</p>
+
+					<div class="form-group">
+						<input type="password" class="form-control" ng-model="login.novaSenha" name="novaSenha" placeholder="Nova senha" required
+							ng-pattern="/[A-Z.]/" ng-minlength="6">
+					</div>
+					<div ng-show="form.$submitted || form.novaSenha.$touched">
+						<p ng-show="form.novaSenha.$error.required" class="text-danger">Informe sua nova senha</p>
+						<p ng-show="form.novaSenha.$error.pattern" class="text-danger">A senha deve conter pelo menos uma letra maiúscula</p>
+						<p ng-show="form.novaSenha.$error.minlength" class="text-danger">A senha deve conter no mínimo 6 caracteres</p>
+					</div>
+				</div>
+
+
+				<p ng-show="erro" class="text-danger">
+					{{erro}}
+				</p>
+
+				<p ng-show="senhaok">
+					Sua senha foi alterada! Agora você pode acessar o Sharenews normalmente.
+				</p>
+
+				<button type="submit" class="btn btn-success block full-width m-b" ng-hide="senhaok">Trocar senha</button>
+				<a href="/login"><small>Login</small></a>
+
+			</form>
+
+		</div>
+	</div>
+
+	<!-- Mainly scripts -->
+	<script src="vendors/jquery.min.js"></script>
+	<script src="vendors/bootstrap.min.js"></script>
+	<script src="vendors/angular.min.js"></script>
+	<script src="app/app.js"></script>
+	<script src="app/login/login.module.js"></script>
+
+</body>
+
+</html>

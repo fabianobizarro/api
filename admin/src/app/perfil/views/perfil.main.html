@@ -1,0 +1,121 @@
+<div class="wrapper wrapper-content animated fadeIn" data-ng-controller="perfilCtrl as c">
+
+	<page-title title="'Meu perfil'"></page-title>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content no-padding border-left-right text-center">
+					<img alt="image" class="img-responsive" ng-src="{{c.usuario.UrlFoto || 'images/user-icon-256.png' }}" style="margin:0 auto;padding:15px;max-height:256px;max-width:256px">
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8">
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<h2> {{c.usuario.Nome}} </h2>
+					<h3> @{{c.usuario.Login}} </h3>
+					<h3> {{c.usuario.Email}} </h3>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="tabs-container" ng-init="tab = 1">
+		<ul class="nav nav-tabs">
+			<li ng-class="{active: tab == 1}"><a data-toggle="tab" ng-click="selecionarTab(1)" aria-expanded="true"> Alteração de senha</a></li>
+			<li ng-class="{active: tab == 2}"><a data-toggle="tab" ng-click="selecionarTab(2)" aria-expanded="false">Atividades recentes</a></li>
+		</ul>
+		<div class="tab-content">
+			<div id="tab-1" class="tab-pane" ng-class="{active:tab == 1}">
+				<div class="panel-body">
+					<form name="form" ng-submit="c.alterarSenha(form.$valid, senhaAtual, novaSenha)">
+
+
+						<div class="row">
+							<div class="col-md-3">
+
+								<h3>Alteração de senha</h3>
+								<label for="senha">Senha atual</label>
+								<input type="password" class="form-control" name="senhaAtual" id="senhaAtual" ng-model="senhaAtual" required ng-pattern="/[A-Z.]/" ng-minlength="6">
+								<div ng-show="form.senha.$touched">
+									<p ng-show="form.senhaAtual.$error.required" class="text-danger">Este campo é obrigatório</p>
+									<p ng-show="form.senhaAtual.$error.pattern" class="text-danger">A senha deve conter pelo menos uma letra maiúscula</p>
+									<p ng-show="form.senhaAtual.$error.minlength" class="text-danger">A senha deve conter no mínimo 6 caracteres</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-3">
+								<label for="novaSenha">Nova senha</label>
+								<input type="password" class="form-control" name="novaSenha" id="novaSenha" ng-model="novaSenha" required ng-pattern="/[A-Z.]/" ng-minlength="6">
+								<div ng-show="form.novaSenha.$touched">
+									<p ng-show="form.novaSenha.$error.required" class="text-danger">Este campo é obrigatório</p>
+									<p ng-show="form.novaSenha.$error.pattern" class="text-danger">A senha deve conter pelo menos uma letra maiúscula</p>
+									<p ng-show="form.novaSenha.$error.minlength" class="text-danger">A senha deve conter no mínimo 6 caracteres</p>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-md-3">
+
+								<label for="confirmacao">Confirmação da nova senha</label>
+								<input type="password" class="form-control" name="confirmacao" ng-model="confirmacao" required ng-pattern="novaSenha">
+								<div ng-show="form.confirmacao.$touched || novaSenha !== confirmacao">
+									<p ng-show="form.confirmacao.$error.pattern" class="text-danger">A senha e sua confirmação devem ser iguais.</p>
+								</div>
+							</div>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="col-md-4">
+								<button ng-disabled="!form.$valid" type="submit" class="btn btn-success">Alterar senha</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div id="tab-2" class="tab-pane" ng-class="{active:tab == 2}">
+				<div class="panel-body">
+
+					<div id="vertical-timeline" class="vertical-container dark-timeline">
+
+						<div class="vertical-timeline-block" ng-repeat="atividade in c.historicoAtividades">
+							<div class="vertical-timeline-icon blue-bg" ng-show="atividade.tipo == 'noticia'">
+								<i class="fa fa-newspaper-o"></i>
+							</div>
+							<div class="vertical-timeline-icon red-bg" ng-show="atividade.tipo == 'curtida'">
+								<i class="fa fa-heart"></i>
+							</div>
+							<div class="vertical-timeline-icon yellow-bg" ng-show="atividade.tipo == 'grupo'">
+								<i class="fa fa-users"></i>
+							</div>
+							<div class="vertical-timeline-icon navy-bg" ng-show="atividade.tipo == 'comentario'">
+								<i class="fa fa-comments"></i>
+							</div>
+							<div class="vertical-timeline-icon blue-bg" ng-show="atividade.tipo == 'usuario'">
+								<i class="fa fa-user"></i>
+							</div>
+
+							<div class="vertical-timeline-content">
+								<h2> {{atividade.data | date: 'dd/MM/yyyy HH:mm:ss'}} </h2>
+								<p> <strong>@{{atividade.usuario}}</strong> {{atividade.atividade}} </p>
+							</div>
+
+						</div>
+
+					</div>
+
+
+
+
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+
+
+</div>

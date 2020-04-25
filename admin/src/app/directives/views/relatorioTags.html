@@ -1,0 +1,38 @@
+<div class="ibox float-e-margins animated fadeIn" ng-show="result">
+
+	<div class="ibox-content">
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<h2 ng-show="result.resultados.length == 0">A pesquisa não retornou resultados</h2>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-3">
+				<h3>Total de tags: {{result.totalTags}} </h3>
+			</div>
+			<div class="col-md-3">
+				<h3>Tags diferentes: {{result.totalTagsDiferentes}}	</h3>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table">
+					<thread>
+						<th>Tag</th>
+						<th>Quantidade</th>
+						<th>%</th>
+					</thread>
+					<tbody>
+						<tr ng-repeat="tag in result.resultados">
+							<td> #{{tag.tag}} </td>
+							<td> {{tag.total}} </td>
+							<td> {{tag.percentagem | number:2 }} % </td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

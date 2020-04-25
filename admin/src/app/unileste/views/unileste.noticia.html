@@ -1,0 +1,113 @@
+<div class="wrapper wrapper-content animated fadeIn article" data-ng-controller="unilesteController as uni" data-ng-init="uni.carregarNoticia()">
+
+    <loading-icon show="uni.loading" message="'Carregando notícia...'"></loading-icon>
+
+    <div class="row" data-ng-show="uni.noticia">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+
+                    <div class="text-center article-title">
+                        <div class="text-right">
+                            <a ng-href="#/unileste/noticia/{{uni.noticia.Id}}/alterar">Alterar</a> | 
+                            <a ng-href="#/unileste/noticia/{{uni.noticia.Id}}/analitico">Estatísticas</a>
+                        </div>
+                        <hr>
+                        <span class="text-muted"><i class="fa fa-clock-o"></i> {{uni.noticia.Data | date: 'dd/MM/yyyy'}} </span>
+                        <h1>
+                            {{ uni.noticia.Titulo }}
+                        </h1>
+                    </div>
+
+                    <div>
+                        <markdown-preview content="uni.noticia.Conteudo"></markdown-preview>
+                    </div>
+                    <hr>
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <a ng-click="uni.curtirNoticia(uni.noticia.Id)">
+                                        <i class="fa fa-lg text-succes" ng-class="uni.noticia.Curtidas.indexOf(uni.$user.Login) != -1 ? 'fa-heart': 'fa-heart-o'"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <i class="fa fa-heart-o"> </i> {{uni.noticia.Curtidas.length || 0}} curtida(s) |
+                                    <i class="fa fa-comments-o"> </i> {{uni.noticia.Comentarios.length || 0}} comentário(s)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Tags:</h4>
+                            <ul class="list-inline">
+                                <li data-ng-repeat="tag in uni.noticia.Tags" class="text-info"> #{{tag}} </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <h2>Comentários:</h2>
+
+                            <loading-icon show="uni.loadingComments" message="'Carregando comentários...'"></loading-icon>
+                            <div class="social-feed-box" data-ng-repeat="comentario in uni.noticia.Comentarios | orderBy: comentario.Data " ng-show="uni.noticia.Comentarios">
+                                <div class="social-avatar">
+                                    <a href="" class="pull-left">
+                                        <img alt="image" src="{{comentario.UrlFoto || 'images/user-icon-64.png'}}">
+                                    </a>
+                                    <div class="media-body">
+                                        <a href="#">
+                                            {{ comentario.Usuario }}
+                                        </a>
+                                        <small class="text-muted">{{comentario.Data | date: 'dd/MM/yyyy HH:mm'}}</small>
+                                    </div>
+                                    <div class="pull-right">
+                                        <button class="btn btn-link text-danger" data-ng-click="uni.removerComentario(comentario)">
+                                            Remover comentário
+                                            <i class="fa fa-remove text-danger fa-bg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="social-body">
+                                    <p>
+                                        {{comentario.Conteudo}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="space-20"></div>
+                    <div class="form-comentario form-horizontal" ng-show="uni.noticia.Comentarios">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <textarea data-ng-model="comment" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-success" data-ng-click="uni.enviarComentario(comment); comment = ''">Enviar comentário</button>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="animated fadeIn" ng-show="uni.sendingMsg">Enviando mensagem...</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

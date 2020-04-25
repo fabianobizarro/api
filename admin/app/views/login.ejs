@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html data-ng-app="sharenews-login">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>ShareNews | Login</title>
+
+        <link href="vendors/bootstrap.min.css" rel="stylesheet">
+        <link href="vendors/font-awesome.min.css" rel="stylesheet">
+
+        <link href="vendors/animate.min.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
+
+    </head>
+
+    <body class="gray-bg">
+        
+        <div class="middle-box text-center loginscreen animated fadeInDown" ng-controller="loginCtrl as login" ng-init="login.setUrl('<%= apiUrl %>')">
+            <div>
+                <div>
+                    <img src="images/sharenews.png" height="200" width="200"/>
+                </div>
+
+                <h3>Bem-vindo ao ShareNews</h3>
+
+                <form class="m-t" role="form" method="POST" action="/login" novalidate ng-show="login.login == 1">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="username" placeholder="Usuário" value="<%= usuario %>">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                    
+                    <% if (!sucesso) { %>
+                        <p class="text-danger"> <%= mensagem %> </p>
+                    <% } %>
+                    
+                    <button type="submit" class="btn btn-success block full-width m-b">Login</button>
+                    <a href="#" ng-click="login.showForgotPass()"><small>Esqueceu sua senha?</small></a>
+                    
+                    <!--<p class="text-muted text-center"><small>Do not have an account?</small></p>
+                    <a class="btn btn-sm btn-white btn-block" href="register.html">Create an account</a>-->
+                </form>
+
+                <form class="m-t" role="form" novalidate ng-show="login.forgot == 1" ng-submit="login.recuperarSenha()">
+                    
+                    <p>
+                        Informe seu endereço de e-mail. Enviaremos para você um link para trocar sua senha!
+                    </p>
+                    <div class="form-group">
+                        <input type="text" class="form-control" ng-model="login.email" name="email" placeholder="Endereço de E-mail">
+                    </div>
+
+                    <p ng-show="resposta" class="text-info">
+                        {{resposta}}
+                    </p>
+                    <p ng-show="erro" class="text-danger">
+                        {{erro}}
+                    </p>
+
+                    <button type="submit" class="btn btn-success block full-width m-b">Recuperar seneha</button>
+                    <a href="#" ng-click="login.showLogin()"><small>Login</small></a>
+                </form>
+
+                
+            </div>
+        </div>
+
+        <!-- Mainly scripts -->
+        <script src="vendors/jquery.min.js"></script>
+        <script src="vendors/bootstrap.min.js"></script>
+        <script src="vendors/angular.min.js"></script>
+        <script src="app/app.js"></script>
+        <script src="app/login/login.module.js"></script>
+
+    </body>
+
+</html>
+

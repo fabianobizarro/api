@@ -1,0 +1,45 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Noticia</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding (swipe)="swipeBack($event)" class="noticia">
+
+  <p>
+    {{noticia.Data | date:'dd/MM/yyyy'}}
+    <text [hidden]="true"> - {{noticia.CategoriaNoticia}}</text>
+  </p>
+  <ion-card [hidden]="!noticia.UrlImagem">
+    <img [src]="noticia.UrlImagem || ''">
+  </ion-card>
+
+  <h5>{{noticia.Titulo}}</h5>
+
+  <p [innerHTML]="markdown(noticia.Conteudo)"></p>
+
+  <ul class="tags">
+    <li *ngFor="let tag of noticia.Tags">
+      #{{tag}}
+    </li>
+  </ul>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons start>
+      <button (click)="curtirNoticia(noticia)">
+        {{noticia.Curtidas}}
+      <ion-icon name="heart" [ngClass]="{danger: noticia.Curtiu}"></ion-icon>
+    </button>
+      <button (click)="exibirComentarios(noticia.Id)">
+        {{noticia.Comentarios}}
+      <ion-icon name="chatbubbles"></ion-icon>
+    </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

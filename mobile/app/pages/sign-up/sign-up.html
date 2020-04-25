@@ -1,0 +1,65 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Criar usuário</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content class="sign-up" padding>
+
+
+  <h4>Informe seus dados</h4>
+  <div class="space-20"></div>
+
+  <form [ngFormModel]="signupForm" (ngSubmit)="onSubmit()">
+
+    <ion-list>
+
+      <ion-item [class.error]="!nome.valid && nome.touched">
+        <ion-label stacked>Nome</ion-label>
+        <ion-input type="text" ngControl="nome"></ion-input>
+      </ion-item>
+      <div *ngIf="nome.hasError('required') && nome.touched" class="error-box"> Obrigatório</div>
+
+      <ion-item [class.error]="!login.valid && login.touched">
+        <ion-label stacked>Login</ion-label>
+        <ion-input type="text" ngControl="login"></ion-input>
+      </ion-item>
+      <div *ngIf="login.hasError('required') && login.touched" class="error-box"> Obrigatório</div>
+      <div *ngIf="login.hasError('pattern') && login.touched" class="error-box"> O login deve conter de 3 a 15 caracteres, somente letras, números e os caracteres _ e - </div>
+
+      <ion-item [class.error]="!senha.valid && senha.touched">
+        <ion-label stacked>Senha</ion-label>
+        <ion-input type="password" ngControl="senha"></ion-input>
+      </ion-item>
+      <div *ngIf="senha.hasError('required') && senha.touched" class="error-box"> Obrigatório</div>
+      <div *ngIf="senha.hasError('minlength') && senha.touched" class="error-box"> A senha deve conter no mínimo 6 caracteres</div>
+      <div *ngIf="senha.hasError('pattern') && senha.touched" class="error-box"> A senha deve conter no mínimo 1 letra maiúscula</div>
+
+      <ion-item [class.error]="!email.valid && email.touched">
+         <ion-label stacked>Email</ion-label>
+        <ion-input type="text" ngControl="email"></ion-input>
+      </ion-item>
+      <div *ngIf="email.hasError('required') && email.touched" class="error-box"> Obrigatório</div>
+      <div *ngIf="email.hasError('pattern') && email.touched" class="error-box"> O email está no formato incorreto</div>
+
+      <ion-item [class.error]="!telefone.valid && telefone.touched">
+        <ion-label stacked>Telefone</ion-label>
+        <ion-input type="text" ngControl="telefone"></ion-input>
+      </ion-item>
+      <div *ngIf="telefone.hasError('required') && telefone.touched" class="error-box"> Obrigatório</div>
+      <div *ngIf="telefone.hasError('pattern') && telefone.touched" class="error-box"> Informe somente números</div>
+      <div *ngIf="telefone.hasError('maxlength') && telefone.touched" class="error-box"> Tamanho máximo do campo de 15 caracteres</div>
+
+    </ion-list>
+
+    <div>
+      <button block primary type="submit" [disabled]="!signupForm.valid" >Criar usuário</button>
+    </div>
+
+  </form>
+
+
+</ion-content>

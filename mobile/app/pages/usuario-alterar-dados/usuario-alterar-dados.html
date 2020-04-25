@@ -1,0 +1,61 @@
+<ion-header>
+
+	<ion-navbar>
+
+		<ion-title>Alterar Dados</ion-title>
+	</ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding class="usuario-alterar-dados">
+
+	<form [ngFormModel]="form" (submit)="submit()">
+
+		<ion-list>
+
+			<ion-item>
+				<ion-label>Nome</ion-label>
+				<ion-input type="text" [ngFormControl]="nome"></ion-input>
+			</ion-item>
+			<p *ngIf="nome.hasError('required') && (nome.touched || submitted)" class="error-label">
+				* O nome é obrigatório
+			</p>
+			<p *ngIf="nome.hasError('pattern') && (nome.touched || submitted)" class="error-label">
+				* O nome do usuário não pode conter caracteres especiais
+			</p>
+			<p *ngIf="nome.hasError('maxlength') && (telefone.touched || submitted)" class="error-label">
+				* O nome do usuário contém mais de 100 caracteres
+			</p>
+
+			<ion-item>
+				<ion-label>Telefone</ion-label>
+				<ion-input type="text" [ngFormControl]="telefone"></ion-input>
+			</ion-item>
+			<p *ngIf="telefone.hasError('required') && (telefone.touched || submitted)" class="error-label">
+				* O telefone é obrigatório
+			</p>
+			<p *ngIf="telefone.hasError('pattern') && (telefone.touched || submitted)" class="error-label">
+				* O telefone contém caracteres inválidos
+			</p>
+			<p *ngIf="telefone.hasError('maxlength') && (telefone.touched || submitted)" class="error-label">
+				* O telefone contém mais de 15 caracteres
+			</p>
+			<p *ngIf="telefone.hasError('minlength') && (telefone.touched || submitted)" class="error-label">
+				* O telefone deve conter mais de 10 caracteres
+			</p>
+
+			<ion-item>
+				<ion-label>Url da Foto</ion-label>
+				<ion-input type="text" [ngFormControl]="urlFoto"></ion-input>
+			</ion-item>
+			<p *ngIf="urlFoto.hasError('pattern') && (urlFoto.touched || submitted)" class="error-label">
+				Parece que a URL informada está inválida
+			</p>
+
+		</ion-list>
+
+		<button type="submit" block>Alterar</button>
+
+	</form>
+</ion-content>

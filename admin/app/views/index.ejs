@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html data-ng-app="sharenews">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ShareNews</title>
+
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link href="vendors/bootstrap.min.css" rel="stylesheet">
+    <link href="vendors/font-awesome.min.css" rel="stylesheet">
+
+    <link href="vendors/animate.min.css" rel="stylesheet">
+    <link href="vendors/sweetalert.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="vendors/loading-bar.min.css" rel="stylesheet">
+    <link href="vendors/ng-tags-input.min.css" rel="stylesheet">
+    <link href="vendors/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+</head>
+
+<!--<body ng-controller="MainCtrl as main"  landing-scrollspy id="page-top">-->
+
+<body class="skin-1">
+
+    <!--<div data-ng-include="'app/template/views/content.html'"></div>-->
+
+    <!-- Wrapper-->
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <div ng-include="'app/template/views/navigation.html'"></div>
+
+        <!-- Page wraper -->
+        <!-- ng-class with current state name give you the ability to extended customization your view -->
+        <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+
+            <!-- Page wrapper -->
+            <div ng-include="'app/template/views/topnavbar.html'"></div>
+            <div ng-include="'app/template/views/pageTitle.html'"></div>
+            <div ng-include="'app/template/views/theme_config.html'"></div>
+            <!-- Main view  -->
+            <div data-ng-view></div>
+
+            <!-- Footer -->
+            <div ng-include="'app/template/views/footer.html'"></div>
+
+        </div>
+        <!-- End page wrapper-->
+
+    </div>
+    <!-- End wrapper-->
+
+
+    <!-- Mainly scripts -->
+    <script src="vendors/jquery.min.js"></script>
+    <script src="vendors/bootstrap.min.js"></script>
+    <script src="vendors/metisMenu.min.js"></script>
+    <script src="vendors/jquery.slimscroll.min.js"></script>
+    <script src="vendors/sweetalert.min.js"></script>
+
+
+    <!-- AngualarJS -->
+    <script src="vendors/angular.min.js"></script>
+    <script src="vendors/angular-cookies.min.js"></script>
+    <script src="vendors/angular-route.min.js"></script>
+    <script src="vendors/angular-resource.min.js"></script>
+    <script src="app/api/api.sharenews.js"></script>
+    <script src="vendors/loading-bar.min.js"></script>
+    <script src="vendors/ng-tags-input.min.js"></script>
+    <script src="vendors/angular-sanitize.min.js"></script>
+    <script src="vendors/marked.min.js"></script>
+    <script src="vendors/mask.min.js"></script>
+    <script src="vendors/bootstrap-datepicker.min.js"></script>
+    <script src="vendors/bootstrap-datepicker.pt-BR.min.js"></script>
+
+
+    <!-- App Script -->
+    <script src="app/app.js"></script>
+    <script src="app/config.js"></script>
+    <script src="app/directives/directives.js"></script>
+    <script src="app/services/services.js"></script>
+
+    <script src="app/template/template.module.js"></script>
+    <script src="app/unileste/unileste.module.js"></script>
+    <script src="app/blacklist/blacklist.module.js"></script>
+    <script src="app/configAdmin/configAdmin.module.js"></script>
+    <script src="app/perfil/perfil.module.js"></script>
+    <script src="app/relatorios/relatorios.module.js"></script>
+
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="vendors/pace.min.js"></script>
+
+
+</body>
+
+</html>

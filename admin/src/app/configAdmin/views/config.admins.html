@@ -1,0 +1,54 @@
+<div id="config-main" class="wrapper wrapper-content animated fadeIn" data-ng-controller="configAdminCtrl as c">
+
+    <page-title title="'Administradores'"></page-title>
+    <div class="ibox-content m-b-sm border-bottom" id="divPesquisaUsuario">
+        <h3>Pesquisa por usuário</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input type="text" id="pesquisa" name="pesquisa" value="" placeholder="Nome do usuário ou nome completo" class="form-control"
+                        data-ng-model="pesquisa">
+                    <span class="input-group-btn"> 
+                        <button type="button" class="btn btn-success" data-ng-click="c.pesquisarUsuarios(pesquisa)">
+                            <i class="fa fa-search"></i>
+                            Pesquisar
+                        </button> 
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ibox-content m-b-sm border-bottom animated fadeIn" data-ng-show="c.resultadoPesquisa">
+        <div class="row">
+            <div class="col-md-12">
+                <loading-icon show="c.loadingSearch" message="'Pesquisando usuários...'"></loading-icon>
+
+                <table class="table">
+                    <thead>
+                        <th>Usuário</th>
+                        <th>Nome</th>
+                        <th>Administrador?</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <tr data-ng-repeat="usuario in c.resultadoPesquisa">
+                            <td> {{usuario.Login}} </td>
+                            <td> {{usuario.Nome}} </td>
+                            <td> {{usuario.Admin ? 'Sim' : 'Não' }} </td>
+                            <td class="text-center">
+                                <a ng-click="c.toogleAdmin(usuario)" ng-show="usuario.Admin == false" class="btn text-primary">
+                                    <i class="fa fa-plus" aria-hidden="true"></i> Tornar administrador
+                                </a>
+                                <a ng-click="c.toogleAdmin(usuario)" ng-show="usuario.Admin == true" class="btn text-danger">
+                                    <i class="fa fa-minus" aria-hidden="true"></i> Remover administrador
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

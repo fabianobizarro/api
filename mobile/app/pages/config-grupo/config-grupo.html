@@ -1,0 +1,46 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Configurações</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+
+
+  <ion-item-group>
+
+    <ion-item-divider light>Ajustes</ion-item-divider>
+    <ion-item>
+      <ion-label>Grupo público</ion-label>
+      <ion-toggle [(ngModel)]="grupoPublico" (ionChange)="switchGrupoPublico($event)" [disabled]="toggleDisabled"></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Nome e Descrição</ion-label>
+      <ion-icon name="arrow-forward" (click)="alterarInfoGrupo()" item-right></ion-icon>
+    </ion-item>
+    <ion-item [hidden]="!grupo.usuarioAdmin">
+      <ion-label danger>Excluir Grupo</ion-label>
+      <ion-icon name="trash" (click)="excluirGrupo()" item-right danger></ion-icon>
+    </ion-item>
+
+  </ion-item-group>
+
+  <ion-item-group>
+
+    <ion-item-divider light>Integrantes</ion-item-divider>
+
+    <ion-list>
+
+      <ion-item *ngFor="let usuario of integrantes" (press)="pressed($event, usuario)">
+        <h2>{{usuario.Login}}</h2>
+        <ion-badge favorite item-right [hidden]="!usuario.Admin">Admin</ion-badge>
+      </ion-item>
+
+    </ion-list>
+
+  </ion-item-group>
+
+</ion-content>

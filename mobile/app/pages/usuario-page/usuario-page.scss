@@ -1,0 +1,38 @@
+.padding {
+    padding: 10px;
+}
+
+.usuario-page {
+
+    .card-background-image {
+        background-image: url('../../images/newspaper.jpeg');
+        background-size: 100% 100%;
+        width: 100%;
+        color: #FFFFFF;
+        text-align: center;
+        
+    }
+
+    .profile-pic {
+        
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        box-shadow: 50%;
+        box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+    }
+
+    .container {
+        padding: 10px;
+        background-color: rgba(69, 99, 150, 0.5);
+        width: 100%;
+    }
+
+    .hist-icon{
+        font-size:50px;
+    }
+
+}

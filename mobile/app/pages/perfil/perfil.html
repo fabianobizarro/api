@@ -1,0 +1,105 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Meu Perfil</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content class="perfil">
+
+  <div padding>
+    <ion-segment [(ngModel)]="acao" (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="perfil">
+        Perfil
+      </ion-segment-button>
+      <ion-segment-button value="atividades">
+        Atividades
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+
+
+  <div [ngSwitch]="acao">
+    <section *ngSwitchCase="'perfil'">
+
+      <div class="card-background-image">
+        <div class="container">
+          <img src="{{usuario.UrlFoto || 'images/user-default.svg'}}" class="profile-pic">
+          <h2>@{{usuario.Login}} </h2>
+        </div>
+      </div>
+
+      <div padding>
+        <ion-list>
+          <ion-item>Nome: {{usuario.Nome}} </ion-item>
+          <ion-item>Email: {{usuario.Email}} </ion-item>
+          <ion-item>Telefone: {{usuario.Telefone}} </ion-item>
+        </ion-list>
+
+        <ion-list>
+          <ion-item (click)="alterarSenha()">
+            Alterar Senha
+            <ion-icon name="arrow-forward" item-right></ion-icon>
+          </ion-item>
+          <ion-item (click)="alterarDados()">
+            Alterar Dados
+            <ion-icon name="arrow-forward" item-right></ion-icon>
+          </ion-item>
+        </ion-list>
+
+        <button type="button" block (click)="logout()">Log out</button>
+      </div>
+    </section>
+
+    <section *ngSwitchCase="'atividades'" class="atividades">
+
+      <ion-refresher (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+
+      <!--<ion-list text-wrap>
+        <ion-item *ngFor="let atividade of historicoAtividades">
+          <p>
+            <strong> {{atividade.Data | date:'dd/MM/yyyy'}} </strong>
+          </p>
+          <p>
+            Você {{atividade.Atividade}}
+          </p>
+        </ion-item>
+      </ion-list>-->
+
+      <ion-grid>
+        <ion-row *ngFor="let atividade of historicoAtividades" center>
+
+          <ion-col width-20>
+
+            <ion-icon *ngIf="atividade.tipo == 'curtida'" name="heart" danger class="hist-icon" ></ion-icon>
+            <ion-icon *ngIf="atividade.tipo == 'noticia'" name="paper" primary class="hist-icon" ></ion-icon>
+            <ion-icon *ngIf="atividade.tipo == 'comentario'" name="chatboxes" secondary class="hist-icon" ></ion-icon>
+            <ion-icon *ngIf="atividade.tipo == 'grupo'" name="people" primary class="hist-icon" ></ion-icon>
+            <ion-icon *ngIf="atividade.tipo == 'usuario'" name="person" primary class="hist-icon" ></ion-icon>
+          </ion-col>
+
+          <ion-col width-80>
+
+            <ion-card>
+              <ion-card-content>
+                <strong> {{atividade.data | date:'dd/MM/yyyy HH:mm:ss'}} </strong>
+                <br> Você {{atividade.atividade}}
+              </ion-card-content>
+            </ion-card>
+
+          </ion-col>
+
+        </ion-row>
+      </ion-grid>
+
+
+
+    </section>
+
+  </div>
+</ion-content>

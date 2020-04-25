@@ -1,0 +1,112 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Unileste</ion-title>
+
+  </ion-navbar>
+  <ion-toolbar showWhen="ios">
+    <ion-segment [(ngModel)]="tipoNoticia" (ionChange)="segmentChange($event)">
+      <ion-segment-button value="hoje">
+        Hoje
+      </ion-segment-button>
+      <ion-segment-button value="antigas">
+        Anteriores
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="unileste">
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <h2 *ngIf="exibirNoticiasHoje()">Notícias de hoje</h2>
+  <h2 *ngIf="exibirNoticiasAntigas()">Todas as notícias</h2>
+
+  <ion-grid>
+
+    <ion-row [hidden]="!carregandoNoticias">
+      <ion-col width-90>
+        Carregando notícias. Aguarde...
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+  
+
+  <ion-card [hidden]="!exibirNoticiasHoje()" *ngFor="let noticia of noticiasHoje" >
+    <img [src]="noticia.UrlImagem || ''" [hidden]="!noticia.UrlImagem" (click)="visualizarNoticia(noticia)">
+
+    <ion-card-content>
+      <p (click)="visualizarNoticia(noticia)"> <strong>{{noticia.Titulo}}</strong> </p>
+    </ion-card-content>
+
+    <ion-row>
+      <ion-col>
+        <button primary clear small (click)="curtirNoticia(noticia)">
+        <ion-icon name="heart" [ngClass]="{danger: noticia.Curtiu}"></ion-icon>
+        <div> {{noticia.Curtidas}}  </div>
+      </button>
+      </ion-col>
+      <ion-col>
+        <button primary clear small (click)="exibirComentarios(noticia.Id)">
+        <ion-icon name="text"></ion-icon>
+        <div> {{noticia.Comentarios}} </div>
+      </button>
+      </ion-col>
+      <ion-col center text-center>
+        <ion-note>
+          {{noticia.Data | date: 'dd/MM/yyyy'}}
+        </ion-note>
+      </ion-col>
+    </ion-row>
+
+  </ion-card>
+
+  <ion-card *ngFor="let noticia of noticiasAntigas" [hidden]="!exibirNoticiasAntigas()">
+    <img [src]="noticia.UrlImagem || ''" [hidden]="!noticia.UrlImagem" (click)="visualizarNoticia(noticia)">
+    <ion-card-content>
+      <p (click)="visualizarNoticia(noticia)"> <strong>{{noticia.Titulo}}</strong> </p>
+    </ion-card-content>
+
+    <ion-row>
+      <ion-col>
+        <button primary clear small (click)="curtirNoticia(noticia)">
+        <ion-icon name="heart" [ngClass]="{danger: noticia.Curtiu}"></ion-icon>
+        <div> {{noticia.Curtidas}}  </div>
+      </button>
+      </ion-col>
+      <ion-col>
+        <button primary clear small (click)="exibirComentarios(noticia.Id)">
+        <ion-icon name="text"></ion-icon>
+        <div> {{noticia.Comentarios}} </div>
+      </button>
+      </ion-col>
+      <ion-col center text-center>
+        <ion-note>
+          {{noticia.Data | date: 'dd/MM/yyyy'}}
+        </ion-note>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+
+  <button block [hidden]="!exibirNoticiasAntigas()" (click)="listarMaisNoticias()">
+    Exibir mais notícias
+  </button>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar showWhen="android,windows">
+    <ion-segment [(ngModel)]="tipoNoticia" (ionChange)="segmentChange($event)">
+      <ion-segment-button value="hoje">
+        Hoje
+      </ion-segment-button>
+      <ion-segment-button value="antigas">
+        Anteriores
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-footer>

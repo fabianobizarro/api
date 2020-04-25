@@ -1,0 +1,16 @@
+
+# bower packages
+bower_components
+
+# node packages
+node_modules
+
+# TSD files
+typings
+
+# public folder
+wwwroot
+
+.vscode
+
+npm-debug.*

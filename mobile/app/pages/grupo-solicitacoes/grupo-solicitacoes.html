@@ -1,0 +1,38 @@
+<ion-header>
+
+  <ion-navbar primary>
+    <ion-title>Solicitações</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let usuario of solicitacoes">
+      
+      <ion-item>
+        <ion-avatar item-left>
+          <img src="{{usuario.UrlFoto || 'images/user-default.svg'}}">
+        </ion-avatar>
+        <h1> {{usuario.Login}} </h1>
+      </ion-item>
+      <ion-item-options side="left">
+        <button secondary (click)="aceitarSolicitacao(usuario)" >
+          <ion-icon name="checkmark"></ion-icon>
+          Aceitar
+        </button>
+      </ion-item-options>
+      <ion-item-options side="right">
+        <button danger (click)="rejeitarSolicitacao(usuario)">
+          <ion-icon name="close"></ion-icon>
+          Remover
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+  </ion-list>
+
+
+</ion-content>

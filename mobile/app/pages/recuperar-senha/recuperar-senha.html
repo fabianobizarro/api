@@ -1,0 +1,26 @@
+<ion-header>
+
+	<ion-navbar primary>
+		<ion-title>Criar usuário</ion-title>
+	</ion-navbar>
+
+</ion-header>
+
+<ion-content class="recuperar-senha">
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <ion-list>
+    <ion-item>
+      <ion-input full placeholder="Endereço de e-mail" [(ngModel)]="email" type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <button full primary type="button" (click)="enviarEnderecoEmail()">Enviar link por email</button>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

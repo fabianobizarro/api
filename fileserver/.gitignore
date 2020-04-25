@@ -1,0 +1,11 @@
+
+
+project.lock.json
+
+# Visual Studio Code folder
+.vscode
+
+node_modules/
+files/
+
+npm-debug.log.*

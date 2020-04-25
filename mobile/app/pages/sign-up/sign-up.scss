@@ -1,0 +1,46 @@
+.sign-up {
+    //background-color: rgba(56, 119, 205, 1);
+    background-color: #FFFFFF;
+    color: #000000;
+
+
+
+    .sign-up .button-clear{
+        color:#000000;
+    }
+    .sign-up ion-item {
+        background-color: transparent;
+        color: #000000;
+        font-weight: bold;
+    }
+
+    .error {
+        
+    }
+
+    .error-box {
+        margin-top: 5px;
+        margin-left: 15px;
+        color: #FF0000;
+    }
+
+    .space-10 { height: 10px; }
+    .space-20 { height: 20px; }
+    .space-30 { height: 30px; }
+    .space-40 { height: 40px; }
+    .space-50 { height: 50px; }
+    .space-60 { height: 60px; }
+
+
+    input::-webkit-input-placeholder {
+        color: #000000 !important; 
+    }
+
+    .login .logo {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+}
+
